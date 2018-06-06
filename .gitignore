@@ -1,5 +1,6 @@
 [b]in/
 [t]emp/
+.vs/
 
 # Prerequisites
 *.d
@@ -33,3 +34,5 @@
 *.exe
 *.out
 *.app
+
+*.opendb
