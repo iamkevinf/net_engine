@@ -28,16 +28,33 @@ int main()
 	sin.sin_addr.S_un.S_addr = inet_addr(host.c_str());
 	if (SOCKET_ERROR == connect(sock, (sockaddr*)&sin, sizeof(sockaddr_in)))
 		std::cout << "connect error" << std::endl;
-
-	// 3 接受服务器信息 recv
-	const int maxLen = 256;
-	char recvBuff[maxLen] = {};
-	int nLen = recv(sock, recvBuff, maxLen, 0);
-	if (nLen <= 0)
-		std::cout << "recv error" << std::endl;
-
-	std::cout << "recv from server: " << recvBuff << std::endl;
 	
+	// 处理数据
+	const int maxLen = 512;
+	char cmdBuff[maxLen] = {};
+	while (true)
+	{
+		std::cout << "input a cmd: " << std::endl;
+		std::cin >> cmdBuff;
+
+		if (0 == strcmp(cmdBuff, "exit"))
+		{
+			break;
+		}
+		else
+		{
+			send(sock, cmdBuff, strlen(cmdBuff)+1, 0);
+		}
+
+		// 3 接受服务器信息 recv
+		char recvBuff[maxLen] = {};
+		int nLen = recv(sock, recvBuff, maxLen, 0);
+		if (nLen <= 0)
+			std::cout << "recv error" << std::endl;
+
+		std::cout << "recv from server: " << recvBuff << std::endl;
+	}
+
 	// 4 关闭socket
 	closesocket(sock);
 

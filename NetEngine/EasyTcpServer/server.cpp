@@ -39,23 +39,51 @@ int main()
 	int nAddrLen = sizeof(sockaddr_in);
 
 	SOCKET clientSock = INVALID_SOCKET;
-	char msgBuff[] = "Hello, I'm Server!";
+	
+	clientSock = accept(sock, (sockaddr*)&clientAddr, &nAddrLen);
+	if (clientSock == INVALID_SOCKET)
+		std::cout << "accpet error: invalid client" << std::endl;
 
+	std::cout << "new client: connection, sock = " << sock << "IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
+
+	const int maxRecvLen = 512;
+	char recvBuff[maxRecvLen] = {};
+	
 	while (true)
 	{
-		clientSock = accept(sock, (sockaddr*)&clientAddr, &nAddrLen);
-		if (clientSock == INVALID_SOCKET)
-			std::cout << "accpet error: invalid client" << std::endl;
+		// 接受客户端请求数据
+		int nLenRecv = recv(clientSock, recvBuff, maxRecvLen, 0);
+		if (nLenRecv <= 0)
+		{
+			std::cout << "client exit!" << std::endl;
+			break;
+		}
 
-		std::cout << "new client: connection, IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
+		std::cout << "recv cmd: " << recvBuff << std::endl;
 
-		// 5 send 向客户端发送一条数据
-		send(clientSock, msgBuff, strlen(msgBuff) + 1, 0);
+		// 处理客户端请求
+		if (0 == strcmp(recvBuff, "getName"))
+		{
+			char msgBuff[] = "my name is xxxx";
+			send(clientSock, msgBuff, strlen(msgBuff) + 1, 0);
+		}
+		else if (0 == strcmp(recvBuff, "getAge"))
+		{
+			char msgBuff[] = "18";
+			send(clientSock, msgBuff, strlen(msgBuff) + 1, 0);
+		}
+		else
+		{
+			char msgBuff[] = "???";
+			send(clientSock, msgBuff, strlen(msgBuff) + 1, 0);
+		}
+;
 	}
 
 	// 6.关闭socket
 	closesocket(sock);
 
 	WSACleanup();
+	system("pause");
 	return 0;
 }
