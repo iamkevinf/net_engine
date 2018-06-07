@@ -9,6 +9,8 @@ int main()
 	WSADATA data;
 	WSAStartup(ver, &data);
 
+
+
 	WSACleanup();
 	return 0;
 }
