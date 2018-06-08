@@ -1,6 +1,7 @@
 [b]in/
 [t]emp/
 .vs/
+.vscode/
 
 # Prerequisites
 *.d
