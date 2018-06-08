@@ -11,6 +11,12 @@
 std::string host = "127.0.0.1";
 int port = 10086;
 
+struct DataPackage
+{
+	int age;
+	char name[32];
+};
+
 int main()
 {
 	WORD ver = MAKEWORD(2, 2);
@@ -62,15 +68,10 @@ int main()
 		std::cout << "recv cmd: " << recvBuff << std::endl;
 
 		// 处理客户端请求
-		if (0 == strcmp(recvBuff, "getName"))
+		if (0 == strcmp(recvBuff, "getInfo"))
 		{
-			char msgBuff[] = "my name is xxxx";
-			send(clientSock, msgBuff, strlen(msgBuff) + 1, 0);
-		}
-		else if (0 == strcmp(recvBuff, "getAge"))
-		{
-			char msgBuff[] = "18";
-			send(clientSock, msgBuff, strlen(msgBuff) + 1, 0);
+			DataPackage data = { 18, "凯文" };
+			send(clientSock, (const char*)&data, sizeof(DataPackage), 0);
 		}
 		else
 		{

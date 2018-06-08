@@ -10,6 +10,12 @@
 std::string host = "127.0.0.1";
 int port = 10086;
 
+struct DataPackage
+{
+	int age;
+	char name[32];
+};
+
 int main()
 {
 	WORD ver = MAKEWORD(2, 2);
@@ -49,10 +55,14 @@ int main()
 		// 3 接受服务器信息 recv
 		char recvBuff[maxLen] = {};
 		int nLen = recv(sock, recvBuff, maxLen, 0);
-		if (nLen <= 0)
+		if (nLen < 0)
+		{
 			std::cout << "recv error" << std::endl;
+		}
 
-		std::cout << "recv from server: " << recvBuff << std::endl;
+		DataPackage* data = (DataPackage*)recvBuff;
+		if (data)
+		std::cout << "recv from server: " << "age: " << data->age << " name: " << data->name << std::endl;
 	}
 
 	// 4 关闭socket
