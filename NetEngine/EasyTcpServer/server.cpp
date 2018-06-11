@@ -11,11 +11,47 @@
 std::string host = "127.0.0.1";
 int port = 10086;
 
-struct DataPackage
+enum class MessageType
 {
-	int age;
-	char name[32];
+	MT_C2S_LOGIN,
+	MT_S2C_LOGIN,
+
+	MT_C2S_LOGOUT,
+	MT_S2C_LOGOUT,
+
+	MT_ERROR
 };
+
+// 消息头
+struct DataHeader
+{
+	short dataLen; // 数据长度
+	MessageType cmd; // 命令
+};
+
+struct c2s_Login
+{
+	char userName[32];
+	char passWord[32];
+};
+
+struct s2c_Login
+{
+	int ret;
+};
+
+struct c2s_Logout
+{
+	char userName[32];
+};
+
+struct s2c_Logout
+{
+	int ret;
+	char userName[32];
+};
+
+
 
 int main()
 {
@@ -52,33 +88,50 @@ int main()
 
 	std::cout << "new client: connection, sock = " << sock << "IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
 
-	const int maxRecvLen = 512;
-	char recvBuff[maxRecvLen] = {};
-	
 	while (true)
 	{
+		DataHeader header = {};
+
 		// 接受客户端请求数据
-		int nLenRecv = recv(clientSock, recvBuff, maxRecvLen, 0);
+		int nLenRecv = recv(clientSock, (char*)&header, sizeof(DataHeader), 0);
 		if (nLenRecv <= 0)
 		{
 			std::cout << "client exit!" << std::endl;
 			break;
 		}
 
-		std::cout << "recv cmd: " << recvBuff << std::endl;
+		std::cout << "recv cmd: " << (int)header.cmd << " len: " << header.dataLen << std::endl;
 
-		// 处理客户端请求
-		if (0 == strcmp(recvBuff, "getInfo"))
+		switch (header.cmd)
 		{
-			DataPackage data = { 18, "凯文" };
-			send(clientSock, (const char*)&data, sizeof(DataPackage), 0);
-		}
-		else
+		case MessageType::MT_C2S_LOGIN:
 		{
-			char msgBuff[] = "???";
-			send(clientSock, msgBuff, strlen(msgBuff) + 1, 0);
+			c2s_Login login = {};
+			recv(clientSock, (char*)&login, sizeof(c2s_Login), 0);
+			s2c_Login ret = {100};
+			send(clientSock, (char*)&header, sizeof(DataHeader), 0);
+			send(clientSock, (char*)&ret, sizeof(s2c_Login), 0);
 		}
-;
+			break;
+
+		case MessageType::MT_C2S_LOGOUT:
+		{
+			c2s_Logout logout = {};
+			recv(clientSock, (char*)&logout, sizeof(c2s_Logout), 0);
+			s2c_Logout ret = { 100 };
+			send(clientSock, (char*)&header, sizeof(DataHeader), 0);
+			send(clientSock, (char*)&ret, sizeof(s2c_Logout), 0);
+		}
+			break;
+
+		default:
+		{
+			header.cmd = MessageType::MT_ERROR;
+			header.dataLen = 0;
+			send(clientSock, (char*)&header, sizeof(DataHeader), 0);
+		}
+			break;
+		}
 	}
 
 	// 6.关闭socket

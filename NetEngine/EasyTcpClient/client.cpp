@@ -10,10 +10,44 @@
 std::string host = "127.0.0.1";
 int port = 10086;
 
-struct DataPackage
+enum class MessageType
 {
-	int age;
-	char name[32];
+	MT_C2S_LOGIN,
+	MT_S2C_LOGIN,
+
+	MT_C2S_LOGOUT,
+	MT_S2C_LOGOUT,
+
+	MT_ERROR
+};
+
+// 消息头
+struct DataHeader
+{
+	short dataLen; // 数据长度
+	MessageType cmd; // 命令
+};
+
+struct c2s_Login
+{
+	char userName[32];
+	char passWord[32];
+};
+
+struct s2c_Login
+{
+	int ret;
+};
+
+struct c2s_Logout
+{
+	char userName[32];
+};
+
+struct s2c_Logout
+{
+	int ret;
+	char userName[32];
 };
 
 int main()
@@ -47,22 +81,49 @@ int main()
 		{
 			break;
 		}
+		else if(0 == strcmp(cmdBuff, "login"))
+		{
+			c2s_Login msg = {
+				"admin",
+				"123.com"
+			};
+			DataHeader c2sHeader = {
+				sizeof(c2s_Login),
+				MessageType::MT_C2S_LOGIN
+			};
+
+			send(sock, (const char*)&c2sHeader, sizeof(DataHeader), 0);
+			send(sock, (const char*)&msg, sizeof(c2s_Login), 0);
+			// 接收服务器的返回数据
+			DataHeader s2cHeader = {};
+			s2c_Login ret = {};
+			recv(sock, (char*)&s2cHeader, sizeof(DataHeader), 0);
+			recv(sock, (char*)&ret, sizeof(s2c_Login), 0);
+			std::cout << "s2c_Login " << ret.ret << std::endl;
+		}
+		else if (0 == strcmp(cmdBuff, "logout"))
+		{
+			c2s_Logout msg = {
+				"admin"
+			};
+			DataHeader c2sHeader = {
+				sizeof(c2s_Logout),
+				MessageType::MT_C2S_LOGOUT
+			};
+
+			send(sock, (const char*)&c2sHeader, sizeof(DataHeader), 0);
+			send(sock, (const char*)&msg, sizeof(c2s_Logout), 0);
+			// 接收服务器的返回数据
+			DataHeader s2cHeader = {};
+			s2c_Logout ret = {};
+			recv(sock, (char*)&s2cHeader, sizeof(DataHeader), 0);
+			recv(sock, (char*)&ret, sizeof(s2c_Logout), 0);
+			std::cout << "s2c_Logout " << ret.ret << std::endl;
+		}
 		else
 		{
-			send(sock, cmdBuff, strlen(cmdBuff)+1, 0);
+			std::cout << "cmd not support : " << cmdBuff << std::endl;
 		}
-
-		// 3 接受服务器信息 recv
-		char recvBuff[maxLen] = {};
-		int nLen = recv(sock, recvBuff, maxLen, 0);
-		if (nLen < 0)
-		{
-			std::cout << "recv error" << std::endl;
-		}
-
-		DataPackage* data = (DataPackage*)recvBuff;
-		if (data)
-		std::cout << "recv from server: " << "age: " << data->age << " name: " << data->name << std::endl;
 	}
 
 	// 4 关闭socket
