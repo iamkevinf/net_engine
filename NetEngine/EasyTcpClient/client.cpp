@@ -28,27 +28,55 @@ struct DataHeader
 	MessageType cmd; // 命令
 };
 
-struct c2s_Login
+struct c2s_Login : public DataHeader
 {
+	c2s_Login()
+	{
+		dataLen = sizeof(c2s_Login);
+		cmd = MessageType::MT_C2S_LOGIN;
+	}
+
 	char userName[32];
 	char passWord[32];
 };
 
-struct s2c_Login
+struct s2c_Login : public DataHeader
 {
+	s2c_Login()
+	{
+		dataLen = sizeof(s2c_Login);
+		cmd = MessageType::MT_S2C_LOGIN;
+		ret = 0;
+	}
+
 	int ret;
 };
 
-struct c2s_Logout
+struct c2s_Logout : public DataHeader
 {
+	c2s_Logout()
+	{
+		dataLen = sizeof(c2s_Logout);
+		cmd = MessageType::MT_C2S_LOGOUT;
+	}
+
 	char userName[32];
 };
 
-struct s2c_Logout
+struct s2c_Logout : public DataHeader
 {
+	s2c_Logout()
+	{
+		dataLen = sizeof(s2c_Logout);
+		cmd = MessageType::MT_S2C_LOGOUT;
+		ret = 0;
+	}
+
 	int ret;
 	char userName[32];
 };
+
+
 
 int main()
 {
@@ -83,40 +111,22 @@ int main()
 		}
 		else if(0 == strcmp(cmdBuff, "login"))
 		{
-			c2s_Login msg = {
-				"admin",
-				"123.com"
-			};
-			DataHeader c2sHeader = {
-				sizeof(c2s_Login),
-				MessageType::MT_C2S_LOGIN
-			};
-
-			send(sock, (const char*)&c2sHeader, sizeof(DataHeader), 0);
+			c2s_Login msg;
+			strcpy_s(msg.userName, "admin");
+			strcpy_s(msg.passWord, "123.com");
 			send(sock, (const char*)&msg, sizeof(c2s_Login), 0);
 			// 接收服务器的返回数据
-			DataHeader s2cHeader = {};
 			s2c_Login ret = {};
-			recv(sock, (char*)&s2cHeader, sizeof(DataHeader), 0);
 			recv(sock, (char*)&ret, sizeof(s2c_Login), 0);
 			std::cout << "s2c_Login " << ret.ret << std::endl;
 		}
 		else if (0 == strcmp(cmdBuff, "logout"))
 		{
-			c2s_Logout msg = {
-				"admin"
-			};
-			DataHeader c2sHeader = {
-				sizeof(c2s_Logout),
-				MessageType::MT_C2S_LOGOUT
-			};
-
-			send(sock, (const char*)&c2sHeader, sizeof(DataHeader), 0);
+			c2s_Logout msg;
+			strcpy_s(msg.userName, "admin");
 			send(sock, (const char*)&msg, sizeof(c2s_Logout), 0);
 			// 接收服务器的返回数据
-			DataHeader s2cHeader = {};
 			s2c_Logout ret = {};
-			recv(sock, (char*)&s2cHeader, sizeof(DataHeader), 0);
 			recv(sock, (char*)&ret, sizeof(s2c_Logout), 0);
 			std::cout << "s2c_Logout " << ret.ret << std::endl;
 		}

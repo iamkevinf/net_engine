@@ -29,24 +29,50 @@ struct DataHeader
 	MessageType cmd; // 命令
 };
 
-struct c2s_Login
+struct c2s_Login : public DataHeader
 {
+	c2s_Login()
+	{
+		dataLen = sizeof(c2s_Login);
+		cmd = MessageType::MT_C2S_LOGIN;
+	}
+
 	char userName[32];
 	char passWord[32];
 };
 
-struct s2c_Login
+struct s2c_Login : public DataHeader
 {
+	s2c_Login()
+	{
+		dataLen = sizeof(s2c_Login);
+		cmd = MessageType::MT_S2C_LOGIN;
+		ret = 0;
+	}
+
 	int ret;
 };
 
-struct c2s_Logout
+struct c2s_Logout : public DataHeader
 {
+	c2s_Logout()
+	{
+		dataLen = sizeof(c2s_Logout);
+		cmd = MessageType::MT_C2S_LOGOUT;
+	}
+
 	char userName[32];
 };
 
-struct s2c_Logout
+struct s2c_Logout : public DataHeader
 {
+	s2c_Logout()
+	{
+		dataLen = sizeof(s2c_Logout);
+		cmd = MessageType::MT_S2C_LOGOUT;
+		ret = 0;
+	}
+
 	int ret;
 	char userName[32];
 };
@@ -69,7 +95,7 @@ int main()
 	_sin.sin_family = AF_INET;
 	_sin.sin_port = htons(port);
 	_sin.sin_addr.S_un.S_addr = INADDR_ANY; // inet_addr(host.c_str());
-	if ( SOCKET_ERROR == bind(sock, (sockaddr*)&_sin, sizeof(sockaddr_in)) )
+	if (SOCKET_ERROR == bind(sock, (sockaddr*)&_sin, sizeof(sockaddr_in)))
 		std::cout << "bind error" << std::endl;
 
 	// 3 listen 监听网络端口
@@ -81,48 +107,54 @@ int main()
 	int nAddrLen = sizeof(sockaddr_in);
 
 	SOCKET clientSock = INVALID_SOCKET;
-	
+
 	clientSock = accept(sock, (sockaddr*)&clientAddr, &nAddrLen);
 	if (clientSock == INVALID_SOCKET)
 		std::cout << "accpet error: invalid client" << std::endl;
 
-	std::cout << "new client: connection, sock = " << sock << "IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
+	std::cout << "new client: connection, sock = " << sock << " IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
 
+	const int headerSize = sizeof(DataHeader);
 	while (true)
 	{
 		DataHeader header = {};
 
 		// 接受客户端请求数据
-		int nLenRecv = recv(clientSock, (char*)&header, sizeof(DataHeader), 0);
+		int nLenRecv = recv(clientSock, (char*)&header, headerSize, 0);
 		if (nLenRecv <= 0)
 		{
 			std::cout << "client exit!" << std::endl;
 			break;
 		}
 
-		std::cout << "recv cmd: " << (int)header.cmd << " len: " << header.dataLen << std::endl;
 
 		switch (header.cmd)
 		{
 		case MessageType::MT_C2S_LOGIN:
 		{
 			c2s_Login login = {};
-			recv(clientSock, (char*)&login, sizeof(c2s_Login), 0);
-			s2c_Login ret = {100};
-			send(clientSock, (char*)&header, sizeof(DataHeader), 0);
+			recv(clientSock, (char*)&login + headerSize, sizeof(c2s_Login) - headerSize, 0);
+
+			std::cout << "recv cmd: " << (int)header.cmd << " len: " << login.dataLen << " username: " << login.userName << " password: " << login.passWord << std::endl;
+
+			s2c_Login ret;
+			ret.ret = 100;
 			send(clientSock, (char*)&ret, sizeof(s2c_Login), 0);
 		}
-			break;
+		break;
 
 		case MessageType::MT_C2S_LOGOUT:
 		{
 			c2s_Logout logout = {};
-			recv(clientSock, (char*)&logout, sizeof(c2s_Logout), 0);
-			s2c_Logout ret = { 100 };
-			send(clientSock, (char*)&header, sizeof(DataHeader), 0);
+			recv(clientSock, (char*)&logout + headerSize, sizeof(c2s_Logout) - headerSize, 0);
+
+			std::cout << "recv cmd: " << (int)header.cmd << " len: " << logout.dataLen << " username: " << logout.userName << std::endl;
+
+			s2c_Logout ret;
+			ret.ret = 100;
 			send(clientSock, (char*)&ret, sizeof(s2c_Logout), 0);
 		}
-			break;
+		break;
 
 		default:
 		{
@@ -130,7 +162,7 @@ int main()
 			header.dataLen = 0;
 			send(clientSock, (char*)&header, sizeof(DataHeader), 0);
 		}
-			break;
+		break;
 		}
 	}
 
