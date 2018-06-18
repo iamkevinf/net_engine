@@ -115,27 +115,27 @@ int main()
 	std::cout << "new client: connection, sock = " << sock << " IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
 
 	const int headerSize = sizeof(DataHeader);
+	char szRecv[1024] = {};
+
 	while (true)
 	{
-		DataHeader header = {};
-
 		// 接受客户端请求数据
-		int nLenRecv = recv(clientSock, (char*)&header, headerSize, 0);
+		int nLenRecv = recv(clientSock, szRecv, headerSize, 0);
+		DataHeader* header = (DataHeader*)szRecv;
 		if (nLenRecv <= 0)
 		{
 			std::cout << "client exit!" << std::endl;
 			break;
 		}
 
-
-		switch (header.cmd)
+		switch (header->cmd)
 		{
 		case MessageType::MT_C2S_LOGIN:
 		{
-			c2s_Login login = {};
-			recv(clientSock, (char*)&login + headerSize, sizeof(c2s_Login) - headerSize, 0);
+			recv(clientSock, szRecv + headerSize, header->dataLen - headerSize, 0);
+			c2s_Login* login = (c2s_Login*)szRecv;
 
-			std::cout << "recv cmd: " << (int)header.cmd << " len: " << login.dataLen << " username: " << login.userName << " password: " << login.passWord << std::endl;
+			std::cout << "recv cmd: " << (int)header->cmd << " len: " << login->dataLen << " username: " << login->userName << " password: " << login->passWord << std::endl;
 
 			s2c_Login ret;
 			ret.ret = 100;
@@ -145,10 +145,10 @@ int main()
 
 		case MessageType::MT_C2S_LOGOUT:
 		{
-			c2s_Logout logout = {};
-			recv(clientSock, (char*)&logout + headerSize, sizeof(c2s_Logout) - headerSize, 0);
+			recv(clientSock, szRecv + headerSize, header->dataLen - headerSize, 0);
+			c2s_Logout* logout = (c2s_Logout*)szRecv;
 
-			std::cout << "recv cmd: " << (int)header.cmd << " len: " << logout.dataLen << " username: " << logout.userName << std::endl;
+			std::cout << "recv cmd: " << (int)header->cmd << " len: " << logout->dataLen << " username: " << logout->userName << std::endl;
 
 			s2c_Logout ret;
 			ret.ret = 100;
@@ -158,8 +158,8 @@ int main()
 
 		default:
 		{
-			header.cmd = MessageType::MT_ERROR;
-			header.dataLen = 0;
+			header->cmd = MessageType::MT_ERROR;
+			header->dataLen = 0;
 			send(clientSock, (char*)&header, sizeof(DataHeader), 0);
 		}
 		break;
