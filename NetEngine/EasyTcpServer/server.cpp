@@ -23,6 +23,8 @@ enum class MessageType
 	MT_C2S_LOGOUT,
 	MT_S2C_LOGOUT,
 
+	MT_S2C_JOIN,
+
 	MT_ERROR
 };
 
@@ -81,6 +83,18 @@ struct s2c_Logout : public DataHeader
 	char userName[32];
 };
 
+struct s2c_Join : public DataHeader
+{
+	s2c_Join()
+	{
+		dataLen = sizeof(s2c_Join);
+		cmd = MessageType::MT_S2C_JOIN;
+		sock = 0;
+	}
+
+	int sock;
+};
+
 int processor(SOCKET cSock)
 {
 	const int headerSize = sizeof(DataHeader);
@@ -91,7 +105,7 @@ int processor(SOCKET cSock)
 	DataHeader* header = (DataHeader*)szRecv;
 	if (nLenRecv <= 0)
 	{
-		std::cout << "client exit!" << std::endl;
+		std::cout << "client <Socket=" << cSock << "> exit!" << std::endl;
 		return -1;
 	}
 
@@ -198,6 +212,13 @@ int main()
 			clientSock = accept(sock, (sockaddr*)&clientAddr, &nAddrLen);
 			if (clientSock == INVALID_SOCKET)
 				std::cout << "accpet error: invalid client" << std::endl;
+
+			for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+			{
+				s2c_Join msg;
+				msg.sock = g_clients[n];
+				send(g_clients[n], (const char*)&msg, sizeof(s2c_Join), 0);
+			}
 
 			g_clients.push_back(clientSock);
 			std::cout << "new client: connection, sock = " << clientSock << " IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;

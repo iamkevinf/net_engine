@@ -18,6 +18,8 @@ enum class MessageType
 	MT_C2S_LOGOUT,
 	MT_S2C_LOGOUT,
 
+	MT_S2C_JOIN,
+
 	MT_ERROR
 };
 
@@ -76,7 +78,64 @@ struct s2c_Logout : public DataHeader
 	char userName[32];
 };
 
+struct s2c_Join : public DataHeader
+{
+	s2c_Join()
+	{
+		dataLen = sizeof(s2c_Join);
+		cmd = MessageType::MT_S2C_JOIN;
+		sock = 0;
+	}
 
+	int sock;
+};
+
+
+int processor(SOCKET sock)
+{
+	const int headerSize = sizeof(DataHeader);
+
+	char szRecv[1024] = {};
+	// 接受客户端请求数据
+	int nLenRecv = recv(sock, szRecv, headerSize, 0);
+	DataHeader* header = (DataHeader*)szRecv;
+	if (nLenRecv <= 0)
+	{
+		std::cout << "disconnection from server" << std::endl;
+		return -1;
+	}
+
+	switch (header->cmd)
+	{
+	case MessageType::MT_S2C_LOGIN:
+	{
+		recv(sock, szRecv + headerSize, header->dataLen - headerSize, 0);
+		s2c_Login* ret = (s2c_Login*)szRecv;
+		std::cout << "s2c_Login " << ret->ret << std::endl;
+	}
+	break;
+
+	case MessageType::MT_C2S_LOGOUT:
+	{
+		recv(sock, szRecv + headerSize, header->dataLen - headerSize, 0);
+		s2c_Logout* ret = (s2c_Logout*)szRecv;
+		std::cout << "s2c_Logout " << ret->ret << std::endl;
+
+	}
+	break;
+
+	case MessageType::MT_S2C_JOIN:
+	{
+		recv(sock, szRecv + headerSize, header->dataLen - headerSize, 0);
+		s2c_Join* ret = (s2c_Join*)szRecv;
+		std::cout << "s2c_Join " << ret->sock << std::endl;
+	}
+	break;
+
+	}
+
+	return 0;
+}
 
 int main()
 {
@@ -97,42 +156,35 @@ int main()
 	if (SOCKET_ERROR == connect(sock, (sockaddr*)&sin, sizeof(sockaddr_in)))
 		std::cout << "connect error" << std::endl;
 	
+	c2s_Login msg;
+	strcpy_s(msg.userName, "admin");
+	strcpy_s(msg.passWord, "123.com");
+	send(sock, (const char*)&msg, sizeof(c2s_Login), 0);
+
 	// 处理数据
 	const int maxLen = 512;
 	char cmdBuff[maxLen] = {};
 	while (true)
 	{
-		std::cout << "input a cmd: " << std::endl;
-		std::cin >> cmdBuff;
-
-		if (0 == strcmp(cmdBuff, "exit"))
+		fd_set fdReads;
+		FD_ZERO(&fdReads);
+		FD_SET(sock, &fdReads);
+		int ret = select(sock, &fdReads, 0, 0, 0);
+		if (ret < 0)
 		{
+			std::cout << "select over" << std::endl;
 			break;
 		}
-		else if(0 == strcmp(cmdBuff, "login"))
+
+		if (FD_ISSET(sock, &fdReads))
 		{
-			c2s_Login msg;
-			strcpy_s(msg.userName, "admin");
-			strcpy_s(msg.passWord, "123.com");
-			send(sock, (const char*)&msg, sizeof(c2s_Login), 0);
-			// 接收服务器的返回数据
-			s2c_Login ret = {};
-			recv(sock, (char*)&ret, sizeof(s2c_Login), 0);
-			std::cout << "s2c_Login " << ret.ret << std::endl;
-		}
-		else if (0 == strcmp(cmdBuff, "logout"))
-		{
-			c2s_Logout msg;
-			strcpy_s(msg.userName, "admin");
-			send(sock, (const char*)&msg, sizeof(c2s_Logout), 0);
-			// 接收服务器的返回数据
-			s2c_Logout ret = {};
-			recv(sock, (char*)&ret, sizeof(s2c_Logout), 0);
-			std::cout << "s2c_Logout " << ret.ret << std::endl;
-		}
-		else
-		{
-			std::cout << "cmd not support : " << cmdBuff << std::endl;
+			FD_CLR(sock, &fdReads);
+
+			if (-1 == processor(sock))
+			{
+				std::cout << "select over" << std::endl;
+				break;
+			}
 		}
 	}
 
