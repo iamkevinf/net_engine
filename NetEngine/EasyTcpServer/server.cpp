@@ -6,10 +6,14 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
+std::vector<SOCKET> g_clients;
 
 std::string host = "127.0.0.1";
 int port = 10086;
+
+
 
 enum class MessageType
 {
@@ -77,7 +81,59 @@ struct s2c_Logout : public DataHeader
 	char userName[32];
 };
 
+int processor(SOCKET cSock)
+{
+	const int headerSize = sizeof(DataHeader);
 
+	char szRecv[1024] = {};
+	// 接受客户端请求数据
+	int nLenRecv = recv(cSock, szRecv, headerSize, 0);
+	DataHeader* header = (DataHeader*)szRecv;
+	if (nLenRecv <= 0)
+	{
+		std::cout << "client exit!" << std::endl;
+		return -1;
+	}
+
+	switch (header->cmd)
+	{
+	case MessageType::MT_C2S_LOGIN:
+	{
+		recv(cSock, szRecv + headerSize, header->dataLen - headerSize, 0);
+		c2s_Login* login = (c2s_Login*)szRecv;
+
+		std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd << " len: " << login->dataLen << " username: " << login->userName << " password: " << login->passWord << std::endl;
+
+		s2c_Login ret;
+		ret.ret = 100;
+		send(cSock, (char*)&ret, sizeof(s2c_Login), 0);
+	}
+	break;
+
+	case MessageType::MT_C2S_LOGOUT:
+	{
+		recv(cSock, szRecv + headerSize, header->dataLen - headerSize, 0);
+		c2s_Logout* logout = (c2s_Logout*)szRecv;
+
+		std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd << " len: " << logout->dataLen << " username: " << logout->userName << std::endl;
+
+		s2c_Logout ret;
+		ret.ret = 100;
+		send(cSock, (char*)&ret, sizeof(s2c_Logout), 0);
+	}
+	break;
+
+	default:
+	{
+		header->cmd = MessageType::MT_ERROR;
+		header->dataLen = 0;
+		send(cSock, (char*)&header, sizeof(DataHeader), 0);
+	}
+	break;
+	}
+
+	return 0;
+}
 
 int main()
 {
@@ -102,68 +158,69 @@ int main()
 	if (SOCKET_ERROR == listen(sock, 5))
 		std::cout << "listen error" << std::endl;
 
-	// 4 accept 等待客户端连接
-	sockaddr_in clientAddr = {};
-	int nAddrLen = sizeof(sockaddr_in);
-
-	SOCKET clientSock = INVALID_SOCKET;
-
-	clientSock = accept(sock, (sockaddr*)&clientAddr, &nAddrLen);
-	if (clientSock == INVALID_SOCKET)
-		std::cout << "accpet error: invalid client" << std::endl;
-
-	std::cout << "new client: connection, sock = " << sock << " IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
-
-	const int headerSize = sizeof(DataHeader);
-	char szRecv[1024] = {};
-
+	int maxsock = sock;
 	while (true)
 	{
-		// 接受客户端请求数据
-		int nLenRecv = recv(clientSock, szRecv, headerSize, 0);
-		DataHeader* header = (DataHeader*)szRecv;
-		if (nLenRecv <= 0)
+		fd_set fdRead;
+		fd_set fdWrite;
+		fd_set fdExp;
+
+		FD_ZERO(&fdRead);
+		FD_ZERO(&fdWrite);
+		FD_ZERO(&fdExp);
+
+		FD_SET(sock, &fdRead);
+		FD_SET(sock, &fdWrite);
+		FD_SET(sock, &fdExp);
+
+		for (int n = (int)g_clients.size() - 1; n >= 0; n--)
 		{
-			std::cout << "client exit!" << std::endl;
+			FD_SET(g_clients[n], &fdRead);
+		}
+
+		timeval t = { 1,0 };
+		int ret = select(maxsock + 1, &fdRead, &fdWrite, &fdExp, &t);
+		if (ret < 0)
+		{
+			std::cout << "select over" << std::endl;
 			break;
 		}
 
-		switch (header->cmd)
+		if (FD_ISSET(sock, &fdRead))
 		{
-		case MessageType::MT_C2S_LOGIN:
+			FD_CLR(sock, &fdRead);
+
+			// 4 accept 等待客户端连接
+			sockaddr_in clientAddr = {};
+			int nAddrLen = sizeof(sockaddr_in);
+
+			SOCKET clientSock = INVALID_SOCKET;
+			clientSock = accept(sock, (sockaddr*)&clientAddr, &nAddrLen);
+			if (clientSock == INVALID_SOCKET)
+				std::cout << "accpet error: invalid client" << std::endl;
+
+			g_clients.push_back(clientSock);
+			std::cout << "new client: connection, sock = " << clientSock << " IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
+		}
+
+		for (size_t n = 0; n < fdRead.fd_count; ++n)
 		{
-			recv(clientSock, szRecv + headerSize, header->dataLen - headerSize, 0);
-			c2s_Login* login = (c2s_Login*)szRecv;
-
-			std::cout << "recv cmd: " << (int)header->cmd << " len: " << login->dataLen << " username: " << login->userName << " password: " << login->passWord << std::endl;
-
-			s2c_Login ret;
-			ret.ret = 100;
-			send(clientSock, (char*)&ret, sizeof(s2c_Login), 0);
+			if (-1 == processor(fdRead.fd_array[n]))
+			{
+				auto iter = find(g_clients.begin(), g_clients.end(), fdRead.fd_array[n]);
+				if (iter != g_clients.end())
+				{
+					g_clients.erase(iter);
+				}
+			}
 		}
-		break;
 
-		case MessageType::MT_C2S_LOGOUT:
-		{
-			recv(clientSock, szRecv + headerSize, header->dataLen - headerSize, 0);
-			c2s_Logout* logout = (c2s_Logout*)szRecv;
+		std::cout << "other..." << std::endl;
+	}
 
-			std::cout << "recv cmd: " << (int)header->cmd << " len: " << logout->dataLen << " username: " << logout->userName << std::endl;
-
-			s2c_Logout ret;
-			ret.ret = 100;
-			send(clientSock, (char*)&ret, sizeof(s2c_Logout), 0);
-		}
-		break;
-
-		default:
-		{
-			header->cmd = MessageType::MT_ERROR;
-			header->dataLen = 0;
-			send(clientSock, (char*)&header, sizeof(DataHeader), 0);
-		}
-		break;
-		}
+	for (SOCKET ele : g_clients)
+	{
+		closesocket(ele);
 	}
 
 	// 6.关闭socket
