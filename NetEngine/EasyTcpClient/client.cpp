@@ -1,15 +1,25 @@
 #define WIN32_LEAN_AND_MEAN
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
-#include <Windows.h>
-#include <WinSock2.h>
+#ifdef _WIN32
+	#include <Windows.h>
+	#include <WinSock2.h>
+#else
+	#include <unistd.h>
+	#include <arpa/inet.h>
+	#include <string.h>
+
+	#define SOCKET					int
+	#define INVALID_SOCKET	(SOCKET)(~0)
+	#define SOCKET_ERROR			(-1)
+#endif
 
 #include <string.h>
 #include <iostream>
 
 #include <thread>
 
-std::string host = "127.0.0.1";
+std::string host = "192.168.1.102";
 int port = 10086;
 
 enum class MessageType
@@ -25,11 +35,11 @@ enum class MessageType
 	MT_ERROR
 };
 
-// ÏûÏ¢Í·
+// ï¿½ï¿½Ï¢Í·
 struct DataHeader
 {
-	short dataLen; // Êý¾Ý³¤¶È
-	MessageType cmd; // ÃüÁî
+	short dataLen; // ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½
+	MessageType cmd; // ï¿½ï¿½ï¿½ï¿½
 };
 
 struct c2s_Login : public DataHeader
@@ -98,7 +108,7 @@ int processor(SOCKET sock)
 	const int headerSize = sizeof(DataHeader);
 
 	char szRecv[1024] = {};
-	// ½ÓÊÜ¿Í»§¶ËÇëÇóÊý¾Ý
+	// ï¿½ï¿½ï¿½Ü¿Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	int nLenRecv = recv(sock, szRecv, headerSize, 0);
 	DataHeader* header = (DataHeader*)szRecv;
 	if (nLenRecv <= 0)
@@ -159,21 +169,20 @@ void inputThread(SOCKET sock)
 		if (0 == strcmp(cmdBuff, "exit"))
 		{
 			g_runing = false;
-			std::cout << "exit" << std::endl;
 			break;
 		}
 		else if (0 == strcmp(cmdBuff, "login"))
 		{
 			c2s_Login login;
-			strcpy_s(login.userName, "admin");
-			strcpy_s(login.passWord, "123.com");
+			strcpy(login.userName, "admin");
+			strcpy(login.passWord, "123.com");
 
 			send(sock, (const char*)&login, sizeof(c2s_Login), 0);
 		}
-		else if (0 == strcmp(cmdBuff, "login"))
+		else if (0 == strcmp(cmdBuff, "logout"))
 		{
 			c2s_Logout logout;
-			strcpy_s(logout.userName, "admin");
+			strcpy(logout.userName, "admin");
 
 			send(sock, (const char*)&logout, sizeof(c2s_Logout), 0);
 		}
@@ -182,30 +191,40 @@ void inputThread(SOCKET sock)
 			std::cout << "not support cmd!" << std::endl;
 		}
 
+#ifdef _WIN32
 		Sleep(1000);
+#else
+		sleep(1);
+#endif
 	}
 }
 
 int main()
 {
+#ifdef _WIN32
 	WORD ver = MAKEWORD(2, 2);
 	WSADATA data;
 	WSAStartup(ver, &data);
+#endif
 
-	// 1 ½¨Á¢Ò»¸ösocket
+	// 1 ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½socket
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET)
 		std::cout << "socket error" << std::endl;
 
-	// 2 Á¬½Ó·þÎñÆ÷ connect
+	// 2 ï¿½ï¿½ï¿½Ó·ï¿½ï¿½ï¿½ï¿½ï¿½ connect
 	sockaddr_in sin = {};
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
+#ifdef _WIN32
 	sin.sin_addr.S_un.S_addr = inet_addr(host.c_str());
+#else
+	sin.sin_addr.s_addr = inet_addr(host.c_str());
+#endif
 	if (SOCKET_ERROR == connect(sock, (sockaddr*)&sin, sizeof(sockaddr_in)))
 		std::cout << "connect error" << std::endl;
 	
-	// ´¦ÀíÊý¾Ý
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	const int maxLen = 512;
 	char cmdBuff[maxLen] = {};
 
@@ -240,11 +259,16 @@ int main()
 
 	}
 
-	// 4 ¹Ø±Õsocket
+#ifdef _WIN32
+	// 4 ï¿½Ø±ï¿½socket
 	closesocket(sock);
+#else
+	close(sock);
+#endif
 
+#ifdef _WIN32
 	WSACleanup();
-
 	system("pause");
+#endif
 	return 0;
 }
