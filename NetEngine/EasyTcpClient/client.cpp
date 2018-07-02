@@ -1,13 +1,12 @@
-#define WIN32_LEAN_AND_MEAN
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
-
 #ifdef _WIN32
+	#define WIN32_LEAN_AND_MEAN
+	#define _WINSOCK_DEPRECATED_NO_WARNINGS
+
 	#include <Windows.h>
 	#include <WinSock2.h>
 #else
 	#include <unistd.h>
 	#include <arpa/inet.h>
-	#include <string.h>
 
 	#define SOCKET					int
 	#define INVALID_SOCKET	(SOCKET)(~0)
@@ -19,7 +18,8 @@
 
 #include <thread>
 
-std::string host = "192.168.1.102";
+std::string host = "127.0.0.1";//"192.168.1.102";
+
 int port = 10086;
 
 enum class MessageType
@@ -109,7 +109,7 @@ int processor(SOCKET sock)
 
 	char szRecv[1024] = {};
 	// ���ܿͻ�����������
-	int nLenRecv = recv(sock, szRecv, headerSize, 0);
+	int nLenRecv = (int)recv(sock, szRecv, headerSize, 0);
 	DataHeader* header = (DataHeader*)szRecv;
 	if (nLenRecv <= 0)
 	{

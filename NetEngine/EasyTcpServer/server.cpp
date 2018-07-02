@@ -1,8 +1,17 @@
-#define WIN32_LEAN_AND_MEAN
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#ifdef _WIN32
+	#define WIN32_LEAN_AND_MEAN
+	#define _WINSOCK_DEPRECATED_NO_WARNINGS
 
-#include <Windows.h>
-#include <WinSock2.h>
+	#include <Windows.h>
+	#include <WinSock2.h>
+#else
+	#include <unistd.h>
+	#include <arpa/inet.h>
+
+	#define SOCKET					int
+	#define INVALID_SOCKET	(SOCKET)(~0)
+	#define SOCKET_ERROR			(-1)
+#endif
 
 #include <iostream>
 #include <string>
@@ -10,10 +19,8 @@
 
 std::vector<SOCKET> g_clients;
 
-std::string host = "127.0.0.1";
+std::string host = "127.0.0.1";//"192.168.1.102";
 int port = 10086;
-
-
 
 enum class MessageType
 {
@@ -28,11 +35,11 @@ enum class MessageType
 	MT_ERROR
 };
 
-// ÏûÏ¢Í·
+// ï¿½ï¿½Ï¢Í·
 struct DataHeader
 {
-	short dataLen; // Êý¾Ý³¤¶È
-	MessageType cmd; // ÃüÁî
+	short dataLen; // ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½
+	MessageType cmd; // ï¿½ï¿½ï¿½ï¿½
 };
 
 struct c2s_Login : public DataHeader
@@ -100,8 +107,8 @@ int processor(SOCKET cSock)
 	const int headerSize = sizeof(DataHeader);
 
 	char szRecv[1024] = {};
-	// ½ÓÊÜ¿Í»§¶ËÇëÇóÊý¾Ý
-	int nLenRecv = recv(cSock, szRecv, headerSize, 0);
+	// ï¿½ï¿½ï¿½Ü¿Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	int nLenRecv = (int)recv(cSock, szRecv, headerSize, 0);
 	DataHeader* header = (DataHeader*)szRecv;
 	if (nLenRecv <= 0)
 	{
@@ -151,24 +158,30 @@ int processor(SOCKET cSock)
 
 int main()
 {
+#ifdef _WIN32
 	WORD ver = MAKEWORD(2, 2);
 	WSADATA data;
 	WSAStartup(ver, &data);
+#endif
 
-	// 1½¨Á¢socket
+	// 1ï¿½ï¿½ï¿½ï¿½socket
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (sock == INVALID_SOCKET)
 		std::cout << "socket error" << std::endl;
 
-	// 2 bind°ó¶¨ÓÃÓÚ½ÓÊÜ¿Í»§¶ËÁ¬½ÓµÄÍøÂç¶Ë¿Ú
+	// 2 bindï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½Ü¿Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½
 	sockaddr_in _sin = {};
 	_sin.sin_family = AF_INET;
 	_sin.sin_port = htons(port);
+#ifdef _WIN32
 	_sin.sin_addr.S_un.S_addr = INADDR_ANY; // inet_addr(host.c_str());
+#else
+	_sin.sin_addr.s_addr = INADDR_ANY; // inet_addr(host.c_str());
+#endif
 	if (SOCKET_ERROR == bind(sock, (sockaddr*)&_sin, sizeof(sockaddr_in)))
 		std::cout << "bind error" << std::endl;
 
-	// 3 listen ¼àÌýÍøÂç¶Ë¿Ú
+	// 3 listen ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½
 	if (SOCKET_ERROR == listen(sock, 5))
 		std::cout << "listen error" << std::endl;
 
@@ -203,12 +216,16 @@ int main()
 		{
 			FD_CLR(sock, &fdRead);
 
-			// 4 accept µÈ´ý¿Í»§¶ËÁ¬½Ó
+			// 4 accept ï¿½È´ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			sockaddr_in clientAddr = {};
 			int nAddrLen = sizeof(sockaddr_in);
 
 			SOCKET clientSock = INVALID_SOCKET;
+#ifdef _WIN32
 			clientSock = accept(sock, (sockaddr*)&clientAddr, &nAddrLen);
+#else
+			clientSock = accept(sock, (sockaddr*)&clientAddr, (socklen_t*)(&nAddrLen));
+#endif
 			if (clientSock == INVALID_SOCKET)
 			{
 				std::cout << "accpet error: invalid client" << std::endl;
@@ -227,14 +244,18 @@ int main()
 			}
 		}
 
-		for (size_t n = 0; n < fdRead.fd_count; ++n)
+		for(int n = (int)g_clients.size() - 1; n >= 0; n--)
 		{
-			if (-1 == processor(fdRead.fd_array[n]))
+			if(FD_ISSET(g_clients[n], &fdRead))
 			{
-				auto iter = find(g_clients.begin(), g_clients.end(), fdRead.fd_array[n]);
-				if (iter != g_clients.end())
+
+				if (-1 == processor(g_clients[n]))
 				{
-					g_clients.erase(iter);
+					auto iter = g_clients.begin();
+					if (iter != g_clients.end())
+					{
+						g_clients.erase(iter);
+					}
 				}
 			}
 		}
@@ -242,13 +263,24 @@ int main()
 
 	for (SOCKET ele : g_clients)
 	{
+#ifdef _WIN32
 		closesocket(ele);
+#else
+		close(ele);
+#endif
 	}
 
-	// 6.¹Ø±Õsocket
-	closesocket(sock);
+	// 6.ï¿½Ø±ï¿½socket
+#ifdef _WIN32
+		closesocket(sock);
+#else
+		close(sock);
+#endif
 
+#ifdef _WIN32
 	WSACleanup();
 	system("pause");
+#endif
+
 	return 0;
 }
