@@ -7,6 +7,8 @@
 #include <string.h>
 #include <iostream>
 
+#include <thread>
+
 std::string host = "127.0.0.1";
 int port = 10086;
 
@@ -137,6 +139,53 @@ int processor(SOCKET sock)
 	return 0;
 }
 
+////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////
+
+bool g_runing = true;
+
+////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////
+void inputThread(SOCKET sock)
+{
+	while (true)
+	{
+		char cmdBuff[256] = { 0 };
+		std::cout << "input a cmd: " << std::endl;
+		std::cin >> cmdBuff;
+
+		if (0 == strcmp(cmdBuff, "exit"))
+		{
+			g_runing = false;
+			std::cout << "exit" << std::endl;
+			break;
+		}
+		else if (0 == strcmp(cmdBuff, "login"))
+		{
+			c2s_Login login;
+			strcpy_s(login.userName, "admin");
+			strcpy_s(login.passWord, "123.com");
+
+			send(sock, (const char*)&login, sizeof(c2s_Login), 0);
+		}
+		else if (0 == strcmp(cmdBuff, "login"))
+		{
+			c2s_Logout logout;
+			strcpy_s(logout.userName, "admin");
+
+			send(sock, (const char*)&logout, sizeof(c2s_Logout), 0);
+		}
+		else
+		{
+			std::cout << "not support cmd!" << std::endl;
+		}
+
+		Sleep(1000);
+	}
+}
+
 int main()
 {
 	WORD ver = MAKEWORD(2, 2);
@@ -156,20 +205,22 @@ int main()
 	if (SOCKET_ERROR == connect(sock, (sockaddr*)&sin, sizeof(sockaddr_in)))
 		std::cout << "connect error" << std::endl;
 	
-	c2s_Login msg;
-	strcpy_s(msg.userName, "admin");
-	strcpy_s(msg.passWord, "123.com");
-	send(sock, (const char*)&msg, sizeof(c2s_Login), 0);
-
 	// 处理数据
 	const int maxLen = 512;
 	char cmdBuff[maxLen] = {};
-	while (true)
+
+	// input thread
+	std::thread thread_input(inputThread, sock);
+	thread_input.detach();
+
+	while (g_runing)
 	{
 		fd_set fdReads;
 		FD_ZERO(&fdReads);
 		FD_SET(sock, &fdReads);
-		int ret = select(sock, &fdReads, 0, 0, 0);
+
+		timeval tv = { 1,0 };
+		int ret = select(sock, &fdReads, 0, 0, &tv);
 		if (ret < 0)
 		{
 			std::cout << "select over" << std::endl;
@@ -186,6 +237,7 @@ int main()
 				break;
 			}
 		}
+
 	}
 
 	// 4 关闭socket
