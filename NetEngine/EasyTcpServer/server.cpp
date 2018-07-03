@@ -19,7 +19,7 @@
 
 std::vector<SOCKET> g_clients;
 
-std::string host = "127.0.0.1";//"192.168.1.102";
+std::string host = "192.168.35.3";//"192.168.1.102";
 int port = 10086;
 
 enum class MessageType
@@ -195,13 +195,18 @@ int main()
 		FD_SET(sock, &fdWrite);
 		FD_SET(sock, &fdExp);
 
+		SOCKET maxSock = sock;
+
 		for (int n = (int)g_clients.size() - 1; n >= 0; n--)
 		{
-			FD_SET(g_clients[n], &fdRead);
+			SOCKET clientSock = g_clients[n];
+			FD_SET(clientSock, &fdRead);
+			if(maxSock < clientSock)
+				maxSock = clientSock;
 		}
 
 		timeval t = { 1,0 };
-		int ret = select(sock + 1, &fdRead, &fdWrite, &fdExp, &t);
+		int ret = select(maxSock + 1, &fdRead, &fdWrite, &fdExp, &t);
 		if (ret < 0)
 		{
 			std::cout << "select over" << std::endl;
