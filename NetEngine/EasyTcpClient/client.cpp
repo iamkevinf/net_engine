@@ -1,6 +1,7 @@
 #ifdef _WIN32
 	#define WIN32_LEAN_AND_MEAN
 	#define _WINSOCK_DEPRECATED_NO_WARNINGS
+	#define _CRT_SECURE_NO_WARNINGS
 
 	#include <Windows.h>
 	#include <WinSock2.h>
@@ -35,11 +36,10 @@ enum class MessageType
 	MT_ERROR
 };
 
-// ��Ϣͷ
 struct DataHeader
 {
-	short dataLen; // ���ݳ���
-	MessageType cmd; // ����
+	short dataLen;
+	MessageType cmd;
 };
 
 struct c2s_Login : public DataHeader
@@ -108,7 +108,6 @@ int processor(SOCKET sock)
 	const int headerSize = sizeof(DataHeader);
 
 	char szRecv[1024] = {};
-	// ���ܿͻ�����������
 	int nLenRecv = (int)recv(sock, szRecv, headerSize, 0);
 	DataHeader* header = (DataHeader*)szRecv;
 	if (nLenRecv <= 0)
@@ -207,12 +206,10 @@ int main()
 	WSAStartup(ver, &data);
 #endif
 
-	// 1 ����һ��socket
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET)
 		std::cout << "socket error" << std::endl;
 
-	// 2 ���ӷ����� connect
 	sockaddr_in sin = {};
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
@@ -224,7 +221,6 @@ int main()
 	if (SOCKET_ERROR == connect(sock, (sockaddr*)&sin, sizeof(sockaddr_in)))
 		std::cout << "connect error" << std::endl;
 	
-	// ��������
 	const int maxLen = 512;
 	char cmdBuff[maxLen] = {};
 
@@ -260,7 +256,6 @@ int main()
 	}
 
 #ifdef _WIN32
-	// 4 �ر�socket
 	closesocket(sock);
 #else
 	close(sock);

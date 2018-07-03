@@ -35,11 +35,10 @@ enum class MessageType
 	MT_ERROR
 };
 
-// ��Ϣͷ
 struct DataHeader
 {
-	short dataLen; // ���ݳ���
-	MessageType cmd; // ����
+	short dataLen;
+	MessageType cmd;
 };
 
 struct c2s_Login : public DataHeader
@@ -107,7 +106,6 @@ int processor(SOCKET cSock)
 	const int headerSize = sizeof(DataHeader);
 
 	char szRecv[1024] = {};
-	// ���ܿͻ�����������
 	int nLenRecv = (int)recv(cSock, szRecv, headerSize, 0);
 	DataHeader* header = (DataHeader*)szRecv;
 	if (nLenRecv <= 0)
@@ -169,7 +167,6 @@ int main()
 	if (sock == INVALID_SOCKET)
 		std::cout << "socket error" << std::endl;
 
-	// 2 bind�����ڽ��ܿͻ������ӵ�����˿�
 	sockaddr_in _sin = {};
 	_sin.sin_family = AF_INET;
 	_sin.sin_port = htons(port);
@@ -181,7 +178,6 @@ int main()
 	if (SOCKET_ERROR == bind(sock, (sockaddr*)&_sin, sizeof(sockaddr_in)))
 		std::cout << "bind error" << std::endl;
 
-	// 3 listen ��������˿�
 	if (SOCKET_ERROR == listen(sock, 5))
 		std::cout << "listen error" << std::endl;
 
@@ -216,7 +212,6 @@ int main()
 		{
 			FD_CLR(sock, &fdRead);
 
-			// 4 accept �ȴ��ͻ�������
 			sockaddr_in clientAddr = {};
 			int nAddrLen = sizeof(sockaddr_in);
 
@@ -248,7 +243,6 @@ int main()
 		{
 			if(FD_ISSET(g_clients[n], &fdRead))
 			{
-
 				if (-1 == processor(g_clients[n]))
 				{
 					auto iter = g_clients.begin();
@@ -270,7 +264,6 @@ int main()
 #endif
 	}
 
-	// 6.�ر�socket
 #ifdef _WIN32
 		closesocket(sock);
 #else
