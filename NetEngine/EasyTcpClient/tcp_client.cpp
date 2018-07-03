@@ -82,6 +82,7 @@ namespace knet
 		if (ret < 0)
 		{
 			std::cout << "Select Error: <socket=" << m_sock << ">" << std::endl;
+			CloseSock();
 			return false;
 		}
 
@@ -92,6 +93,7 @@ namespace knet
 			if (-1 == Recv())
 			{
 				std::cout << "Processor Error: <socket=" << m_sock << ">" << std::endl;
+				CloseSock();
 				return false;
 			}
 		}
