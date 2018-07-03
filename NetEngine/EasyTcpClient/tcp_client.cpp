@@ -44,7 +44,7 @@ namespace knet
 #ifdef _WIN32
 		sin.sin_addr.S_un.S_addr = inet_addr(ip.c_str());
 #else
-		sin.sin_addr.s_addr = inet_addr(host.c_str());
+		sin.sin_addr.s_addr = inet_addr(ip.c_str());
 #endif
 
 		int ret = connect(m_sock, (sockaddr*)&sin, sizeof(sockaddr_in));
@@ -61,7 +61,7 @@ namespace knet
 #ifdef _WIN32
 			closesocket(m_sock);
 #else
-			close(sock);
+			close(m_sock);
 #endif
 
 			m_sock = INVALID_SOCKET;

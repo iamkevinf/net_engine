@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <thread>
+#include <string.h>
 
 std::string host = "192.168.1.102"; //"192.168.35.3";
 uint16_t port = 10086;
