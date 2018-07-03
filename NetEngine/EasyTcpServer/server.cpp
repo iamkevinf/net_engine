@@ -19,7 +19,7 @@
 
 std::vector<SOCKET> g_clients;
 
-std::string host = "192.168.35.3";//"192.168.1.102";
+std::string host = "192.168.1.102"; //"192.168.35.3";
 int port = 10086;
 
 enum class MessageType
@@ -250,7 +250,7 @@ int main()
 			{
 				if (-1 == processor(g_clients[n]))
 				{
-					auto iter = g_clients.begin();
+					auto iter = g_clients.begin() + n;
 					if (iter != g_clients.end())
 					{
 						g_clients.erase(iter);

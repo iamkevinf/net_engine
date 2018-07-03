@@ -19,7 +19,7 @@
 
 #include <thread>
 
-std::string host = "127.0.0.1";//"192.168.1.102";
+std::string host = "192.168.1.102"; //"192.168.35.3";
 
 int port = 10086;
 
