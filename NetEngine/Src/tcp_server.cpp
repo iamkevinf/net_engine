@@ -1,5 +1,6 @@
 ﻿#include "tcp_server.h"
 #include "message.hpp"
+#include "client_socket.h"
 
 #include <iostream>
 
@@ -92,7 +93,7 @@ namespace knet
 		msg.sock = clientSock;
 		Send2All(&msg);
 
-		m_clients.push_back(clientSock);
+		m_clients.push_back(new ClientSocket(clientSock));
 		std::cout << "<Sock:" << m_sock << "> New Client: Connection,  <Client Sock:" << clientSock << "> :IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
 
 		return true;
@@ -103,14 +104,18 @@ namespace knet
 		if (m_sock != INVALID_SOCKET)
 		{
 
-			for (SOCKET ele : m_clients)
+			for (int n = (int)m_clients.size() - 1; n >= 0; n--)
 			{
+				ClientSocket* ele = m_clients[n];
 #ifdef _WIN32
-				closesocket(ele);
+				closesocket(ele->Sockfd());
 #else
-				close(ele);
+				close(ele->Sockfd());
 #endif
+				delete ele;
 			}
+
+			m_clients.clear();
 
 #ifdef _WIN32
 			closesocket(m_sock);
@@ -145,7 +150,7 @@ namespace knet
 
 		for (int n = (int)m_clients.size() - 1; n >= 0; n--)
 		{
-			SOCKET clientSock = m_clients[n];
+			SOCKET clientSock = m_clients[n]->Sockfd();
 			FD_SET(clientSock, &fdRead);
 			if (maxSock < clientSock)
 				maxSock = clientSock;
@@ -169,13 +174,14 @@ namespace knet
 
 		for (int n = (int)m_clients.size() - 1; n >= 0; n--)
 		{
-			if (FD_ISSET(m_clients[n], &fdRead))
+			if (FD_ISSET(m_clients[n]->Sockfd(), &fdRead))
 			{
-				if (-1 == Recv(m_clients[n]))
+				if (-1 == Recv(m_clients[n]->Sockfd()))
 				{
 					auto iter = m_clients.begin() + n;
 					if (iter != m_clients.end())
 					{
+						delete m_clients[n];
 						m_clients.erase(iter);
 					}
 				}
@@ -198,7 +204,7 @@ namespace knet
 	void TCPServer::Send2All(DataHeader* msg)
 	{
 		for (int n = (int)m_clients.size() - 1; n >= 0; n--)
-			Send(m_clients[n], msg);
+			Send(m_clients[n]->Sockfd(), msg);
 	}
 
 	int TCPServer::Recv(SOCKET cSock)
@@ -229,7 +235,10 @@ namespace knet
 		{
 			c2s_Login* login = (c2s_Login*)header;
 
-			std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd << " len: " << login->dataLen << " username: " << login->userName << " password: " << login->passWord << std::endl;
+			std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
+				<< " len: " << login->dataLen
+				<< " username: " << login->userName
+				<< " password: " << login->passWord << std::endl;
 
 			s2c_Login ret;
 			strcpy(ret.userName, login->userName);
@@ -242,7 +251,9 @@ namespace knet
 		{
 			c2s_Logout* logout = (c2s_Logout*)header;
 
-			std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd << " len: " << logout->dataLen << " username: " << logout->userName << std::endl;
+			std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
+				<< " len: " << logout->dataLen
+				<< " username: " << logout->userName << std::endl;
 
 			s2c_Logout ret;
 			ret.ret = 100;

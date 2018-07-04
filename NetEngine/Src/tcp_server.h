@@ -22,7 +22,8 @@
 
 namespace knet
 {
-	typedef std::vector<SOCKET> SockVector;
+	class ClientSocket;
+	typedef std::vector<ClientSocket*> SockVector;
 	struct DataHeader;
 
 	class TCPServer

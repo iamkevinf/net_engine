@@ -1,0 +1,12 @@
+#ifndef __NET_DEFINED_HPP__
+#define __NET_DEFINED_HPP__
+
+#ifndef BUFFER_SIZE
+#define BUFFER_SIZE 10240
+#endif // BUFFER_SIZE
+
+#ifndef MSG_BUFFER_SIZE
+#define MSG_BUFFER_SIZE 102400
+#endif // MSG_BUFFER_SIZE
+
+#endif // __NET_DEFINED_HPP__

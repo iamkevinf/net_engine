@@ -142,11 +142,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Src\client_socket.cpp" />
     <ClCompile Include="..\Src\tcp_server.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Src\client_socket.h" />
     <ClInclude Include="..\Src\message.hpp" />
+    <ClInclude Include="..\Src\net_defined.hpp" />
     <ClInclude Include="..\Src\tcp_server.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

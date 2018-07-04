@@ -18,12 +18,7 @@
 #endif // _WIN32
 
 #include <string>
-
-const int m_buffer_size = 409600;
-
-#ifndef BUFFER_SIZE
-#define BUFFER_SIZE 10240
-#endif // BUFFER_SIZE
+#include "net_defined.hpp"
 
 namespace knet
 {
@@ -53,7 +48,7 @@ namespace knet
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
 		char m_buffer_recv[BUFFER_SIZE] = {};
-		char m_buffer_msg[BUFFER_SIZE * 10] = {};
+		char m_buffer_msg[MSG_BUFFER_SIZE] = {};
 		// m_buffer_msgÎ²°ÍµÄÎ»ÖÃ
 		int m_lastPos = 0;
 	};
