@@ -176,7 +176,7 @@ namespace knet
 		{
 			if (FD_ISSET(m_clients[n]->Sockfd(), &fdRead))
 			{
-				if (-1 == Recv(m_clients[n]->Sockfd()))
+				if (-1 == Recv(m_clients[n]))
 				{
 					auto iter = m_clients.begin() + n;
 					if (iter != m_clients.end())
@@ -207,22 +207,47 @@ namespace knet
 			Send(m_clients[n]->Sockfd(), msg);
 	}
 
-	int TCPServer::Recv(SOCKET cSock)
+	int TCPServer::Recv(ClientSocket* clientSock)
 	{
 		const int headerSize = sizeof(DataHeader);
 
-		char szRecv[1024] = {};
-		int nLenRecv = (int)recv(cSock, szRecv, headerSize, 0);
-		DataHeader* header = (DataHeader*)szRecv;
+		int nLenRecv = (int)recv(clientSock->Sockfd(), m_buffer_recv, BUFFER_SIZE, 0);
+		DataHeader* header = (DataHeader*)m_buffer_recv;
 
 		if (nLenRecv <= 0)
 		{
-			std::cout << "client <Socket=" << cSock << "> exit!" << std::endl;
+			std::cout << "client <Socket=" << clientSock->Sockfd() << "> exit!" << std::endl;
 			return -1;
 		}
 
-		recv(cSock, szRecv + headerSize, header->dataLen - headerSize, 0);
-		OnMessageProc(cSock, header);
+		memcpy(clientSock->MsgBuffer() + clientSock->GetLastPos(), m_buffer_recv, nLenRecv);
+		// m_buffer_msg尾巴的位置向后移动
+		clientSock->SetLastPos(clientSock->GetLastPos() + nLenRecv);
+
+		// 接收到的数据长度 >= 消息头的长度 就可以拿到消息头
+		while (clientSock->GetLastPos() >= headerSize)
+		{
+			// 拿到消息头
+			DataHeader* header = (DataHeader*)clientSock->MsgBuffer();
+
+			// 接收到的数据长度 >= 消息本身的长度 说明一个消息已经收完
+			if (clientSock->GetLastPos() >= header->dataLen)
+			{
+				// 剩余未处理的消息缓冲区的长度
+				int nSize = clientSock->GetLastPos() - header->dataLen;
+
+				OnMessageProc(clientSock->Sockfd(), header);
+
+				// 消息缓冲区剩余未处理的数据前移
+				memcpy(clientSock->MsgBuffer(), clientSock->MsgBuffer() + header->dataLen, nSize);
+				// m_buffer_msg尾巴的位置向前移动
+				clientSock->SetLastPos(nSize);
+			}
+			else // 说明没有收完一个消息,也就是剩余的不够一条消息
+			{
+				break;
+			}
+		}
 
 		return 0;
 	}
@@ -235,10 +260,10 @@ namespace knet
 		{
 			c2s_Login* login = (c2s_Login*)header;
 
-			std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
-				<< " len: " << login->dataLen
-				<< " username: " << login->userName
-				<< " password: " << login->passWord << std::endl;
+			//std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
+			//	<< " len: " << login->dataLen
+			//	<< " username: " << login->userName
+			//	<< " password: " << login->passWord << std::endl;
 
 			s2c_Login ret;
 			strcpy(ret.userName, login->userName);
@@ -251,9 +276,9 @@ namespace knet
 		{
 			c2s_Logout* logout = (c2s_Logout*)header;
 
-			std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
-				<< " len: " << logout->dataLen
-				<< " username: " << logout->userName << std::endl;
+			//std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
+			//	<< " len: " << logout->dataLen
+			//	<< " username: " << logout->userName << std::endl;
 
 			s2c_Logout ret;
 			ret.ret = 100;
@@ -263,8 +288,10 @@ namespace knet
 
 		default:
 		{
+			std::cout << "Undefined Msg" << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
+				<< " len: " << header->dataLen << std::endl;
+
 			header->cmd = MessageType::MT_ERROR;
-			header->dataLen = 0;
 			Send(cSock, header);
 		}
 		break;

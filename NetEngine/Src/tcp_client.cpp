@@ -169,18 +169,18 @@ namespace knet
 		case MessageType::MT_S2C_LOGIN:
 		{
 			s2c_Login* ret = (s2c_Login*)header;
-			std::cout << "s2c_Login " << "<Socket = " << m_sock 
-				<< "> userName: " << ret->userName
-				<< " ret: " << ret->ret
-				<< " dataLen: " << ret->dataLen << std::endl;
+			//std::cout << "s2c_Login " << "<Socket = " << m_sock 
+			//	<< "> userName: " << ret->userName
+			//	<< " ret: " << ret->ret
+			//	<< " dataLen: " << ret->dataLen << std::endl;
 		}
 		break;
 
 		case MessageType::MT_S2C_LOGOUT:
 		{
 			s2c_Logout* ret = (s2c_Logout*)header;
-			std::cout << "s2c_Logout " << "<Socket=" << m_sock << "> ret: "
-				<< ret->ret << " dataLen: " << ret->dataLen << std::endl;
+			//std::cout << "s2c_Logout " << "<Socket=" << m_sock << "> ret: "
+			//	<< ret->ret << " dataLen: " << ret->dataLen << std::endl;
 
 		}
 		break;
@@ -188,8 +188,8 @@ namespace knet
 		case MessageType::MT_S2C_JOIN:
 		{
 			s2c_Join* ret = (s2c_Join*)header;
-			std::cout << "s2c_Join " << "<Socket = " << m_sock  << "> sock: "
-				<< ret->sock << " dataLen: " << ret->dataLen << std::endl;
+			//std::cout << "s2c_Join " << "<Socket = " << m_sock  << "> sock: "
+			//	<< ret->sock << " dataLen: " << ret->dataLen << std::endl;
 		}
 		break;
 

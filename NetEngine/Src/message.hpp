@@ -18,6 +18,12 @@ namespace knet
 
 	struct DataHeader
 	{
+		DataHeader()
+		{
+			dataLen = sizeof(DataHeader);
+			cmd = MessageType::MT_ERROR;
+		}
+
 		short dataLen;
 		MessageType cmd;
 	};
@@ -32,6 +38,7 @@ namespace knet
 
 		char userName[32];
 		char passWord[32];
+		char data[928];
 	};
 
 	struct s2c_Login : public DataHeader
@@ -45,8 +52,9 @@ namespace knet
 
 		char userName[32];
 		int ret;
-		char data[1024];
+		char data[956];
 	};
+
 
 	struct c2s_Logout : public DataHeader
 	{

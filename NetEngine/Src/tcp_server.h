@@ -19,6 +19,7 @@
 
 #include <vector>
 #include <string>
+#include "net_defined.hpp"
 
 namespace knet
 {
@@ -40,7 +41,7 @@ namespace knet
 
 		int Send(SOCKET cSock, DataHeader* msg);
 		void Send2All(DataHeader* msg);
-		int Recv(SOCKET cSock);
+		int Recv(ClientSocket* clientSock);
 
 		void CloseSock();
 
@@ -52,6 +53,7 @@ namespace knet
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
 		SockVector m_clients;
+		char m_buffer_recv[BUFFER_SIZE] = {0};
 	};
 
 }; // end of namespace knet
