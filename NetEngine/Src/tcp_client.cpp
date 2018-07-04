@@ -31,6 +31,8 @@ namespace knet
 		m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (m_sock == INVALID_SOCKET)
 			std::cout << "CreateSock Error" << std::endl;
+
+		std::cout << "CreateSock Done <Sock:" << m_sock << ">" << std::endl;
 	}
 
 	int TCPClient::Conn(const std::string& ip, uint16_t port)
@@ -51,6 +53,10 @@ namespace knet
 		if (SOCKET_ERROR == ret)
 			std::cout << "Conn Error" << std::endl;
 
+		std::cout << "Conn <Socket:" << m_sock 
+			<< "> IP: " << ip.c_str()
+			<< " Port: " << port << std::endl;
+
 		return ret;
 	}
 
@@ -63,6 +69,8 @@ namespace knet
 #else
 			close(m_sock);
 #endif
+
+			std::cout << "CloseSock <Socket:" << m_sock << std::endl;
 
 			m_sock = INVALID_SOCKET;
 		}
@@ -92,7 +100,7 @@ namespace knet
 
 			if (-1 == Recv())
 			{
-				std::cout << "Processor Error: <socket=" << m_sock << ">" << std::endl;
+				std::cout << "Recv Error: <socket=" << m_sock << ">" << std::endl;
 				CloseSock();
 				return false;
 			}

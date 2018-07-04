@@ -18,15 +18,15 @@
     <ClCompile Include="client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tcp_client.cpp">
+    <ClCompile Include="..\Src\tcp_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="tcp_client.h">
+    <ClInclude Include="..\Src\message.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="message.hpp">
+    <ClInclude Include="..\Src\tcp_client.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
