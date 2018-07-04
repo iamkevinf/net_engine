@@ -1,5 +1,5 @@
 ﻿#include "client_socket.h"
-
+#include <string.h>
 
 namespace knet
 {

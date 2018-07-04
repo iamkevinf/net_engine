@@ -2,6 +2,7 @@
 #include "message.hpp"
 
 #include <iostream>
+#include <string.h>
 
 namespace knet
 {
@@ -131,29 +132,29 @@ namespace knet
 		}
 
 		memcpy(m_buffer_msg + m_lastPos, m_buffer_recv, nLenRecv);
-		// m_buffer_msgÎ²°ÍµÄÎ»ÖÃÏòºóÒÆ¶¯
+		// m_buffer_msgÎ²ï¿½Íµï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½
 		m_lastPos += nLenRecv;
 
-		// ½ÓÊÕµ½µÄÊý¾Ý³¤¶È > ÏûÏ¢Í·µÄ³¤¶È ¾Í¿ÉÒÔÄÃµ½ÏûÏ¢Í·
+		// ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½ > ï¿½ï¿½Ï¢Í·ï¿½Ä³ï¿½ï¿½ï¿½ ï¿½Í¿ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ï¢Í·
 		while (m_lastPos >= headerSize)
 		{
-			// ÄÃµ½ÏûÏ¢Í·
+			// ï¿½Ãµï¿½ï¿½ï¿½Ï¢Í·
 			DataHeader* header = (DataHeader*)m_buffer_msg;
 
-			// ½ÓÊÕµ½µÄÊý¾Ý³¤¶È > ÏûÏ¢±¾ÉíµÄ³¤¶È ËµÃ÷Ò»¸öÏûÏ¢ÒÑ¾­ÊÕÍê
+			// ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½ > ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ Ëµï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½
 			if (m_lastPos >= header->dataLen)
 			{
-				// Ê£ÓàÎ´´¦ÀíµÄÏûÏ¢»º³åÇøµÄ³¤¶È
+				// Ê£ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½
 				int nSize = m_lastPos - header->dataLen;
 
 				OnMessageProc(header);
 				
-				// ÏûÏ¢»º³åÇøÊ£ÓàÎ´´¦ÀíµÄÊý¾ÝÇ°ÒÆ
+				// ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê£ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½
 				memcpy(m_buffer_msg, m_buffer_msg + header->dataLen, nSize);
-				// m_buffer_msgÎ²°ÍµÄÎ»ÖÃÏòÇ°ÒÆ¶¯
+				// m_buffer_msgÎ²ï¿½Íµï¿½Î»ï¿½ï¿½ï¿½ï¿½Ç°ï¿½Æ¶ï¿½
 				m_lastPos = nSize;
 			}
-			else // ËµÃ÷Ã»ÓÐÊÕÍêÒ»¸öÏûÏ¢,Ò²¾ÍÊÇÊ£ÓàµÄ²»¹»Ò»ÌõÏûÏ¢
+			else // Ëµï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ï¢,Ò²ï¿½ï¿½ï¿½ï¿½Ê£ï¿½ï¿½Ä²ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ï¢
 			{
 				break;
 			}

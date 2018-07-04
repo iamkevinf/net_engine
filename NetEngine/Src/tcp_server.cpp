@@ -3,6 +3,7 @@
 #include "client_socket.h"
 
 #include <iostream>
+#include <string.h>
 
 namespace knet
 {
