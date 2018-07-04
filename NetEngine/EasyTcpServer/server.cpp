@@ -1,7 +1,7 @@
 #include "tcp_server.h"
 
 #include <iostream>
-#include <string>
+#include <string.h>
 #include <thread>
 
 std::vector<SOCKET> g_clients;
