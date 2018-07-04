@@ -43,7 +43,9 @@ namespace knet
 			ret = 0;
 		}
 
+		char userName[32];
 		int ret;
+		char data[1024];
 	};
 
 	struct c2s_Logout : public DataHeader

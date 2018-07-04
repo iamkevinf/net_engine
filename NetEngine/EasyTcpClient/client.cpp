@@ -56,12 +56,17 @@ int main()
 	client.Conn(host, port);
 
 	// input thread
-	std::thread thread_input(inputThread, &client);
-	thread_input.detach();
+	//std::thread thread_input(inputThread, &client);
+	//thread_input.detach();
+
+		knet::c2s_Login login;
+		strcpy(login.userName, "admin");
+		strcpy(login.passWord, "123.com");
 
 	while (client.IsRun())
 	{
 		client.OnRun();
+		client.Send(&login);
 	}
 
 	client.CloseSock();

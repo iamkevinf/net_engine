@@ -232,8 +232,9 @@ namespace knet
 			std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd << " len: " << login->dataLen << " username: " << login->userName << " password: " << login->passWord << std::endl;
 
 			s2c_Login ret;
+			strcpy(ret.userName, login->userName);
 			ret.ret = 100;
-			send(cSock, (char*)&ret, sizeof(s2c_Login), 0);
+			Send(cSock, &ret);
 		}
 		break;
 
@@ -245,7 +246,7 @@ namespace knet
 
 			s2c_Logout ret;
 			ret.ret = 100;
-			send(cSock, (char*)&ret, sizeof(s2c_Logout), 0);
+			Send(cSock, &ret);
 		}
 		break;
 
@@ -253,7 +254,7 @@ namespace knet
 		{
 			header->cmd = MessageType::MT_ERROR;
 			header->dataLen = 0;
-			send(cSock, (char*)&header, sizeof(DataHeader), 0);
+			Send(cSock, header);
 		}
 		break;
 		}

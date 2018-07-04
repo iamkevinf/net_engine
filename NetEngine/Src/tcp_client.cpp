@@ -123,18 +123,41 @@ namespace knet
 	{
 		const int headerSize = sizeof(DataHeader);
 
-		char szRecv[1024] = {};
-		int nLenRecv = (int)recv(m_sock, szRecv, headerSize, 0);
+		int nLenRecv = (int)recv(m_sock, m_buffer_recv, BUFFER_SIZE, 0);
 		if (nLenRecv <= 0)
 		{
 			std::cout << "disconnection from server" << std::endl;
 			return -1;
 		}
 
-		DataHeader* header = (DataHeader*)szRecv;
-		recv(m_sock, szRecv + headerSize, header->dataLen - headerSize, 0);
+		memcpy(m_buffer_msg + m_lastPos, m_buffer_recv, nLenRecv);
+		// m_buffer_msg尾巴的位置向后移动
+		m_lastPos += nLenRecv;
 
-		OnMessageProc(header);
+		// 接收到的数据长度 > 消息头的长度 就可以拿到消息头
+		while (m_lastPos >= headerSize)
+		{
+			// 拿到消息头
+			DataHeader* header = (DataHeader*)m_buffer_msg;
+
+			// 接收到的数据长度 > 消息本身的长度 说明一个消息已经收完
+			if (m_lastPos >= header->dataLen)
+			{
+				// 剩余未处理的消息缓冲区的长度
+				int nSize = m_lastPos - header->dataLen;
+
+				OnMessageProc(header);
+				
+				// 消息缓冲区剩余未处理的数据前移
+				memcpy(m_buffer_msg, m_buffer_msg + header->dataLen, nSize);
+				// m_buffer_msg尾巴的位置向前移动
+				m_lastPos = nSize;
+			}
+			else // 说明没有收完一个消息,也就是剩余的不够一条消息
+			{
+				break;
+			}
+		}
 
 		return 0;
 	}
@@ -146,14 +169,18 @@ namespace knet
 		case MessageType::MT_S2C_LOGIN:
 		{
 			s2c_Login* ret = (s2c_Login*)header;
-			std::cout << "s2c_Login " << ret->ret << std::endl;
+			std::cout << "s2c_Login " << "<Socket = " << m_sock 
+				<< "> userName: " << ret->userName
+				<< " ret: " << ret->ret
+				<< " dataLen: " << ret->dataLen << std::endl;
 		}
 		break;
 
 		case MessageType::MT_S2C_LOGOUT:
 		{
 			s2c_Logout* ret = (s2c_Logout*)header;
-			std::cout << "s2c_Logout " << ret->ret << std::endl;
+			std::cout << "s2c_Logout " << "<Socket=" << m_sock << "> ret: "
+				<< ret->ret << " dataLen: " << ret->dataLen << std::endl;
 
 		}
 		break;
@@ -161,7 +188,21 @@ namespace knet
 		case MessageType::MT_S2C_JOIN:
 		{
 			s2c_Join* ret = (s2c_Join*)header;
-			std::cout << "s2c_Join " << ret->sock << std::endl;
+			std::cout << "s2c_Join " << "<Socket = " << m_sock  << "> sock: "
+				<< ret->sock << " dataLen: " << ret->dataLen << std::endl;
+		}
+		break;
+
+		case MessageType::MT_ERROR:
+		{
+			std::cout << "Error Message " << "<Socket = " << m_sock << ">" << std::endl;
+		}
+		break;
+
+		default:
+		{
+			std::cout << "Undefined Message: " << "<Socket=" << m_sock << "> dataLen: "
+				<< header->dataLen << std::endl;
 		}
 		break;
 

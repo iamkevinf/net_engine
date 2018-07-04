@@ -19,6 +19,12 @@
 
 #include <string>
 
+const int m_buffer_size = 409600;
+
+#ifndef BUFFER_SIZE
+#define BUFFER_SIZE 10240
+#endif // BUFFER_SIZE
+
 namespace knet
 {
 	struct DataHeader;
@@ -46,6 +52,10 @@ namespace knet
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
+		char m_buffer_recv[BUFFER_SIZE] = {};
+		char m_buffer_msg[BUFFER_SIZE * 10] = {};
+		// m_buffer_msgÎ²°ÍµÄÎ»ÖÃ
+		int m_lastPos = 0;
 	};
 
 }; // end of namespace knet
