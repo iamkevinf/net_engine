@@ -50,26 +50,59 @@ void inputThread(knet::TCPClient* client)
 	}
 }
 
+bool g_runing = true;
+void inputThread2()
+{
+	while (true)
+	{
+		char cmdBuff[256] = { 0 };
+		std::cout << "input a cmd: " << std::endl;
+		std::cin >> cmdBuff;
+
+		if (0 == strcmp(cmdBuff, "exit"))
+		{
+			g_runing = false;
+			break;
+		}
+		else
+		{
+			std::cout << "not support cmd!" << std::endl;
+		}
+	}
+}
+
 int main()
 {
-	knet::TCPClient client;
-	client.Conn(host, port);
+	const int count = FD_SETSIZE-1;
+	knet::TCPClient* clients[count];
 
-	// input thread
+	for (int i = 0; i < count; ++i)
+	{
+		clients[i] = new knet::TCPClient();
+		clients[i]->Conn(host, port);
+	}
+
 	//std::thread thread_input(inputThread, &client);
 	//thread_input.detach();
 
-		knet::c2s_Login login;
-		strcpy(login.userName, "admin");
-		strcpy(login.passWord, "123.com");
+	std::thread thread_input2(inputThread2);
+	thread_input2.detach();
 
-	while (client.IsRun())
+	knet::c2s_Login login;
+	strcpy(login.userName, "admin");
+	strcpy(login.passWord, "123.com");
+
+	while (g_runing)//client.IsRun())
 	{
-		client.OnRun();
-		client.Send(&login);
+		for (int i = 0; i < count; ++i)
+		{
+			clients[i]->OnRun();
+			clients[i]->Send(&login);
+		}
 	}
 
-	client.CloseSock();
+	for (int i = 0; i < count; ++i)
+		clients[i]->CloseSock();
 
 	getchar();
 	return 0;
