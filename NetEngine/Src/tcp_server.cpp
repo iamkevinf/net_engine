@@ -3,6 +3,7 @@
 #include "client_socket.h"
 
 #include <iostream>
+#include <iomanip>
 #include <string.h>
 
 namespace knet
@@ -90,12 +91,12 @@ namespace knet
 			return false;
 		}
 
-		s2c_Join msg;
-		msg.sock = clientSock;
-		Send2All(&msg);
+		//s2c_Join msg;
+		//msg.sock = clientSock;
+		//Send2All(&msg);
 
 		m_clients.push_back(new ClientSocket(clientSock));
-		std::cout << "<Sock:" << m_sock << "> New Client: Connection,  <Client Sock:" << clientSock << "> :IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
+		//std::cout << "<Sock:" << m_sock << "> New Client<" << m_clients.size() << ">: Connection <Client Sock:" << clientSock << "> :IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
 
 		return true;
 	}
@@ -157,7 +158,7 @@ namespace knet
 				maxSock = clientSock;
 		}
 
-		timeval t = { 1,0 };
+		timeval t = { 0,0 };
 		int ret = select(maxSock + 1, &fdRead, &fdWrite, &fdExp, &t);
 		if (ret < 0)
 		{
@@ -171,6 +172,8 @@ namespace knet
 			FD_CLR(m_sock, &fdRead);
 
 			Accept();
+
+			return true;
 		}
 
 		for (int n = (int)m_clients.size() - 1; n >= 0; n--)
@@ -255,6 +258,18 @@ namespace knet
 
 	void TCPServer::OnMessageProc(SOCKET cSock, DataHeader* header)
 	{
+		m_recvCount++;
+		double t = m_time.GetElapsedSecond();
+		if (t >= 1.0)
+		{
+			::std::cout.setf(::std::ios::fixed);
+			::std::cout << "<Socket = " << m_sock << ">"
+				<< " CurrentTime = " << ::std::fixed << ::std::setprecision(6) << t
+				<< " RecvCount = " << m_recvCount
+				<< " ClientCount = " << m_clients.size() << ::std::endl;
+			m_time.Tick();
+			m_recvCount = 0;
+		}
 		switch (header->cmd)
 		{
 		case MessageType::MT_C2S_LOGIN:
@@ -266,10 +281,10 @@ namespace knet
 			//	<< " username: " << login->userName
 			//	<< " password: " << login->passWord << std::endl;
 
-			s2c_Login ret;
-			strcpy(ret.userName, login->userName);
-			ret.ret = 100;
-			Send(cSock, &ret);
+			//s2c_Login ret;
+			//strcpy(ret.userName, login->userName);
+			//ret.ret = 100;
+			//Send(cSock, &ret);
 		}
 		break;
 
@@ -281,9 +296,9 @@ namespace knet
 			//	<< " len: " << logout->dataLen
 			//	<< " username: " << logout->userName << std::endl;
 
-			s2c_Logout ret;
-			ret.ret = 100;
-			Send(cSock, &ret);
+			//s2c_Logout ret;
+			//ret.ret = 100;
+			//Send(cSock, &ret);
 		}
 		break;
 

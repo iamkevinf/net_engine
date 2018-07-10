@@ -33,7 +33,7 @@ namespace knet
 		if (m_sock == INVALID_SOCKET)
 			std::cout << "CreateSock Error" << std::endl;
 
-		std::cout << "CreateSock Done <Sock:" << m_sock << ">" << std::endl;
+		//std::cout << "CreateSock Done <Sock:" << m_sock << ">" << std::endl;
 	}
 
 	int TCPClient::Conn(const std::string& ip, uint16_t port)
@@ -54,9 +54,9 @@ namespace knet
 		if (SOCKET_ERROR == ret)
 			std::cout << "Conn Error" << std::endl;
 
-		std::cout << "Conn <Socket:" << m_sock 
-			<< "> IP: " << ip.c_str()
-			<< " Port: " << port << std::endl;
+		//std::cout << "Conn <Socket:" << m_sock 
+		//	<< "> IP: " << ip.c_str()
+		//	<< " Port: " << port << std::endl;
 
 		return ret;
 	}
@@ -86,7 +86,7 @@ namespace knet
 		FD_ZERO(&fdReads);
 		FD_SET(m_sock, &fdReads);
 
-		timeval tv = { 1,0 };
+		timeval tv = { 0,0 };
 		int ret = select(m_sock + 1, &fdReads, 0, 0, &tv);
 		if (ret < 0)
 		{
@@ -131,30 +131,30 @@ namespace knet
 			return -1;
 		}
 
+		//将m_buffer_recv拷贝到m_buffer_msg
 		memcpy(m_buffer_msg + m_lastPos, m_buffer_recv, nLenRecv);
-		// m_buffer_msgβ�͵�λ������ƶ�
+		// m_buffer_msg数据尾部位置后移
 		m_lastPos += nLenRecv;
 
-		// ���յ������ݳ��� > ��Ϣͷ�ĳ��� �Ϳ����õ���Ϣͷ
+		//判断m_buffer_msg的长度 >= headerSize
 		while (m_lastPos >= headerSize)
 		{
-			// �õ���Ϣͷ
 			DataHeader* header = (DataHeader*)m_buffer_msg;
 
-			// ���յ������ݳ��� > ��Ϣ����ĳ��� ˵��һ����Ϣ�Ѿ�����
+			//判断m_buffer_msg的数据长度 >= 消息长度
 			if (m_lastPos >= header->dataLen)
 			{
-				// ʣ��δ�������Ϣ�������ĳ���
+				//m_buffer_msg剩余未处理数据的长度
 				int nSize = m_lastPos - header->dataLen;
 
 				OnMessageProc(header);
-				
-				// ��Ϣ������ʣ��δ���������ǰ��
+
+				//将消息缓冲区剩余未处理数据前移
 				memcpy(m_buffer_msg, m_buffer_msg + header->dataLen, nSize);
-				// m_buffer_msgβ�͵�λ����ǰ�ƶ�
+				//消息缓冲区的数据尾部位置前移
 				m_lastPos = nSize;
 			}
-			else // ˵��û������һ����Ϣ,Ҳ����ʣ��Ĳ���һ����Ϣ
+			else //消息缓冲区剩余数据不够一条完整消息
 			{
 				break;
 			}

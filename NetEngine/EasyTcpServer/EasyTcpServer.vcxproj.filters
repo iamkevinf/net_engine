@@ -24,6 +24,9 @@
     <ClCompile Include="..\Src\client_socket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\net_time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\message.hpp">
@@ -36,6 +39,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Src\net_defined.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\net_time.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

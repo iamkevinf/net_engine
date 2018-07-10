@@ -6,10 +6,11 @@
 #include <string.h>
 
 #ifdef _WIN32
-	std::string host = "192.168.1.102";
+std::string host = "192.168.1.102";
 #else 
 	std::string host = "192.168.35.3";
 #endif
+
 uint16_t port = 10086;
 
 ////////////////////////////////////////////////////////
@@ -73,13 +74,24 @@ void inputThread2()
 
 int main()
 {
-	const int count = FD_SETSIZE-1;
+	const int count = 3000;
 	knet::TCPClient* clients[count];
 
 	for (int i = 0; i < count; ++i)
 	{
+		if (!g_runing)
+			return 0;
+
 		clients[i] = new knet::TCPClient();
+	}
+
+	for (int i = 0; i < count; ++i)
+	{
+		if (!g_runing)
+			return 0;
+
 		clients[i]->Conn(host, port);
+		std::cout << "Conn Count = " << i << std::endl;
 	}
 
 	//std::thread thread_input(inputThread, &client);
@@ -91,12 +103,12 @@ int main()
 	knet::c2s_Login login;
 	strcpy(login.userName, "admin");
 	strcpy(login.passWord, "123.com");
-
+	
 	while (g_runing)//client.IsRun())
 	{
 		for (int i = 0; i < count; ++i)
 		{
-			clients[i]->OnRun();
+			//clients[i]->OnRun();
 			clients[i]->Send(&login);
 		}
 	}

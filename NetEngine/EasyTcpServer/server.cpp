@@ -7,7 +7,7 @@
 std::vector<SOCKET> g_clients;
 
 #ifdef _WIN32
-	std::string host = "192.168.1.102";
+std::string host = "192.168.1.102";
 #else 
 	std::string host = "192.168.35.3";
 #endif

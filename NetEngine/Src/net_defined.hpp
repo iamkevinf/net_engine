@@ -6,7 +6,7 @@
 #endif // BUFFER_SIZE
 
 #ifndef MSG_BUFFER_SIZE
-#define MSG_BUFFER_SIZE 102400
+#define MSG_BUFFER_SIZE (BUFFER_SIZE*10)
 #endif // MSG_BUFFER_SIZE
 
 #endif // __NET_DEFINED_HPP__

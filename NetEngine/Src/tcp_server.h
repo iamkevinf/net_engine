@@ -2,6 +2,9 @@
 #define __TCP_SERVERH_H__
 
 #ifdef _WIN32
+	
+	#define FD_SETSIZE      10024
+
 	#define WIN32_LEAN_AND_MEAN
 	#define _WINSOCK_DEPRECATED_NO_WARNINGS
 	#define _CRT_SECURE_NO_WARNINGS
@@ -19,7 +22,9 @@
 
 #include <vector>
 #include <string>
+
 #include "net_defined.hpp"
+#include "net_time.h"
 
 namespace knet
 {
@@ -54,6 +59,8 @@ namespace knet
 		SOCKET m_sock = INVALID_SOCKET;
 		SockVector m_clients;
 		char m_buffer_recv[BUFFER_SIZE] = {0};
+		Time m_time;
+		int m_recvCount = 0;
 	};
 
 }; // end of namespace knet

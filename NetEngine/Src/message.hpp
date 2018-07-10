@@ -3,7 +3,7 @@
 
 namespace knet
 {
-	enum class MessageType
+	enum class MessageType : short
 	{
 		MT_C2S_LOGIN,
 		MT_S2C_LOGIN,
