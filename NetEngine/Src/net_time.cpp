@@ -13,7 +13,7 @@ namespace knet
 
 	}
 
-	void Time::Tick()
+	void Time::Update()
 	{
 		m_begin = GetTime();
 	}

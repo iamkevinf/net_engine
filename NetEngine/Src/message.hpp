@@ -38,7 +38,7 @@ namespace knet
 
 		char userName[32];
 		char passWord[32];
-		char data[928];
+		char data[32];
 	};
 
 	struct s2c_Login : public DataHeader
@@ -52,7 +52,7 @@ namespace knet
 
 		char userName[32];
 		int ret;
-		char data[956];
+		char data[32];
 	};
 
 

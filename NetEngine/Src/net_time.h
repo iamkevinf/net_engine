@@ -12,7 +12,7 @@ namespace knet
 		Time();
 		virtual ~Time();
 
-		void Tick();
+		void Update();
 
 		std::chrono::time_point<std::chrono::high_resolution_clock> GetTime();
 

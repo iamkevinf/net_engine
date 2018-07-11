@@ -267,7 +267,7 @@ namespace knet
 				<< " CurrentTime = " << ::std::fixed << ::std::setprecision(6) << t
 				<< " RecvCount = " << m_recvCount
 				<< " ClientCount = " << m_clients.size() << ::std::endl;
-			m_time.Tick();
+			m_time.Update();
 			m_recvCount = 0;
 		}
 		switch (header->cmd)

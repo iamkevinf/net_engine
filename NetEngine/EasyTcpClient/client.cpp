@@ -12,6 +12,13 @@ std::string host = "192.168.1.102";
 #endif
 
 uint16_t port = 10086;
+////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////
+
+const int g_client_count = 4000;
+const int g_thread_count = 4;
+knet::TCPClient* g_clients[g_client_count];
 
 ////////////////////////////////////////////////////////
 //
@@ -72,49 +79,63 @@ void inputThread2()
 	}
 }
 
-int main()
+void SendFunc(int thread_id)
 {
-	const int count = 3000;
-	knet::TCPClient* clients[count];
+	// thread_id 1 base
+	int pre_count = g_client_count / g_thread_count;
+	int bgn = (thread_id - 1) * pre_count;
+	int end = thread_id * pre_count;
 
-	for (int i = 0; i < count; ++i)
+	for (int i = bgn; i < end; ++i)
 	{
 		if (!g_runing)
-			return 0;
+			return;
 
-		clients[i] = new knet::TCPClient();
+		g_clients[i] = new knet::TCPClient();
 	}
 
-	for (int i = 0; i < count; ++i)
+	for (int i = bgn; i < end; ++i)
 	{
 		if (!g_runing)
-			return 0;
+			return;
 
-		clients[i]->Conn(host, port);
+		g_clients[i]->Conn(host, port);
 		std::cout << "Conn Count = " << i << std::endl;
 	}
-
-	//std::thread thread_input(inputThread, &client);
-	//thread_input.detach();
-
-	std::thread thread_input2(inputThread2);
-	thread_input2.detach();
 
 	knet::c2s_Login login;
 	strcpy(login.userName, "admin");
 	strcpy(login.passWord, "123.com");
-	
+
 	while (g_runing)//client.IsRun())
 	{
-		for (int i = 0; i < count; ++i)
+		for (int i = bgn; i < end; ++i)
 		{
+			g_clients[i]->Send(&login);
 			//clients[i]->OnRun();
-			clients[i]->Send(&login);
 		}
 	}
 
-	for (int i = 0; i < count; ++i)
-		clients[i]->CloseSock();
+	for (int i = bgn; i < end; ++i)
+		g_clients[i]->CloseSock();
+
+}
+
+int main()
+{
+	std::thread thread_input(inputThread2);
+	thread_input.detach();
+
+	for (int i = 0; i < g_thread_count; ++i)
+	{
+		std::thread t(SendFunc, i + 1);
+		t.detach();
+	}
+
+	while (true)
+	{
+		Sleep(100);
+	}
 
 	getchar();
 	return 0;

@@ -52,7 +52,7 @@ namespace knet
 
 		int ret = connect(m_sock, (sockaddr*)&sin, sizeof(sockaddr_in));
 		if (SOCKET_ERROR == ret)
-			std::cout << "Conn Error" << std::endl;
+			std::cout << "Conn Error <Socket: " << m_sock << ">" << std::endl;
 
 		//std::cout << "Conn <Socket:" << m_sock 
 		//	<< "> IP: " << ip.c_str()
@@ -71,7 +71,7 @@ namespace knet
 			close(m_sock);
 #endif
 
-			std::cout << "CloseSock <Socket:" << m_sock << std::endl;
+			std::cout << "CloseSock <Socket:" << m_sock << ">" << std::endl;
 
 			m_sock = INVALID_SOCKET;
 		}
