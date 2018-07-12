@@ -5,11 +5,13 @@ VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetEngine", "NetEngine\NetEngine.vcxproj", "{14EA49B1-D9A6-4004-8241-87AE1D1C3D29}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpServer", "EasyTcpServer\EasyTcpServer.vcxproj", "{17E975D1-702B-4742-AB9D-42A144240F11}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TcpServer", "EasyTcpServer\EasyTcpServer.vcxproj", "{17E975D1-702B-4742-AB9D-42A144240F11}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpClient", "EasyTcpClient\EasyTcpClient.vcxproj", "{6457755E-3F31-44E4-98C2-7506862B55AE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TcpClient", "EasyTcpClient\EasyTcpClient.vcxproj", "{6457755E-3F31-44E4-98C2-7506862B55AE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestThread", "TestThread\TestThread.vcxproj", "{C2F53563-622D-4DF4-A3E2-3B6829E729A5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2C3505F4-B04E-4482-87C2-FA0BE7B6E4C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{14EA49B1-D9A6-4004-8241-87AE1D1C3D29} = {2C3505F4-B04E-4482-87C2-FA0BE7B6E4C4}
+		{C2F53563-622D-4DF4-A3E2-3B6829E729A5} = {2C3505F4-B04E-4482-87C2-FA0BE7B6E4C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {58FC0994-48E0-4D00-A59D-81F4BDBBFA2C}

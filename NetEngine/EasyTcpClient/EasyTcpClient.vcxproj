@@ -23,6 +23,7 @@
     <ProjectGuid>{6457755E-3F31-44E4-98C2-7506862B55AE}</ProjectGuid>
     <RootNamespace>EasyTcpClient</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>TcpClient</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
