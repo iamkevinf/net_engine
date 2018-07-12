@@ -227,10 +227,11 @@ namespace knet
 			}
 
 			::std::cout.setf(::std::ios::fixed);
-			::std::cout << "<Socket = " << m_sock << ">"
-				<< " CurrentTime = " << ::std::fixed << ::std::setprecision(6) << t
-				<< " ClientCount = " << m_clients.size()
-				<< " RecvCount = " << int(recvCount / t)
+			::std::cout << "ThreadCount=" << m_cells.size()
+				<< " <Socket=" << m_sock << ">"
+				<< " Time=" << ::std::fixed << ::std::setprecision(6) << t
+				<< " ClientCount=" << m_clients.size()
+				<< " RecvCount=" << int(recvCount / t)
 				<< ::std::endl;
 
 			m_time.Update();

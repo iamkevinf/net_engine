@@ -96,6 +96,9 @@ namespace knet
 						auto iter = m_clients.begin() + n;
 						if (iter != m_clients.end())
 						{
+							if (m_clients[n])
+								m_netEvent->OnExit(m_clients[n]);
+
 							delete m_clients[n];
 							m_clients.erase(iter);
 						}

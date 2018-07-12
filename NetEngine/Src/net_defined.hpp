@@ -10,7 +10,7 @@
 #endif // MSG_BUFFER_SIZE
 
 #ifndef CELL_THREAD_COUNT
-#define CELL_THREAD_COUNT 4
+#define CELL_THREAD_COUNT 6
 #endif // CELL_THREAD_COUNT
 
 #endif // __NET_DEFINED_HPP__
