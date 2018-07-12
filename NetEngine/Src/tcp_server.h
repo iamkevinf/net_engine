@@ -1,38 +1,19 @@
 #ifndef __TCP_SERVERH_H__
 #define __TCP_SERVERH_H__
 
-#ifdef _WIN32
-	
-	#define FD_SETSIZE      1024
-
-	#define WIN32_LEAN_AND_MEAN
-	#define _WINSOCK_DEPRECATED_NO_WARNINGS
-	#define _CRT_SECURE_NO_WARNINGS
-
-	#include <Windows.h>
-	#include <WinSock2.h>
-#else
-	#include <unistd.h>
-	#include <arpa/inet.h>
-
-	#define SOCKET					int
-	#define INVALID_SOCKET	(SOCKET)(~0)
-	#define SOCKET_ERROR			(-1)
-#endif
-
-#include <vector>
-#include <string>
-
-#include "net_defined.hpp"
+#include "cell.h"
 #include "net_time.h"
+#include "net_event.h"
 
 namespace knet
 {
 	class ClientSocket;
+	class Cell;
 	typedef std::vector<ClientSocket*> SockVector;
+	typedef std::vector<Cell*> CellPool;
 	struct DataHeader;
 
-	class TCPServer
+	class TCPServer : INetEvent
 	{
 	public:
 		TCPServer();
@@ -44,23 +25,27 @@ namespace knet
 		int Listen(int n);
 		bool Accept();
 
+		void Start();
+		void AddClient2Cell(ClientSocket* client);
+
 		int Send(SOCKET cSock, DataHeader* msg);
 		void Send2All(DataHeader* msg);
-		int Recv(ClientSocket* clientSock);
+
+		void Time4Msg();
 
 		void CloseSock();
 
 		bool IsRun()const { return m_sock != INVALID_SOCKET; }
 		bool OnRun();
 
-		void OnMessageProc(SOCKET cSock, DataHeader* header);
+		virtual void OnExit(ClientSocket* client);
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
 		SockVector m_clients;
+		CellPool m_cells;
 		char m_buffer_recv[BUFFER_SIZE] = {0};
 		Time m_time;
-		int m_recvCount = 0;
 	};
 
 }; // end of namespace knet

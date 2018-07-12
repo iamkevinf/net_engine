@@ -1,6 +1,7 @@
 ﻿#include "tcp_server.h"
 #include "message.hpp"
 #include "client_socket.h"
+#include "cell.h"
 
 #include <iostream>
 #include <iomanip>
@@ -95,10 +96,36 @@ namespace knet
 		//msg.sock = clientSock;
 		//Send2All(&msg);
 
-		m_clients.push_back(new ClientSocket(clientSock));
+		AddClient2Cell(new ClientSocket(clientSock));
+
 		//std::cout << "<Sock:" << m_sock << "> New Client<" << m_clients.size() << ">: Connection <Client Sock:" << clientSock << "> :IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
 
 		return true;
+	}
+
+	void TCPServer::AddClient2Cell(ClientSocket* client)
+	{
+		m_clients.push_back(client);
+
+		Cell* minCell = m_cells[0];
+		for (auto cell : m_cells)
+		{
+			if (minCell->GetClientSize() > cell->GetClientSize())
+				minCell = cell;
+		}
+
+		minCell->AddClient(client);
+	}
+
+	void TCPServer::Start()
+	{
+		for (int i = 0; i < CELL_THREAD_COUNT; ++i)
+		{
+			auto cell = new Cell(m_sock, this);
+			m_cells.push_back(cell);
+
+			cell->Start();
+		}
 	}
 
 	void TCPServer::CloseSock()
@@ -136,6 +163,8 @@ namespace knet
 		if (!IsRun())
 			return false;
 
+		Time4Msg();
+
 		fd_set fdRead;
 		fd_set fdWrite;
 		fd_set fdExp;
@@ -148,18 +177,8 @@ namespace knet
 		FD_SET(m_sock, &fdWrite);
 		FD_SET(m_sock, &fdExp);
 
-		SOCKET maxSock = m_sock;
-
-		for (int n = (int)m_clients.size() - 1; n >= 0; n--)
-		{
-			SOCKET clientSock = m_clients[n]->Sockfd();
-			FD_SET(clientSock, &fdRead);
-			if (maxSock < clientSock)
-				maxSock = clientSock;
-		}
-
-		timeval t = { 0,0 };
-		int ret = select(maxSock + 1, &fdRead, &fdWrite, &fdExp, &t);
+		timeval t = { 0,10 };
+		int ret = select(m_sock + 1, &fdRead, &fdWrite, &fdExp, &t);
 		if (ret < 0)
 		{
 			std::cout << "select over" << std::endl;
@@ -174,22 +193,6 @@ namespace knet
 			Accept();
 
 			return true;
-		}
-
-		for (int n = (int)m_clients.size() - 1; n >= 0; n--)
-		{
-			if (FD_ISSET(m_clients[n]->Sockfd(), &fdRead))
-			{
-				if (-1 == Recv(m_clients[n]))
-				{
-					auto iter = m_clients.begin() + n;
-					if (iter != m_clients.end())
-					{
-						delete m_clients[n];
-						m_clients.erase(iter);
-					}
-				}
-			}
 		}
 
 		return true;
@@ -211,106 +214,39 @@ namespace knet
 			Send(m_clients[n]->Sockfd(), msg);
 	}
 
-	int TCPServer::Recv(ClientSocket* clientSock)
+	void TCPServer::Time4Msg()
 	{
-		const int headerSize = sizeof(DataHeader);
-
-		int nLenRecv = (int)recv(clientSock->Sockfd(), m_buffer_recv, BUFFER_SIZE, 0);
-		DataHeader* header = (DataHeader*)m_buffer_recv;
-
-		if (nLenRecv <= 0)
-		{
-			std::cout << "client <Socket=" << clientSock->Sockfd() << "> exit!" << std::endl;
-			return -1;
-		}
-
-		memcpy(clientSock->MsgBuffer() + clientSock->GetLastPos(), m_buffer_recv, nLenRecv);
-		// m_buffer_msg尾巴的位置向后移动
-		clientSock->SetLastPos(clientSock->GetLastPos() + nLenRecv);
-
-		// 接收到的数据长度 >= 消息头的长度 就可以拿到消息头
-		while (clientSock->GetLastPos() >= headerSize)
-		{
-			// 拿到消息头
-			DataHeader* header = (DataHeader*)clientSock->MsgBuffer();
-
-			// 接收到的数据长度 >= 消息本身的长度 说明一个消息已经收完
-			if (clientSock->GetLastPos() >= header->dataLen)
-			{
-				// 剩余未处理的消息缓冲区的长度
-				int nSize = clientSock->GetLastPos() - header->dataLen;
-
-				OnMessageProc(clientSock->Sockfd(), header);
-
-				// 消息缓冲区剩余未处理的数据前移
-				memcpy(clientSock->MsgBuffer(), clientSock->MsgBuffer() + header->dataLen, nSize);
-				// m_buffer_msg尾巴的位置向前移动
-				clientSock->SetLastPos(nSize);
-			}
-			else // 说明没有收完一个消息,也就是剩余的不够一条消息
-			{
-				break;
-			}
-		}
-
-		return 0;
-	}
-
-	void TCPServer::OnMessageProc(SOCKET cSock, DataHeader* header)
-	{
-		m_recvCount++;
 		double t = m_time.GetElapsedSecond();
 		if (t >= 1.0)
 		{
+			int recvCount = 0;
+			for (auto cell : m_cells)
+			{
+				recvCount += cell->m_recvCount;
+				cell->m_recvCount = 0;
+			}
+
 			::std::cout.setf(::std::ios::fixed);
 			::std::cout << "<Socket = " << m_sock << ">"
 				<< " CurrentTime = " << ::std::fixed << ::std::setprecision(6) << t
-				<< " RecvCount = " << m_recvCount
-				<< " ClientCount = " << m_clients.size() << ::std::endl;
+				<< " ClientCount = " << m_clients.size()
+				<< " RecvCount = " << int(recvCount / t)
+				<< ::std::endl;
+
 			m_time.Update();
-			m_recvCount = 0;
 		}
-		switch (header->cmd)
+	}
+
+	void TCPServer::OnExit(ClientSocket* client)
+	{
+		for (int i = (int)m_clients.size() - 1; i >= 0; i--)
 		{
-		case MessageType::MT_C2S_LOGIN:
-		{
-			c2s_Login* login = (c2s_Login*)header;
-
-			//std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
-			//	<< " len: " << login->dataLen
-			//	<< " username: " << login->userName
-			//	<< " password: " << login->passWord << std::endl;
-
-			//s2c_Login ret;
-			//strcpy(ret.userName, login->userName);
-			//ret.ret = 100;
-			//Send(cSock, &ret);
-		}
-		break;
-
-		case MessageType::MT_C2S_LOGOUT:
-		{
-			c2s_Logout* logout = (c2s_Logout*)header;
-
-			//std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
-			//	<< " len: " << logout->dataLen
-			//	<< " username: " << logout->userName << std::endl;
-
-			//s2c_Logout ret;
-			//ret.ret = 100;
-			//Send(cSock, &ret);
-		}
-		break;
-
-		default:
-		{
-			std::cout << "Undefined Msg" << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
-				<< " len: " << header->dataLen << std::endl;
-
-			header->cmd = MessageType::MT_ERROR;
-			Send(cSock, header);
-		}
-		break;
+			if (m_clients[i] == client)
+			{
+				auto iter = m_clients.begin() + i;
+				if(iter != m_clients.end())
+					m_clients.erase(iter);
+			}
 		}
 	}
 

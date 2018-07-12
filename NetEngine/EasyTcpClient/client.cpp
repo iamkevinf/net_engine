@@ -17,7 +17,7 @@ uint16_t port = 10086;
 ////////////////////////////////////////////////////////
 
 const int g_client_count = 4000;
-const int g_thread_count = 4;
+const int g_thread_count = 8;
 knet::TCPClient* g_clients[g_client_count];
 
 ////////////////////////////////////////////////////////
@@ -106,6 +106,9 @@ void SendFunc(int thread_id)
 	knet::c2s_Login login;
 	strcpy(login.userName, "admin");
 	strcpy(login.passWord, "123.com");
+
+	std::chrono::milliseconds t(3000);
+	std::this_thread::sleep_for(t);
 
 	while (g_runing)//client.IsRun())
 	{

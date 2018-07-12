@@ -43,6 +43,7 @@ int main()
 	server.CreateSock();
 	server.Bind("", port);
 	server.Listen(5);
+	server.Start();
 
 	std::thread input(inputThread);
 	input.detach();
