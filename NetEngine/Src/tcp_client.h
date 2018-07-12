@@ -34,7 +34,7 @@ namespace knet
 
 		int Conn(const std::string& ip, uint16_t port);
 
-		int Send(DataHeader* msg);
+		int Send(DataHeader* msg, int nLen);
 
 		int Recv();
 

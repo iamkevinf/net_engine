@@ -43,14 +43,14 @@ void inputThread(knet::TCPClient* client)
 			strcpy(login.userName, "admin");
 			strcpy(login.passWord, "123.com");
 
-			client->Send(&login);
+			client->Send(&login, login.dataLen);
 		}
 		else if (0 == strcmp(cmdBuff, "logout"))
 		{
 			knet::c2s_Logout logout;
 			strcpy(logout.userName, "admin");
 
-			client->Send(&logout);
+			client->Send(&logout, logout.dataLen);
 		}
 		else
 		{
@@ -104,9 +104,14 @@ void SendFunc(int thread_id)
 		std::cout << "ThreadID = " << thread_id << " Conn Count = " << i << std::endl;
 	}
 
-	knet::c2s_Login login;
-	strcpy(login.userName, "admin");
-	strcpy(login.passWord, "123.com");
+	const int package_count = 10;
+	knet::c2s_Login login[package_count];
+	for (int i = 0; i < package_count; ++i)
+	{
+		strcpy(login[i].userName, "admin");
+		strcpy(login[i].passWord, "123.com");
+	}
+	const int nLen = sizeof(login);
 
 	std::chrono::milliseconds t(5000);
 	std::this_thread::sleep_for(t);
@@ -115,7 +120,7 @@ void SendFunc(int thread_id)
 	{
 		for (int i = bgn; i < end; ++i)
 		{
-			g_clients[i]->Send(&login);
+			g_clients[i]->Send(login, nLen);
 			//clients[i]->OnRun();
 		}
 	}

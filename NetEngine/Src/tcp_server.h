@@ -5,11 +5,12 @@
 #include "net_time.h"
 #include "net_event.h"
 
+#include <atomic>
+
 namespace knet
 {
 	class ClientSocket;
 	class Cell;
-	typedef std::vector<ClientSocket*> SockVector;
 	typedef std::vector<Cell*> CellPool;
 	struct DataHeader;
 
@@ -29,7 +30,6 @@ namespace knet
 		void AddClient2Cell(ClientSocket* client);
 
 		int Send(SOCKET cSock, DataHeader* msg);
-		void Send2All(DataHeader* msg);
 
 		void Time4Msg();
 
@@ -38,14 +38,18 @@ namespace knet
 		bool IsRun()const { return m_sock != INVALID_SOCKET; }
 		bool OnRun();
 
-		virtual void OnExit(ClientSocket* client);
+		virtual void OnExit(ClientSocket* client) override;
+		virtual void OnMessageProc(SOCKET cSock, DataHeader* header) override;
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
-		SockVector m_clients;
-		CellPool m_cells;
 		char m_buffer_recv[BUFFER_SIZE] = {0};
+
+		CellPool m_cells;
+
 		Time m_time;
+		std::atomic_int m_recvCount = 0;
+		std::atomic_int m_connCount = 0;
 	};
 
 }; // end of namespace knet

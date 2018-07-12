@@ -92,21 +92,13 @@ namespace knet
 			return false;
 		}
 
-		//s2c_Join msg;
-		//msg.sock = clientSock;
-		//Send2All(&msg);
-
 		AddClient2Cell(new ClientSocket(clientSock));
-
-		//std::cout << "<Sock:" << m_sock << "> New Client<" << m_clients.size() << ">: Connection <Client Sock:" << clientSock << "> :IP = " << inet_ntoa(clientAddr.sin_addr) << std::endl;
 
 		return true;
 	}
 
 	void TCPServer::AddClient2Cell(ClientSocket* client)
 	{
-		m_clients.push_back(client);
-
 		Cell* minCell = m_cells[0];
 		for (auto cell : m_cells)
 		{
@@ -115,6 +107,7 @@ namespace knet
 		}
 
 		minCell->AddClient(client);
+		m_connCount++;
 	}
 
 	void TCPServer::Start()
@@ -132,20 +125,6 @@ namespace knet
 	{
 		if (m_sock != INVALID_SOCKET)
 		{
-
-			for (int n = (int)m_clients.size() - 1; n >= 0; n--)
-			{
-				ClientSocket* ele = m_clients[n];
-#ifdef _WIN32
-				closesocket(ele->Sockfd());
-#else
-				close(ele->Sockfd());
-#endif
-				delete ele;
-			}
-
-			m_clients.clear();
-
 #ifdef _WIN32
 			closesocket(m_sock);
 #else
@@ -166,19 +145,11 @@ namespace knet
 		Time4Msg();
 
 		fd_set fdRead;
-		//fd_set fdWrite;
-		//fd_set fdExp;
-
 		FD_ZERO(&fdRead);
-		//FD_ZERO(&fdWrite);
-		//FD_ZERO(&fdExp);
-
 		FD_SET(m_sock, &fdRead);
-		//FD_SET(m_sock, &fdWrite);
-		//FD_SET(m_sock, &fdExp);
 
 		timeval t = { 0,10 };
-		int ret = select(m_sock + 1, &fdRead, nullptr/*&fdWrite*/, nullptr/*&fdExp*/, &t);
+		int ret = select(m_sock + 1, &fdRead, nullptr, nullptr, &t);
 		if (ret < 0)
 		{
 			std::cout << "select over" << std::endl;
@@ -208,47 +179,33 @@ namespace knet
 		return SOCKET_ERROR;
 	}
 
-	void TCPServer::Send2All(DataHeader* msg)
-	{
-		for (int n = (int)m_clients.size() - 1; n >= 0; n--)
-			Send(m_clients[n]->Sockfd(), msg);
-	}
 
 	void TCPServer::Time4Msg()
 	{
 		double t = m_time.GetElapsedSecond();
 		if (t >= 1.0)
 		{
-			int recvCount = 0;
-			for (auto cell : m_cells)
-			{
-				recvCount += cell->m_recvCount;
-				cell->m_recvCount = 0;
-			}
-
 			::std::cout.setf(::std::ios::fixed);
 			::std::cout << "ThreadCount=" << m_cells.size()
 				<< " <Socket=" << m_sock << ">"
 				<< " Time=" << ::std::fixed << ::std::setprecision(6) << t
-				<< " ClientCount=" << m_clients.size()
-				<< " RecvCount=" << int(recvCount / t)
+				<< " ClientCount=" << m_connCount
+				<< " RecvCount=" << int(m_recvCount / t)
 				<< ::std::endl;
 
+			m_recvCount = 0;
 			m_time.Update();
 		}
 	}
 
 	void TCPServer::OnExit(ClientSocket* client)
 	{
-		for (int i = (int)m_clients.size() - 1; i >= 0; i--)
-		{
-			if (m_clients[i] == client)
-			{
-				auto iter = m_clients.begin() + i;
-				if(iter != m_clients.end())
-					m_clients.erase(iter);
-			}
-		}
+		m_connCount--;
+	}
+
+	void TCPServer::OnMessageProc(SOCKET cSock, DataHeader* header)
+	{
+		m_recvCount++;
 	}
 
 }; // end of namespace knet

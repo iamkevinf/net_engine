@@ -28,7 +28,7 @@ namespace knet
 
 	void Cell::Start()
 	{
-		m_thread = new std::thread(std::mem_fun(&Cell::OnRun), this);
+		m_thread = new std::thread(std::mem_fn(&Cell::OnRun), this);
 	}
 
 	bool Cell::IsRun()
@@ -99,6 +99,15 @@ namespace knet
 		}
 	}
 
+	//int Cell::Send(SOCKET sock, DataHeader* header)
+	//{
+	//	if (IsRun() && header)
+	//	{
+	//		return send(sock, (const char*)header, header->dataLen, 0);
+	//	}
+
+	//	return SOCKET_ERROR;
+	//}
 
 	int Cell::Recv(ClientSocket* clientSock)
 	{
@@ -109,7 +118,7 @@ namespace knet
 
 		if (nLenRecv <= 0)
 		{
-			std::cout << "client <Socket=" << clientSock->Sockfd() << "> exit!" << std::endl;
+			//std::cout << "client <Socket=" << clientSock->Sockfd() << "> exit!" << std::endl;
 			return -1;
 		}
 
@@ -148,18 +157,7 @@ namespace knet
 
 	void Cell::OnMessageProc(SOCKET cSock, DataHeader* header)
 	{
-		m_recvCount++;
-		//double t = m_time.GetElapsedSecond();
-		//if (t >= 1.0)
-		//{
-		//	::std::cout.setf(::std::ios::fixed);
-		//	::std::cout << "<Socket = " << m_sock << ">"
-		//		<< " CurrentTime = " << ::std::fixed << ::std::setprecision(6) << t
-		//		<< " RecvCount = " << m_recvCount
-		//		<< " ClientCount = " << m_clients.size() << ::std::endl;
-		//	m_time.Update();
-		//	m_recvCount = 0;
-		//}
+		m_netEvent->OnMessageProc(cSock, header);
 		switch (header->cmd)
 		{
 		case MessageType::MT_C2S_LOGIN:
@@ -228,9 +226,6 @@ namespace knet
 			close(m_sock);
 #endif
 
-#ifdef _WIN32
-			WSACleanup();
-#endif
 	}
 }
 

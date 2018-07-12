@@ -110,11 +110,11 @@ namespace knet
 		return true;
 	}
 
-	int TCPClient::Send(DataHeader* msg)
+	int TCPClient::Send(DataHeader* msg, int nLen)
 	{
 		if (IsRun() && msg)
 		{
-			return send(m_sock, (const char*)msg, msg->dataLen, 0);
+			return send(m_sock, (const char*)msg, nLen, 0);
 		}
 
 		return SOCKET_ERROR;
