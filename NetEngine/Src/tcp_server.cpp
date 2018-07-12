@@ -231,7 +231,7 @@ namespace knet
 				<< " <Socket=" << m_sock << ">"
 				<< " Time=" << ::std::fixed << ::std::setprecision(6) << t
 				<< " ClientCount=" << m_clients.size()
-				<< " RecvCount=" << recvCount//int(recvCount / t)
+				<< " RecvCount=" << int(recvCount / t)
 				<< ::std::endl;
 
 			m_time.Update();
