@@ -166,19 +166,19 @@ namespace knet
 		Time4Msg();
 
 		fd_set fdRead;
-		fd_set fdWrite;
-		fd_set fdExp;
+		//fd_set fdWrite;
+		//fd_set fdExp;
 
 		FD_ZERO(&fdRead);
-		FD_ZERO(&fdWrite);
-		FD_ZERO(&fdExp);
+		//FD_ZERO(&fdWrite);
+		//FD_ZERO(&fdExp);
 
 		FD_SET(m_sock, &fdRead);
-		FD_SET(m_sock, &fdWrite);
-		FD_SET(m_sock, &fdExp);
+		//FD_SET(m_sock, &fdWrite);
+		//FD_SET(m_sock, &fdExp);
 
 		timeval t = { 0,10 };
-		int ret = select(m_sock + 1, &fdRead, &fdWrite, &fdExp, &t);
+		int ret = select(m_sock + 1, &fdRead, nullptr/*&fdWrite*/, nullptr/*&fdExp*/, &t);
 		if (ret < 0)
 		{
 			std::cout << "select over" << std::endl;
@@ -231,7 +231,7 @@ namespace knet
 				<< " <Socket=" << m_sock << ">"
 				<< " Time=" << ::std::fixed << ::std::setprecision(6) << t
 				<< " ClientCount=" << m_clients.size()
-				<< " RecvCount=" << int(recvCount / t)
+				<< " RecvCount=" << recvCount//int(recvCount / t)
 				<< ::std::endl;
 
 			m_time.Update();

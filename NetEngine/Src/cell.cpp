@@ -58,16 +58,8 @@ namespace knet
 			}
 
 			fd_set fdRead;
-			fd_set fdWrite;
-			fd_set fdExp;
-
 			FD_ZERO(&fdRead);
-			FD_ZERO(&fdWrite);
-			FD_ZERO(&fdExp);
-
-			FD_SET(m_sock, &fdRead);
-			FD_SET(m_sock, &fdWrite);
-			FD_SET(m_sock, &fdExp);
+			// FD_SET(m_sock, &fdRead); // 主线程已经做了,这里不做FD_SET
 
 			SOCKET maxSock = m_clients[0]->Sockfd();
 			for (int n = (int)m_clients.size() - 1; n >= 0; n--)
@@ -78,8 +70,7 @@ namespace knet
 					maxSock = clientSock;
 			}
 
-			timeval t = { 1,0 };
-			int ret = select(maxSock + 1, &fdRead, &fdWrite, &fdExp, &t);
+			int ret = select(maxSock + 1, &fdRead, nullptr, nullptr, nullptr);
 			if (ret < 0)
 			{
 				std::cout << "select over" << std::endl;

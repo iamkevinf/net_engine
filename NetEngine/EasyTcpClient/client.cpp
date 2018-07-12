@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <thread>
+#include <vector>
 #include <string.h>
 
 #ifdef _WIN32
@@ -16,9 +17,9 @@ uint16_t port = 10086;
 //
 ////////////////////////////////////////////////////////
 
-const int g_client_count = 4000;
-const int g_thread_count = 8;
-knet::TCPClient* g_clients[g_client_count];
+int g_client_count = 2000;
+int g_thread_count = 8;
+std::vector<knet::TCPClient*> g_clients;
 
 ////////////////////////////////////////////////////////
 //
@@ -100,14 +101,14 @@ void SendFunc(int thread_id)
 			return;
 
 		g_clients[i]->Conn(host, port);
-		std::cout << "Conn Count = " << i << std::endl;
+		std::cout << "ThreadID = " << thread_id << " Conn Count = " << i << std::endl;
 	}
 
 	knet::c2s_Login login;
 	strcpy(login.userName, "admin");
 	strcpy(login.passWord, "123.com");
 
-	std::chrono::milliseconds t(3000);
+	std::chrono::milliseconds t(5000);
 	std::this_thread::sleep_for(t);
 
 	while (g_runing)//client.IsRun())
@@ -126,6 +127,17 @@ void SendFunc(int thread_id)
 
 int main()
 {
+	std::cout << "please input client connection count:" << std::endl;
+	std::cin >> g_client_count;
+	for (int i = 0; i < g_client_count; ++i)
+		g_clients.push_back(nullptr);
+
+	std::cout << "please input thread count:" << std::endl;
+	std::cin >> g_thread_count;
+
+	std::cout << "please input host name:" << std::endl;
+	std::cin >> host;
+
 	std::thread thread_input(inputThread2);
 	thread_input.detach();
 

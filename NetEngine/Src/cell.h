@@ -1,9 +1,9 @@
-#ifndef __TCP_CELL_H__
+﻿#ifndef __TCP_CELL_H__
 #define __TCP_CELL_H__
 
 #ifdef _WIN32
 	#ifndef FD_SETSIZE
-		#define FD_SETSIZE      4024
+		#define FD_SETSIZE      2048
 	#endif // FD_SETSIZE
 
 	#define WIN32_LEAN_AND_MEAN
@@ -21,6 +21,7 @@
 	#define SOCKET_ERROR			(-1)
 #endif
 
+#include <string>
 #include <vector>
 #include <thread>
 #include <atomic>
