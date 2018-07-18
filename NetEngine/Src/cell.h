@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <thread>
 #include <mutex>
 
@@ -14,6 +15,7 @@ namespace knet
 	struct DataHeader;
 	class INetEvent;
 	typedef std::vector<ClientSocket*> SockVector;
+	typedef std::map<SOCKET, ClientSocket*> Sock2ClientPool;
 
 	class Cell
 	{
@@ -40,13 +42,17 @@ namespace knet
 		SOCKET m_sock = INVALID_SOCKET;
 		char m_buffer_recv[BUFFER_SIZE] = { 0 };
 
-		SockVector m_clients;
+		Sock2ClientPool m_clients;
 
 		std::mutex m_mutex;
 		SockVector m_clientsBuff;
 
 		std::thread* m_thread = nullptr;
 		INetEvent* m_netEvent = nullptr;
+
+		fd_set m_fdReadBak = {0};
+		bool m_connDelta = true;
+		SOCKET m_maxSock = INVALID_SOCKET;
 	};
 
 }; // end of namespace knet

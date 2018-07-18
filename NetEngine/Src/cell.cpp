@@ -38,16 +38,20 @@ namespace knet
 
 	void Cell::OnRun()
 	{
+		m_connDelta = true;
+
 		while (IsRun())
 		{
 			// lock block
+			if(m_clientsBuff.size() > 0)
 			{
 				std::lock_guard<std::mutex> lock(m_mutex);
 				for (auto client : m_clientsBuff)
 				{
-					m_clients.push_back(client);
+					m_clients[client->Sockfd()] = client;
 				}
 				m_clientsBuff.clear();
+				m_connDelta = true;
 			}
 
 			if (m_clients.empty())
@@ -59,43 +63,81 @@ namespace knet
 
 			fd_set fdRead;
 			FD_ZERO(&fdRead);
-			// FD_SET(m_sock, &fdRead); // 主线程已经做了,这里不做FD_SET
 
-			SOCKET maxSock = m_clients[0]->Sockfd();
-			for (int n = (int)m_clients.size() - 1; n >= 0; n--)
+			if (m_connDelta)
 			{
-				SOCKET clientSock = m_clients[n]->Sockfd();
-				FD_SET(clientSock, &fdRead);
-				if (maxSock < clientSock)
-					maxSock = clientSock;
+				m_connDelta = false;
+				m_maxSock = m_clients.begin()->second->Sockfd();
+				for(auto iter : m_clients)
+				{
+					FD_SET(iter.second->Sockfd(), &fdRead);
+					if (m_maxSock < iter.second->Sockfd())
+						m_maxSock = iter.second->Sockfd();
+				}
+
+				memcpy(&m_fdReadBak, &fdRead, sizeof(fd_set));
+			}
+			else
+			{
+				memcpy(&fdRead, &m_fdReadBak, sizeof(fd_set));
 			}
 
-			int ret = select(maxSock + 1, &fdRead, nullptr, nullptr, nullptr);
+			timeval t = {0,0};
+			int ret = select(m_maxSock + 1, &fdRead, nullptr, nullptr, &t);
 			if (ret < 0)
 			{
 				std::cout << "select over" << std::endl;
 				CloseSock();
 				break;
 			}
-
-			for (int n = (int)m_clients.size() - 1; n >= 0; n--)
+			else if (ret == 0)
 			{
-				if (FD_ISSET(m_clients[n]->Sockfd(), &fdRead))
-				{
-					if (-1 == Recv(m_clients[n]))
-					{
-						auto iter = m_clients.begin() + n;
-						if (iter != m_clients.end())
-						{
-							if (m_clients[n])
-								m_netEvent->OnExit(m_clients[n]);
+				continue;
+			}
 
-							delete m_clients[n];
-							m_clients.erase(iter);
-						}
+#ifdef _WIN32
+			for (u_int i = 0; i < fdRead.fd_count; ++i)
+			{
+				auto iter = m_clients.find(fdRead.fd_array[i]);
+				if (iter != m_clients.end())
+				{
+					if (-1 == Recv(iter->second))
+					{
+						if (m_netEvent)
+							m_netEvent->OnExit(iter->second);
+
+						m_connDelta = true;
+
+						m_clients.erase(iter->first);
+					}
+				}
+				else
+				{
+					std::cout << "OnRun:: m_clients.find Error" << std::endl;
+				}
+			}
+#else
+			SockVector temp;
+			for (auto iter : m_clients)
+			{
+				if (FD_ISSET(iter.second->Sockfd(), &fdRead))
+				{
+					if (-1 == Recv(iter.second))
+					{
+						if (m_netEvent)
+							m_netEvent->OnExit(iter.second);
+
+						m_connDelta = true;
+						temp.push_back(iter.second);
 					}
 				}
 			}
+			for (auto client : temp)
+			{
+				m_clients.erase(client->Sockfd());
+				delete client;
+			}
+#endif
 		}
 	}
 
@@ -165,15 +207,14 @@ namespace knet
 		if (m_sock != INVALID_SOCKET)
 		{
 
-			for (int n = (int)m_clients.size() - 1; n >= 0; n--)
+			for(auto iter : m_clients)
 			{
-				ClientSocket* ele = m_clients[n];
 #ifdef _WIN32
-				closesocket(ele->Sockfd());
+				closesocket(iter.second->Sockfd());
 #else
-				close(ele->Sockfd());
+				close(iter.second->Sockfd());
 #endif
-				delete ele;
+				delete iter.second;
 		}
 
 			m_clients.clear();

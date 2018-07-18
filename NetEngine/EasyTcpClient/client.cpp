@@ -124,7 +124,7 @@ void SendFunc(int thread_id)
 		for (int i = bgn; i < end; ++i)
 		{
 			g_clients[i]->Send(login, nLen);
-			g_clients[i]->OnRun();
+			//g_clients[i]->OnRun();
 		}
 	}
 
