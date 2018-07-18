@@ -1,4 +1,4 @@
-#include "tcp_server.h"
+#include "my_server.h"
 
 #include <iostream>
 #include <string.h>
@@ -34,11 +34,11 @@ void inputThread()
 
 int main()
 {
-	knet::TCPServer server;
+	MyServer server;
 	server.CreateSock();
 	server.Bind("", port);
 	server.Listen(5);
-	server.Start();
+	server.Start(4);
 
 	std::thread input(inputThread);
 	input.detach();

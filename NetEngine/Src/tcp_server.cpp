@@ -107,12 +107,12 @@ namespace knet
 		}
 
 		minCell->AddClient(client);
-		m_connCount++;
+		OnJoin(client);
 	}
 
-	void TCPServer::Start()
+	void TCPServer::Start(int threadCount)
 	{
-		for (int i = 0; i < CELL_THREAD_COUNT; ++i)
+		for (int i = 0; i < threadCount; ++i)
 		{
 			auto cell = new Cell(m_sock, this);
 			m_cells.push_back(cell);
@@ -169,17 +169,6 @@ namespace knet
 		return true;
 	}
 
-	int TCPServer::Send(SOCKET cSock, DataHeader* msg)
-	{
-		if (IsRun() && msg)
-		{
-			return send(cSock, (const char*)msg, msg->dataLen, 0);
-		}
-
-		return SOCKET_ERROR;
-	}
-
-
 	void TCPServer::Time4Msg()
 	{
 		double t = m_time.GetElapsedSecond();
@@ -190,12 +179,17 @@ namespace knet
 				<< " <Socket=" << m_sock << ">"
 				<< " Time=" << ::std::fixed << ::std::setprecision(6) << t
 				<< " ClientCount=" << m_connCount
-				<< " RecvCount=" << int(m_recvCount / t)
+				<< " RecvCount=" << int(m_msgCount / t)
 				<< ::std::endl;
 
-			m_recvCount = 0;
+			m_msgCount = 0;
 			m_time.Update();
 		}
+	}
+
+	void TCPServer::OnJoin(ClientSocket* client)
+	{
+		m_connCount++;
 	}
 
 	void TCPServer::OnExit(ClientSocket* client)
@@ -203,9 +197,9 @@ namespace knet
 		m_connCount--;
 	}
 
-	void TCPServer::OnMessageProc(SOCKET cSock, DataHeader* header)
+	void TCPServer::OnMessage(ClientSocket* client, DataHeader* header)
 	{
-		m_recvCount++;
+		m_msgCount++;
 	}
 
 }; // end of namespace knet

@@ -82,6 +82,8 @@ void inputThread2()
 
 void SendFunc(int thread_id)
 {
+	std::cout << "ThreadID = " << thread_id << " Start" << std::endl;
+
 	// thread_id 1 base
 	int pre_count = g_client_count / g_thread_count;
 	int bgn = (thread_id - 1) * pre_count;
@@ -101,8 +103,9 @@ void SendFunc(int thread_id)
 			return;
 
 		g_clients[i]->Conn(host, port);
-		std::cout << "ThreadID = " << thread_id << " Conn Count = " << i << std::endl;
 	}
+
+	std::cout << "ThreadID = " << thread_id << " Conn Count bng = " << bgn << " end = " << end << std::endl;
 
 	const int package_count = 10;
 	knet::c2s_Login login[package_count];
@@ -121,13 +124,17 @@ void SendFunc(int thread_id)
 		for (int i = bgn; i < end; ++i)
 		{
 			g_clients[i]->Send(login, nLen);
-			//clients[i]->OnRun();
+			g_clients[i]->OnRun();
 		}
 	}
 
 	for (int i = bgn; i < end; ++i)
+	{
 		g_clients[i]->CloseSock();
+		delete g_clients[i];
+	}
 
+	std::cout << "ThreadID = " << thread_id << " Exit" << std::endl;
 }
 
 int main()

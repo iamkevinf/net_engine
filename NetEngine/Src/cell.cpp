@@ -138,7 +138,7 @@ namespace knet
 				// 剩余未处理的消息缓冲区的长度
 				int nSize = clientSock->GetLastPos() - header->dataLen;
 
-				OnMessageProc(clientSock->Sockfd(), header);
+				OnMessageProc(clientSock, header);
 
 				// 消息缓冲区剩余未处理的数据前移
 				memcpy(clientSock->MsgBuffer(), clientSock->MsgBuffer() + header->dataLen, nSize);
@@ -155,51 +155,9 @@ namespace knet
 	}
 
 
-	void Cell::OnMessageProc(SOCKET cSock, DataHeader* header)
+	void Cell::OnMessageProc(ClientSocket* client, DataHeader* header)
 	{
-		m_netEvent->OnMessageProc(cSock, header);
-		switch (header->cmd)
-		{
-		case MessageType::MT_C2S_LOGIN:
-		{
-			c2s_Login* login = (c2s_Login*)header;
-
-			//std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
-			//	<< " len: " << login->dataLen
-			//	<< " username: " << login->userName
-			//	<< " password: " << login->passWord << std::endl;
-
-			//s2c_Login ret;
-			//strcpy(ret.userName, login->userName);
-			//ret.ret = 100;
-			//Send(cSock, &ret);
-		}
-		break;
-
-		case MessageType::MT_C2S_LOGOUT:
-		{
-			c2s_Logout* logout = (c2s_Logout*)header;
-
-			//std::cout << "recv " << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
-			//	<< " len: " << logout->dataLen
-			//	<< " username: " << logout->userName << std::endl;
-
-			//s2c_Logout ret;
-			//ret.ret = 100;
-			//Send(cSock, &ret);
-		}
-		break;
-
-		default:
-		{
-			std::cout << "Undefined Msg" << "<Socket=" << cSock << "> cmd: " << (int)header->cmd
-				<< " len: " << header->dataLen << std::endl;
-
-			//header->cmd = MessageType::MT_ERROR;
-			//Send(cSock, header);
-		}
-		break;
-		}
+		m_netEvent->OnMessage(client, header);
 	}
 
 	void Cell::CloseSock()

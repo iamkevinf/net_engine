@@ -22,6 +22,8 @@
 
 namespace knet
 {
+	struct DataHeader;
+
 	class ClientSocket
 	{
 	public:
@@ -33,6 +35,8 @@ namespace knet
 
 		int GetLastPos() const { return m_lastPos; }
 		void SetLastPos(int pos) { m_lastPos = pos; }
+
+		int Send(DataHeader* header);
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;

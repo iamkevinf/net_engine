@@ -26,10 +26,8 @@ namespace knet
 		int Listen(int n);
 		bool Accept();
 
-		void Start();
+		void Start(int threadCount);
 		void AddClient2Cell(ClientSocket* client);
-
-		int Send(SOCKET cSock, DataHeader* msg);
 
 		void Time4Msg();
 
@@ -38,8 +36,13 @@ namespace knet
 		bool IsRun()const { return m_sock != INVALID_SOCKET; }
 		bool OnRun();
 
+		virtual void OnJoin(ClientSocket* client) override;
 		virtual void OnExit(ClientSocket* client) override;
-		virtual void OnMessageProc(SOCKET cSock, DataHeader* header) override;
+		virtual void OnMessage(ClientSocket* client, DataHeader* header) override;
+
+	protected:
+		std::atomic_int m_msgCount = 0;
+		std::atomic_int m_connCount = 0;
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
@@ -48,8 +51,7 @@ namespace knet
 		CellPool m_cells;
 
 		Time m_time;
-		std::atomic_int m_recvCount = 0;
-		std::atomic_int m_connCount = 0;
+
 	};
 
 }; // end of namespace knet

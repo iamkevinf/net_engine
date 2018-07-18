@@ -53,6 +53,8 @@ namespace knet
 		int ret = connect(m_sock, (sockaddr*)&sin, sizeof(sockaddr_in));
 		if (SOCKET_ERROR == ret)
 			std::cout << "Conn Error <Socket: " << m_sock << ">" << std::endl;
+		else
+			m_isConn = true;
 
 		//std::cout << "Conn <Socket:" << m_sock 
 		//	<< "> IP: " << ip.c_str()
@@ -75,6 +77,7 @@ namespace knet
 
 			m_sock = INVALID_SOCKET;
 		}
+		m_isConn = false;
 	}
 
 	bool TCPClient::OnRun()
@@ -112,12 +115,15 @@ namespace knet
 
 	int TCPClient::Send(DataHeader* msg, int nLen)
 	{
+		int ret = SOCKET_ERROR;
 		if (IsRun() && msg)
 		{
-			return send(m_sock, (const char*)msg, nLen, 0);
+			ret = send(m_sock, (const char*)msg, nLen, 0);
+			if (ret == SOCKET_ERROR)
+				CloseSock();
 		}
 
-		return SOCKET_ERROR;
+		return ret;
 	}
 
 	int TCPClient::Recv()

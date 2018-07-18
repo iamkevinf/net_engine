@@ -11,8 +11,9 @@ namespace knet
 	class INetEvent
 	{
 	public:
+		virtual void OnJoin(ClientSocket* client) = 0;
 		virtual void OnExit(ClientSocket* client) = 0;
-		virtual void OnMessageProc(SOCKET cSock, DataHeader* header) = 0;
+		virtual void OnMessage(ClientSocket* client, DataHeader* header) = 0;
 	};
 
 }; // end of namespace knet

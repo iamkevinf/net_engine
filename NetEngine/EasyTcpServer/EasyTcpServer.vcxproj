@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="..\Src\cell.cpp" />
     <ClCompile Include="..\Src\client_socket.cpp" />
+    <ClCompile Include="..\Src\my_server.cpp" />
     <ClCompile Include="..\Src\net_event.cpp" />
     <ClCompile Include="..\Src\net_time.cpp" />
     <ClCompile Include="..\Src\tcp_server.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="..\Src\cell.h" />
     <ClInclude Include="..\Src\client_socket.h" />
     <ClInclude Include="..\Src\message.hpp" />
+    <ClInclude Include="..\Src\my_server.h" />
     <ClInclude Include="..\Src\net_defined.hpp" />
     <ClInclude Include="..\Src\net_event.h" />
     <ClInclude Include="..\Src\net_time.h" />

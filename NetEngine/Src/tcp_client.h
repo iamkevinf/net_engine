@@ -41,7 +41,7 @@ namespace knet
 		void CloseSock();
 
 		bool OnRun();
-		bool IsRun()const { return m_sock != INVALID_SOCKET; }
+		bool IsRun()const { return m_sock != INVALID_SOCKET && m_isConn; }
 
 		void OnMessageProc(DataHeader* header);
 
@@ -51,6 +51,9 @@ namespace knet
 		char m_buffer_msg[MSG_BUFFER_SIZE] = {};
 		// m_buffer_msgÎ²°ÍµÄÎ»ÖÃ
 		int m_lastPos = 0;
+
+
+		bool m_isConn = false;
 	};
 
 }; // end of namespace knet

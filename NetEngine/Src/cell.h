@@ -26,10 +26,9 @@ namespace knet
 		bool IsRun();
 		void OnRun();
 
-		//int Send(SOCKET sock, DataHeader* header);
 		int Recv(ClientSocket* clientSock);
 
-		void OnMessageProc(SOCKET cSock, DataHeader* header);
+		void OnMessageProc(ClientSocket* client, DataHeader* header);
 
 		void CloseSock();
 
