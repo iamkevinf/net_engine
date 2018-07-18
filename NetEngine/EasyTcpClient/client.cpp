@@ -1,10 +1,13 @@
 #include "tcp_client.h"
 #include "message.hpp"
+#include "net_time.h"
 
 #include <iostream>
 #include <thread>
 #include <vector>
 #include <string.h>
+#include <atomic>
+#include <iomanip>
 
 #ifdef _WIN32
 std::string host = "192.168.1.102";
@@ -20,6 +23,8 @@ uint16_t port = 10086;
 int g_client_count = 2000;
 int g_thread_count = 8;
 std::vector<knet::TCPClient*> g_clients;
+std::atomic_int g_sendCount = 0;
+std::atomic_int g_readyCount = 0;
 
 ////////////////////////////////////////////////////////
 //
@@ -107,7 +112,14 @@ void SendFunc(int thread_id)
 
 	std::cout << "ThreadID = " << thread_id << " Conn Count bng = " << bgn << " end = " << end << std::endl;
 
-	const int package_count = 10;
+	g_readyCount++;
+	while (g_readyCount < g_thread_count)
+	{
+		std::chrono::milliseconds t(10);
+		std::this_thread::sleep_for(t);
+	}
+
+	const int package_count = 1;
 	knet::c2s_Login login[package_count];
 	for (int i = 0; i < package_count; ++i)
 	{
@@ -116,15 +128,14 @@ void SendFunc(int thread_id)
 	}
 	const int nLen = sizeof(login);
 
-	std::chrono::milliseconds t(5000);
-	std::this_thread::sleep_for(t);
-
 	while (g_runing)//client.IsRun())
 	{
 		for (int i = bgn; i < end; ++i)
 		{
-			g_clients[i]->Send(login, nLen);
-			//g_clients[i]->OnRun();
+			if (SOCKET_ERROR != g_clients[i]->Send(login, nLen))
+				g_sendCount++;
+
+			g_clients[i]->OnRun();
 		}
 	}
 
@@ -159,9 +170,26 @@ int main()
 		t.detach();
 	}
 
-	while (true)
+	knet::Time tTime;
+	while (g_runing)
 	{
-		Sleep(100);
+		auto t = tTime.GetElapsedSecond();
+		if (t >= 1.0)
+		{
+			std::cout.setf(::std::ios::fixed);
+			std::cout << "Thread=" << g_thread_count
+				<< " Time=" << ::std::fixed << ::std::setprecision(6) << t
+				<< " Conn=" << g_client_count
+				<< " Send=" << (int)(g_sendCount/t)
+				<< std::endl;
+
+			g_sendCount = 0;
+
+			tTime.Update();
+
+			std::chrono::milliseconds t(1);
+			std::this_thread::sleep_for(t);
+		}
 	}
 
 	getchar();

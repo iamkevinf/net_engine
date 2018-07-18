@@ -11,7 +11,8 @@ public:
 
 	virtual void OnJoin(knet::ClientSocket* client) override;
 	virtual void OnExit(knet::ClientSocket* client) override;
-	virtual void OnMessage(knet::ClientSocket* client, knet::DataHeader* header) override;
+	virtual void OnMessage(knet::Cell* cell, knet::ClientSocket* client, knet::DataHeader* header) override;
+	virtual void OnRecv(knet::ClientSocket* client) override;
 
 };
 

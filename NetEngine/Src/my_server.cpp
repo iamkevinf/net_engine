@@ -16,19 +16,20 @@ MyServer::~MyServer()
 
 void MyServer::OnJoin(knet::ClientSocket* client)
 {
-	m_connCount++;
+	knet::TCPServer::OnJoin(client);
 	//std::cout << "Client " << client->Sockfd() << " Join" << std::endl;
 }
 
 void MyServer::OnExit(knet::ClientSocket* client)
 {
-	m_connCount--;
+	knet::TCPServer::OnExit(client);
 	//std::cout << "Client " << client->Sockfd() << " Exit" << std::endl;
 }
 
-void MyServer::OnMessage(knet::ClientSocket* client, knet::DataHeader* header)
+void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocket* client, knet::DataHeader* header)
 {
-	m_msgCount++;
+	knet::TCPServer::OnMessage(cell, client, header);
+
 	switch (header->cmd)
 	{
 	case knet::MessageType::MT_C2S_LOGIN:
@@ -40,10 +41,11 @@ void MyServer::OnMessage(knet::ClientSocket* client, knet::DataHeader* header)
 		//	<< " username: " << login->userName
 		//	<< " password: " << login->passWord << std::endl;
 
-		//knet::s2c_Login ret;
-		//strcpy(ret.userName, login->userName);
-		//ret.ret = 100;
-		//client->Send(&ret);
+		knet::s2c_Login* ret = new knet::s2c_Login();
+		strcpy(ret->userName, login->userName);
+		ret->ret = 100;
+
+		cell->AddSendTask(client, ret);
 	}
 	break;
 
@@ -55,9 +57,9 @@ void MyServer::OnMessage(knet::ClientSocket* client, knet::DataHeader* header)
 		//	<< " len: " << logout->dataLen
 		//	<< " username: " << logout->userName << std::endl;
 
-		//knet::s2c_Logout ret;
-		//ret.ret = 100;
-		//client->Send(&ret);
+		knet::s2c_Logout* ret = new knet::s2c_Logout();
+		ret->ret = 100;
+		cell->AddSendTask(client, ret);
 	}
 	break;
 
@@ -66,9 +68,15 @@ void MyServer::OnMessage(knet::ClientSocket* client, knet::DataHeader* header)
 		std::cout << "Undefined Msg" << "<Socket=" << client->Sockfd() << "> cmd: " << (int)header->cmd
 			<< " len: " << header->dataLen << std::endl;
 
-		//header->cmd = knet::MessageType::MT_ERROR;
-		//client->Send(header);
+		header->cmd = knet::MessageType::MT_ERROR;
+		cell->AddSendTask(client, header);
 	}
 	break;
 	}
+}
+
+void MyServer::OnRecv(knet::ClientSocket* client)
+{
+	knet::TCPServer::OnRecv(client);
+	//std::cout << "Client " << client->Sockfd() << " Recv" << std::endl;
 }

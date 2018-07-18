@@ -143,11 +143,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Src\net_time.cpp" />
     <ClCompile Include="..\Src\tcp_client.cpp" />
     <ClCompile Include="client.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\message.hpp" />
+    <ClInclude Include="..\Src\net_time.h" />
     <ClInclude Include="..\Src\tcp_client.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

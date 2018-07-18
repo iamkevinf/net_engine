@@ -38,11 +38,13 @@ namespace knet
 
 		virtual void OnJoin(ClientSocket* client) override;
 		virtual void OnExit(ClientSocket* client) override;
-		virtual void OnMessage(ClientSocket* client, DataHeader* header) override;
+		virtual void OnMessage(Cell* cell, ClientSocket* client, DataHeader* header) override;
+		virtual void OnRecv(ClientSocket* client) override;
 
 	protected:
 		std::atomic_int m_msgCount = 0;
 		std::atomic_int m_connCount = 0;
+		std::atomic_int m_recvCount = 0;
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;

@@ -3,6 +3,8 @@
 
 #include "net_defined.hpp"
 
+#include "cell_task.h"
+
 #include <string>
 #include <vector>
 #include <map>
@@ -14,6 +16,7 @@ namespace knet
 	class ClientSocket;
 	struct DataHeader;
 	class INetEvent;
+
 	typedef std::vector<ClientSocket*> SockVector;
 	typedef std::map<SOCKET, ClientSocket*> Sock2ClientPool;
 
@@ -38,6 +41,8 @@ namespace knet
 
 		size_t GetClientSize() const { return m_clients.size() + m_clientsBuff.size(); }
 
+		void AddSendTask(ClientSocket* client, DataHeader* header);
+
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
 		char m_buffer_recv[BUFFER_SIZE] = { 0 };
@@ -53,6 +58,8 @@ namespace knet
 		fd_set m_fdReadBak = {0};
 		bool m_connDelta = true;
 		SOCKET m_maxSock = INVALID_SOCKET;
+
+		CellTaskService m_taskService;
 	};
 
 }; // end of namespace knet

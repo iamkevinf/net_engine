@@ -6,6 +6,8 @@
 #include "message.hpp"
 #include "net_event.h"
 
+#include "net_msg_task.h"
+
 namespace knet
 {
 
@@ -29,6 +31,7 @@ namespace knet
 	void Cell::Start()
 	{
 		m_thread = new std::thread(std::mem_fn(&Cell::OnRun), this);
+		m_taskService.Start();
 	}
 
 	bool Cell::IsRun()
@@ -141,21 +144,13 @@ namespace knet
 		}
 	}
 
-	//int Cell::Send(SOCKET sock, DataHeader* header)
-	//{
-	//	if (IsRun() && header)
-	//	{
-	//		return send(sock, (const char*)header, header->dataLen, 0);
-	//	}
-
-	//	return SOCKET_ERROR;
-	//}
-
 	int Cell::Recv(ClientSocket* clientSock)
 	{
 		const int headerSize = sizeof(DataHeader);
 
 		int nLenRecv = (int)recv(clientSock->Sockfd(), m_buffer_recv, BUFFER_SIZE, 0);
+		m_netEvent->OnRecv(clientSock);
+
 		DataHeader* header = (DataHeader*)m_buffer_recv;
 
 		if (nLenRecv <= 0)
@@ -199,7 +194,7 @@ namespace knet
 
 	void Cell::OnMessageProc(ClientSocket* client, DataHeader* header)
 	{
-		m_netEvent->OnMessage(client, header);
+		m_netEvent->OnMessage(this, client, header);
 	}
 
 	void Cell::CloseSock()
@@ -232,6 +227,12 @@ namespace knet
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		m_clientsBuff.push_back(client);
+	}
+
+	void Cell::AddSendTask(ClientSocket* client, DataHeader* header)
+	{
+		SendTask* task = new SendTask(client, header);
+		m_taskService.AddTask(task);
 	}
 
 }; // end of namespace knet

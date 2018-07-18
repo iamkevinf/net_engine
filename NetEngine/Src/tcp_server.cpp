@@ -175,14 +175,16 @@ namespace knet
 		if (t >= 1.0)
 		{
 			::std::cout.setf(::std::ios::fixed);
-			::std::cout << "ThreadCount=" << m_cells.size()
-				<< " <Socket=" << m_sock << ">"
+			::std::cout << "Thread=" << m_cells.size()
+				<< " Socket " << m_sock
 				<< " Time=" << ::std::fixed << ::std::setprecision(6) << t
-				<< " ClientCount=" << m_connCount
-				<< " RecvCount=" << int(m_msgCount / t)
+				<< " Conn=" << m_connCount
+				<< " Msg=" << int(m_msgCount / t)
+				<< " Rec=" << m_recvCount
 				<< ::std::endl;
 
 			m_msgCount = 0;
+			m_recvCount = 0;
 			m_time.Update();
 		}
 	}
@@ -197,9 +199,14 @@ namespace knet
 		m_connCount--;
 	}
 
-	void TCPServer::OnMessage(ClientSocket* client, DataHeader* header)
+	void TCPServer::OnMessage(Cell* cell, ClientSocket* client, DataHeader* header)
 	{
 		m_msgCount++;
+	}
+
+	void TCPServer::OnRecv(ClientSocket* client)
+	{
+		m_recvCount++;
 	}
 
 }; // end of namespace knet
