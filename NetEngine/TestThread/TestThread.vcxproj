@@ -134,10 +134,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Src\mem_alloctor.cpp" />
+    <ClCompile Include="..\Src\mem_manager.cpp" />
     <ClCompile Include="..\Src\net_time.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Src\mem_alloctor.h" />
+    <ClInclude Include="..\Src\mem_manager.h" />
     <ClInclude Include="..\Src\net_time.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
