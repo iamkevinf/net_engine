@@ -37,6 +37,7 @@ namespace knet
 
 	void* MemAlloc::Alloc(size_t size)
 	{
+		std::lock_guard<std::mutex> lock(m_mutex);
 		if (!m_poolData)
 			Init();
 
@@ -62,7 +63,7 @@ namespace knet
 			ret->m_ref++;
 		}
 
-		MemTrace("  MemAlloc::Alloc: 0x%llx, m_id=%d, size=%d\n", ret, ret->m_id, (int)size);
+		MemTrace("  MemAlloc::Alloc: 0X%p, m_id=%d, size=%zd\n", ret, ret->m_id, size);
 		return ((char*)ret + s_MemBlockSize);
 	}
 
@@ -73,17 +74,23 @@ namespace knet
 		MemBlock* block = (MemBlock*)(data - s_MemBlockSize);
 		assert(block->m_ref > 0);
 
-		// 说明还有引用
-		if (--block->m_ref != 0)
-			return;
-
 		if (block->m_inPool)
 		{
+			std::lock_guard<std::mutex> lock(m_mutex);
+
+			// 说明还有引用
+			if (--block->m_ref != 0)
+				return;
+
 			block->m_next = m_header;
 			m_header = block;
 		}
 		else
 		{
+			// 说明还有引用
+			if (--block->m_ref != 0)
+				return;
+
 			free(block);
 		}
 	}
@@ -121,7 +128,12 @@ namespace knet
 	 ***********************************************/
 	MemManager::MemManager()
 	{
-		Init(0, 64, &m_mem);
+		Init(0, 32, &m_mem32);
+		Init(33, 64, &m_mem64);
+		Init(65, 128, &m_mem128);
+		Init(129, 256, &m_mem256);
+		Init(257, 512, &m_mem512);
+		Init(513, 1024, &m_mem1024);
 	}
 
 	MemManager::~MemManager()
@@ -131,6 +143,8 @@ namespace knet
 
 	void MemManager::Init(int bgn, int end, MemAlloc* mem)
 	{
+		mem->Init();
+
 		for (int i = bgn; i <= end; ++i)
 		{
 			m_szAlloc[i] = mem;
@@ -139,7 +153,7 @@ namespace knet
 
 	void* MemManager::Alloc(size_t size)
 	{
-		if (size <= MAX_MEM_SIZE)
+		if (size <= s_max_mem_size)
 			return m_szAlloc[size]->Alloc(size);
 
 		MemBlock* ret = (MemBlock*)malloc(size + s_MemBlockSize);
@@ -149,7 +163,7 @@ namespace knet
 		ret->m_ref = 1;
 		ret->m_alloc = nullptr;
 		ret->m_next = nullptr;
-		MemTrace("MemManager::Alloc: 0x%llx, m_id=%d, size=%d\n", ret, ret->m_id, size);
+		MemTrace("MemManager::Alloc: 0X%p, m_id=%d, size=%zd\n", ret, ret->m_id, size);
 
 		return ((char*)ret + s_MemBlockSize);
 	}
@@ -159,7 +173,7 @@ namespace knet
 		char* data = (char*)p;
 		// 回退 s_MemBlockSize 指向MemBlock位置
 		MemBlock* block = (MemBlock*)(data - s_MemBlockSize);
-		MemTrace("MemManager::Free 0x%llx, id=%d\n", block, block->m_id);
+		MemTrace("MemManager::Free:  0X%p, m_id=%d\n", block, block->m_id);
 		if (block->m_inPool)
 		{
 			block->m_alloc->Free(p);

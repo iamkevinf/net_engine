@@ -1,12 +1,10 @@
 #ifndef __MEM_MANAGER_H__
 #define __MEM_MANAGER_H__
 
+#include <mutex>
+
 namespace knet
 {
-#ifndef MAX_MEM_SIZE
-#define MAX_MEM_SIZE 64
-#endif // MAX_MEM_SIZE
-
 	class MemAlloc;
 
 	/***********************************************
@@ -58,6 +56,8 @@ namespace knet
 		char* m_poolData = nullptr;
 		// Í·
 		MemBlock* m_header = nullptr;
+		// Ëø
+		std::mutex m_mutex;
 	};
 	/***********************************************
 	*
@@ -98,8 +98,14 @@ namespace knet
 		void Init(int bgn, int end, MemAlloc* mem);
 
 	private:
-		MemAllocImp<MAX_MEM_SIZE, 10> m_mem;
-		MemAlloc* m_szAlloc[MAX_MEM_SIZE+1];
+		static const int s_max_mem_size = 1024;
+		MemAllocImp<  32, 1000000> m_mem32;
+		MemAllocImp<  64, 1000000> m_mem64;
+		MemAllocImp< 128, 1000000> m_mem128;
+		MemAllocImp< 256, 1000000> m_mem256;
+		MemAllocImp< 512, 1000000> m_mem512;
+		MemAllocImp<1024, 1000000> m_mem1024;
+		MemAlloc* m_szAlloc[s_max_mem_size+1];
 	};
 
 }; // end of namespace knet
