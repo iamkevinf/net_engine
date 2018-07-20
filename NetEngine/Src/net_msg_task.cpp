@@ -6,7 +6,7 @@
 namespace knet
 {
 
-	SendTask::SendTask(ClientSocket* client, DataHeader* header):m_client(client)
+	SendTask::SendTask(ClientSocketPtr client, DataHeader* header):m_client(client)
 		,m_header(header)
 	{
 

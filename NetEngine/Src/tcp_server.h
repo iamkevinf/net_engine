@@ -11,7 +11,7 @@ namespace knet
 {
 	class ClientSocket;
 	class Cell;
-	typedef std::vector<Cell*> CellPool;
+	typedef std::vector<CellPtr> CellPool;
 	struct DataHeader;
 
 	class TCPServer : INetEvent
@@ -27,7 +27,7 @@ namespace knet
 		bool Accept();
 
 		void Start(int threadCount);
-		void AddClient2Cell(ClientSocket* client);
+		void AddClient2Cell(ClientSocketPtr client);
 
 		void Time4Msg();
 
@@ -36,10 +36,10 @@ namespace knet
 		bool IsRun()const { return m_sock != INVALID_SOCKET; }
 		bool OnRun();
 
-		virtual void OnJoin(ClientSocket* client) override;
-		virtual void OnExit(ClientSocket* client) override;
-		virtual void OnMessage(Cell* cell, ClientSocket* client, DataHeader* header) override;
-		virtual void OnRecv(ClientSocket* client) override;
+		virtual void OnJoin(ClientSocketPtr& client) override;
+		virtual void OnExit(ClientSocketPtr& client) override;
+		virtual void OnMessage(Cell* cell, ClientSocketPtr& client, DataHeader* header) override;
+		virtual void OnRecv(ClientSocketPtr& client) override;
 
 	protected:
 		std::atomic_int m_msgCount = 0;

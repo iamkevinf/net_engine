@@ -10,38 +10,44 @@
 #include <map>
 #include <thread>
 #include <mutex>
+#include <memory>
+
+#include "client_socket.h"
 
 namespace knet
 {
-	class ClientSocket;
 	struct DataHeader;
 	class INetEvent;
 
-	typedef std::vector<ClientSocket*> SockVector;
-	typedef std::map<SOCKET, ClientSocket*> Sock2ClientPool;
+	typedef std::shared_ptr<class Cell> CellPtr;
+	typedef std::vector<ClientSocketPtr> SockVector;
+	typedef std::map<SOCKET, ClientSocketPtr> Sock2ClientPool;
 
 	class Cell
 	{
 	public:
-		Cell(SOCKET sock=INVALID_SOCKET, INetEvent* netEvent=nullptr);
+		Cell(SOCKET sock=INVALID_SOCKET);
 		virtual ~Cell();
 		
+		void SetNetEvent(INetEvent* netEvent) { m_netEvent = netEvent; }
+
 		void Start();
 
 		bool IsRun();
 		void OnRun();
 
-		int Recv(ClientSocket* clientSock);
+		int Recv(ClientSocketPtr& clientSock);
 
-		void OnMessageProc(ClientSocket* client, DataHeader* header);
+		void OnMessageProc(ClientSocketPtr& client, DataHeader* header);
 
 		void CloseSock();
 
-		void AddClient(ClientSocket* client);
+		void AddClient(ClientSocketPtr& client);
 
 		size_t GetClientSize() const { return m_clients.size() + m_clientsBuff.size(); }
 
-		void AddSendTask(ClientSocket* client, DataHeader* header);
+		void AddSendTask(ClientSocketPtr& client, DataHeader* header);
+
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;

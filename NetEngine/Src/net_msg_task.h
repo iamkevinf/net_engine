@@ -2,22 +2,27 @@
 #define __NET_MSG_TASK_H__
 
 #include "cell_task.h"
+#include "client_socket.h"
+
+#include <memory>
 
 namespace knet
 {
 	class ClientSocket;
 	struct DataHeader;
 
+	typedef std::shared_ptr<class SendTask> SendTaskPtr;
+
 	class SendTask : public CellTask
 	{
 	public:
-		SendTask(ClientSocket* client, DataHeader* header);
+		SendTask(ClientSocketPtr client, DataHeader* header);
 		virtual ~SendTask();
 
 		virtual void DoTask() override;
 
 	private:
-		ClientSocket* m_client;
+		ClientSocketPtr m_client;
 		DataHeader* m_header;
 	};
 

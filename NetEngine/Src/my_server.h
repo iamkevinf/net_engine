@@ -9,10 +9,10 @@ public:
 	MyServer();
 	virtual ~MyServer();
 
-	virtual void OnJoin(knet::ClientSocket* client) override;
-	virtual void OnExit(knet::ClientSocket* client) override;
-	virtual void OnMessage(knet::Cell* cell, knet::ClientSocket* client, knet::DataHeader* header) override;
-	virtual void OnRecv(knet::ClientSocket* client) override;
+	virtual void OnJoin(knet::ClientSocketPtr& client) override;
+	virtual void OnExit(knet::ClientSocketPtr& client) override;
+	virtual void OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::DataHeader* header) override;
+	virtual void OnRecv(knet::ClientSocketPtr& client) override;
 
 };
 

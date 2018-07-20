@@ -14,19 +14,19 @@ MyServer::~MyServer()
 {
 }
 
-void MyServer::OnJoin(knet::ClientSocket* client)
+void MyServer::OnJoin(knet::ClientSocketPtr& client)
 {
 	knet::TCPServer::OnJoin(client);
 	//std::cout << "Client " << client->Sockfd() << " Join" << std::endl;
 }
 
-void MyServer::OnExit(knet::ClientSocket* client)
+void MyServer::OnExit(knet::ClientSocketPtr& client)
 {
 	knet::TCPServer::OnExit(client);
 	//std::cout << "Client " << client->Sockfd() << " Exit" << std::endl;
 }
 
-void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocket* client, knet::DataHeader* header)
+void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::DataHeader* header)
 {
 	knet::TCPServer::OnMessage(cell, client, header);
 
@@ -75,7 +75,7 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocket* client, knet::Dat
 	}
 }
 
-void MyServer::OnRecv(knet::ClientSocket* client)
+void MyServer::OnRecv(knet::ClientSocketPtr& client)
 {
 	knet::TCPServer::OnRecv(client);
 	//std::cout << "Client " << client->Sockfd() << " Recv" << std::endl;

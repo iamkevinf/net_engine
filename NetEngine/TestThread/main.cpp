@@ -5,6 +5,8 @@
 #include <mutex>
 #include <atomic>
 
+#include <memory>
+
 #include "net_time.h"
 
 // 原子操作 也就是不可分割的操作
@@ -40,23 +42,99 @@ void thread_func(int index)
 	}
 }
 
+struct MyInt {
+	MyInt(int v) :val(v) {
+		std::cout << "  Hello: " << val << std::endl;
+	}
+	~MyInt() {
+		std::cout << "  Good Bye: " << val << std::endl;
+	}
+	int val;
+};
+
+template <typename T>
+struct Deleter {
+	void operator()(T *ptr) {
+		++Deleter::count;
+		delete ptr;
+	}
+	static int count;
+};
+
+template <typename T>
+int Deleter<T>::count = 0;
+
+typedef Deleter<int> IntDeleter;
+typedef Deleter<double> DoubleDeleter;
+typedef Deleter<MyInt> MyIntDeleter;
+
+int test_shared_ptr5()
+{
+	{
+		std::shared_ptr<int> sharedPtr1(new int(1998), IntDeleter());
+		std::shared_ptr<int> sharedPtr2(new int(2011), IntDeleter());
+		std::shared_ptr<double> sharedPtr3(new double(3.17), DoubleDeleter());
+		std::shared_ptr<MyInt> sharedPtr4(new MyInt(2017), MyIntDeleter());
+	}
+
+	std::cout << "Deleted " << IntDeleter().count << " int values." << std::endl;
+	std::cout << "Deleted " << DoubleDeleter().count << " double value." << std::endl;
+	std::cout << "Deleted " << MyIntDeleter().count << " MyInt value." << std::endl;
+
+	return 0;
+}
+
 int main()
 {
-	knet::Time t1;
-	std::thread t[tCount];
-	for (int i = 0; i < tCount; ++i)
-	{
-		t[i] = std::thread(thread_func, i);
-	}
-	double tt1 = t1.GetElapsedTimeMS();
-	for (int i = 0; i < tCount; ++i)
-	{
-		t[i].join();
-		//t[i].detach();
-	}
-	double tt2 = t1.GetElapsedTimeMS();
-	std::cout << "In Job  Thread g_sum = " << g_sum << " dTime = " << tt2 - tt1 << std::endl;
-
+	//knet::Time t1;
+	//std::thread t[tCount];
+	//for (int i = 0; i < tCount; ++i)
+	//{
+	//	t[i] = std::thread(thread_func, i);
+	//}
+	//double tt1 = t1.GetElapsedTimeMS();
+	//for (int i = 0; i < tCount; ++i)
+	//{
+	//	t[i].join();
+	//	//t[i].detach();
+	//}
+	//double tt2 = t1.GetElapsedTimeMS();
+	//std::cout << "In Job  Thread g_sum = " << g_sum << " dTime = " << tt2 - tt1 << std::endl;
+	test_shared_ptr5();
 	getchar();
+	return 0;
+
+	struct Test
+	{
+		int m_a = 0;
+		Test()
+		{
+			std::cout << "Test::Test()" << std::endl;
+		}
+
+		~Test()
+		{
+			std::cout << "Test::~Test()" << std::endl;
+		}
+	};
+
+	std::shared_ptr<Test> a = std::make_shared<Test>();
+	a->m_a = 2;
+	Test* ori = a.get();
+	bool u = a.unique();
+	int count = a.use_count();
+	a.reset();
+	count = a.use_count();
+
+	std::unique_ptr<Test> b = std::make_unique<Test>();
+	b->m_a = 100;
+	auto cc = b.get();
+	std::unique_ptr<Test> c = std::move(b);
+	auto ccc = c.get();
+
+	//std::weak_ptr<Test> d = std::make_shared<Test>();
+	//d.lock().get()->m_a;
+
+	//getchar();
 	return 0;
 }

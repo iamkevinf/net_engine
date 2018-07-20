@@ -19,10 +19,13 @@
 
 
 #include "net_defined.hpp"
+#include <memory>
 
 namespace knet
 {
 	struct DataHeader;
+
+	typedef std::shared_ptr<class ClientSocket> ClientSocketPtr;
 
 	class ClientSocket
 	{

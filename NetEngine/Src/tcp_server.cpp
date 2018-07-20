@@ -92,14 +92,14 @@ namespace knet
 			return false;
 		}
 
-		AddClient2Cell(new ClientSocket(clientSock));
+		AddClient2Cell(std::make_shared<ClientSocket>(clientSock));
 
 		return true;
 	}
 
-	void TCPServer::AddClient2Cell(ClientSocket* client)
+	void TCPServer::AddClient2Cell(ClientSocketPtr client)
 	{
-		Cell* minCell = m_cells[0];
+		CellPtr minCell = m_cells[0];
 		for (auto cell : m_cells)
 		{
 			if (minCell->GetClientSize() > cell->GetClientSize())
@@ -114,7 +114,8 @@ namespace knet
 	{
 		for (int i = 0; i < threadCount; ++i)
 		{
-			auto cell = new Cell(m_sock, this);
+			CellPtr cell = std::make_shared<Cell>(m_sock);
+			cell->SetNetEvent(this);
 			m_cells.push_back(cell);
 
 			cell->Start();
@@ -189,22 +190,22 @@ namespace knet
 		}
 	}
 
-	void TCPServer::OnJoin(ClientSocket* client)
+	void TCPServer::OnJoin(ClientSocketPtr& client)
 	{
 		m_connCount++;
 	}
 
-	void TCPServer::OnExit(ClientSocket* client)
+	void TCPServer::OnExit(ClientSocketPtr& client)
 	{
 		m_connCount--;
 	}
 
-	void TCPServer::OnMessage(Cell* cell, ClientSocket* client, DataHeader* header)
+	void TCPServer::OnMessage(Cell* cell, ClientSocketPtr& client, DataHeader* header)
 	{
 		m_msgCount++;
 	}
 
-	void TCPServer::OnRecv(ClientSocket* client)
+	void TCPServer::OnRecv(ClientSocketPtr& client)
 	{
 		m_recvCount++;
 	}

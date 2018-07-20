@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-#include "client_socket.h"
 #include "message.hpp"
 #include "net_event.h"
 
@@ -11,8 +10,7 @@
 namespace knet
 {
 
-	Cell::Cell(SOCKET sock/*= INVALID_SOCKET*/, INetEvent* netEvent/*=nullptr*/) :m_sock(sock),
-		m_netEvent(netEvent)
+	Cell::Cell(SOCKET sock/*= INVALID_SOCKET*/) :m_sock(sock)
 	{
 	}
 
@@ -144,7 +142,7 @@ namespace knet
 		}
 	}
 
-	int Cell::Recv(ClientSocket* clientSock)
+	int Cell::Recv(ClientSocketPtr& clientSock)
 	{
 		const int headerSize = sizeof(DataHeader);
 
@@ -192,7 +190,7 @@ namespace knet
 	}
 
 
-	void Cell::OnMessageProc(ClientSocket* client, DataHeader* header)
+	void Cell::OnMessageProc(ClientSocketPtr& client, DataHeader* header)
 	{
 		m_netEvent->OnMessage(this, client, header);
 	}
@@ -209,7 +207,6 @@ namespace knet
 #else
 				close(iter.second->Sockfd());
 #endif
-				delete iter.second;
 		}
 
 			m_clients.clear();
@@ -223,15 +220,15 @@ namespace knet
 	}
 }
 
-	void Cell::AddClient(ClientSocket* client)
+	void Cell::AddClient(ClientSocketPtr& client)
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		m_clientsBuff.push_back(client);
 	}
 
-	void Cell::AddSendTask(ClientSocket* client, DataHeader* header)
+	void Cell::AddSendTask(ClientSocketPtr& client, DataHeader* header)
 	{
-		SendTask* task = new SendTask(client, header);
+		SendTaskPtr task = std::make_shared<SendTask>(client, header);
 		m_taskService.AddTask(task);
 	}
 

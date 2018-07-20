@@ -2,20 +2,20 @@
 #define __NET_EVENT_H__
 
 #include "net_defined.hpp"
+#include "client_socket.h"
+#include "cell.h"
 
 namespace knet
 {
-	class ClientSocket;
 	struct DataHeader;
-	class Cell;
 
 	class INetEvent
 	{
 	public:
-		virtual void OnJoin(ClientSocket* client) = 0;
-		virtual void OnExit(ClientSocket* client) = 0;
-		virtual void OnMessage(Cell* cell, ClientSocket* client, DataHeader* header) = 0;
-		virtual void OnRecv(ClientSocket* client) = 0;
+		virtual void OnJoin(ClientSocketPtr& client) = 0;
+		virtual void OnExit(ClientSocketPtr& client) = 0;
+		virtual void OnMessage(Cell* cell, ClientSocketPtr& client, DataHeader* header) = 0;
+		virtual void OnRecv(ClientSocketPtr& client) = 0;
 	};
 
 }; // end of namespace knet

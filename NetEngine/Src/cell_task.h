@@ -7,7 +7,8 @@
 
 namespace knet
 {
-	typedef std::list<class CellTask*> CellTaskList;
+	typedef std::shared_ptr<class CellTask> CellTaskPtr;
+	typedef std::list<CellTaskPtr> CellTaskList;
 
 	class CellTask
 	{
@@ -27,7 +28,7 @@ namespace knet
 		CellTaskService();
 		~CellTaskService();
 
-		void AddTask(CellTask* task);
+		void AddTask(CellTaskPtr task);
 
 		void Start();
 
