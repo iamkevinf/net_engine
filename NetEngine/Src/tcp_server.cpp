@@ -92,7 +92,8 @@ namespace knet
 			return false;
 		}
 
-		AddClient2Cell(std::make_shared<ClientSocket>(clientSock));
+		ClientSocketPtr client(new ClientSocket(clientSock));
+		AddClient2Cell(client);
 
 		return true;
 	}

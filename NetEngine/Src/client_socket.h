@@ -21,13 +21,15 @@
 #include "net_defined.hpp"
 #include <memory>
 
+#include "object_pool.h"
+
 namespace knet
 {
 	struct DataHeader;
 
 	typedef std::shared_ptr<class ClientSocket> ClientSocketPtr;
 
-	class ClientSocket
+	class ClientSocket : public ObjectPoolBase<ClientSocket, 10000>
 	{
 	public:
 		ClientSocket(SOCKET sock = INVALID_SOCKET);

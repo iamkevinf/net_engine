@@ -16,32 +16,10 @@ std::atomic_int g_atomic_sum = 0;
 std::mutex g_mutex;
 
 const int tCount = 8;
-const int maxAllocCount = 1000000;
+const int maxAllocCount = 100000;
 const int preAllocCount = maxAllocCount / tCount;
 int g_sum = 0;
 
-void thread_func(int index)
-{
-	char* data[preAllocCount];
-	for (size_t i = 0; i < preAllocCount; ++i)
-	{
-		data[i] = new char[rand() % 1024 + 1];
-	}
-	for (size_t i = 0; i < preAllocCount; ++i)
-	{
-		delete[] data[i];
-	}
-
-
-	for (int i = 0; i < 20000000; ++i)
-	{
-		//g_atomic_sum++;
-		//std::lock_guard<std::mutex> guard(g_mutex);
-		////g_mutex.lock();
-		//	g_sum++;
-		////g_mutex.unlock();
-	}
-}
 
 struct MyInt {
 	MyInt(int v) :val(v) {
@@ -85,7 +63,7 @@ int test_shared_ptr5()
 	return 0;
 }
 
-class TestObjectPool : public knet::ObjectPoolBase<TestObjectPool, 10>
+class TestObjectPool : public knet::ObjectPoolBase<TestObjectPool, 100000>
 {
 public:
 	TestObjectPool(int a)
@@ -98,6 +76,33 @@ public:
 private:
 	int m_a = 0;
 };
+
+void thread_func(int index)
+{
+	//char* data[preAllocCount];
+	TestObjectPool* data[preAllocCount];
+	for (size_t i = 0; i < preAllocCount; ++i)
+	{
+		//data[i] = new char[rand() % 1024 + 1];
+		data[i] = TestObjectPool::CreateObject(6);
+	}
+	for (size_t i = 0; i < preAllocCount; ++i)
+	{
+		//delete[] data[i];
+		TestObjectPool::DestroyObject(data[i]);
+	}
+
+
+	for (int i = 0; i < 20000000; ++i)
+	{
+		//g_atomic_sum++;
+		//std::lock_guard<std::mutex> guard(g_mutex);
+		////g_mutex.lock();
+		//	g_sum++;
+		////g_mutex.unlock();
+	}
+}
+
 
 int main()
 {
@@ -115,6 +120,25 @@ int main()
 	//}
 	//double tt2 = t1.GetElapsedTimeMS();
 	//std::cout << "In Job  Thread g_sum = " << g_sum << " dTime = " << tt2 - tt1 << std::endl;
+	//getchar();
+	//return 0;
+	TestObjectPool* a1 = new TestObjectPool(2);
+	delete a1;
+
+	std::cout << "------------ Not in Object Pool" << std::endl;
+
+	// Not In Object Pool
+	{
+		std::shared_ptr<TestObjectPool> s1 = std::make_shared<TestObjectPool>(10);
+	}
+
+	std::cout << "------------ in Object Pool" << std::endl;
+	// In Object Pool
+	{
+		std::shared_ptr<TestObjectPool> s1(new TestObjectPool(10));
+	}
+	getchar();
+	return 0;
 	TestObjectPool* testA = TestObjectPool::CreateObject(2);
 	TestObjectPool::DestroyObject(testA);
 	std::cout << testA->GetA() << std::endl;
