@@ -3,11 +3,11 @@
 
 #include "net_defined.hpp"
 #include "client_socket.h"
-#include "cell.h"
 
 namespace knet
 {
 	struct DataHeader;
+	class Cell;
 
 	class INetEvent
 	{

@@ -20,6 +20,7 @@ namespace knet
 	class INetEvent;
 
 	typedef std::shared_ptr<class Cell> CellPtr;
+	typedef std::vector<CellPtr> CellPool;
 	typedef std::vector<ClientSocketPtr> SockVector;
 	typedef std::map<SOCKET, ClientSocketPtr> Sock2ClientPool;
 

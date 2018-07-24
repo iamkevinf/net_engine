@@ -1,6 +1,8 @@
 ﻿#include "cell.h"
 
 #include <iostream>
+#include <functional> // std::mem_fn
+#include <string.h> // memcpy
 
 #include "message.hpp"
 #include "net_event.h"
@@ -136,7 +138,6 @@ namespace knet
 			for (auto client : temp)
 			{
 				m_clients.erase(client->Sockfd());
-				delete client;
 			}
 #endif
 		}

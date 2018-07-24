@@ -1,5 +1,7 @@
 #include "cell_task.h"
 
+#include <functional>   // std::mem_fn
+
 namespace knet
 {
 

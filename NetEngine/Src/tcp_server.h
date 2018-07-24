@@ -1,17 +1,21 @@
 #ifndef __TCP_SERVERH_H__
 #define __TCP_SERVERH_H__
 
-#include "cell.h"
 #include "net_time.h"
 #include "net_event.h"
 
 #include <atomic>
+#include <vector>
 
 namespace knet
 {
 	class ClientSocket;
+	typedef std::shared_ptr<class ClientSocket> ClientSocketPtr;
+
 	class Cell;
+	typedef std::shared_ptr<class Cell> CellPtr;
 	typedef std::vector<CellPtr> CellPool;
+
 	struct DataHeader;
 
 	class TCPServer : INetEvent
@@ -42,9 +46,9 @@ namespace knet
 		virtual void OnRecv(ClientSocketPtr& client) override;
 
 	protected:
-		std::atomic_int m_msgCount = 0;
-		std::atomic_int m_connCount = 0;
-		std::atomic_int m_recvCount = 0;
+		std::atomic<int> m_msgCount{0};
+		std::atomic<int> m_connCount{0};
+		std::atomic<int> m_recvCount{0};
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;

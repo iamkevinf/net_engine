@@ -2,8 +2,10 @@
 
 #include "client_socket.h"
 #include "message.hpp"
+#include "cell.h"
 
 #include <iostream>
+#include <string.h>
 
 MyServer::MyServer()
 {

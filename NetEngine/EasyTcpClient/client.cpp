@@ -23,8 +23,8 @@ uint16_t port = 10086;
 int g_client_count = 2000;
 int g_thread_count = 8;
 std::vector<knet::TCPClient*> g_clients;
-std::atomic_int g_sendCount = 0;
-std::atomic_int g_readyCount = 0;
+std::atomic_int g_sendCount{0};
+std::atomic_int g_readyCount{0};
 
 ////////////////////////////////////////////////////////
 //
