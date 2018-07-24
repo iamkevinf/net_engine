@@ -1,6 +1,7 @@
 #ifndef __TCP_SERVERH_H__
 #define __TCP_SERVERH_H__
 
+#include "net_defined.hpp"
 #include "net_time.h"
 #include "net_event.h"
 

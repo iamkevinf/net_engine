@@ -131,13 +131,14 @@ namespace knet
 							m_netEvent->OnExit(iter.second);
 
 						m_connDelta = true;
-						temp.push_back(iter.second);
+						temp.push_back(iter.second.get());
 					}
 				}
 			}
 			for (auto client : temp)
 			{
 				m_clients.erase(client->Sockfd());
+				delete client;
 			}
 #endif
 		}

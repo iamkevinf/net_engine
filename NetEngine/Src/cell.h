@@ -21,7 +21,8 @@ namespace knet
 
 	typedef std::shared_ptr<class Cell> CellPtr;
 	typedef std::vector<CellPtr> CellPool;
-	typedef std::vector<ClientSocketPtr> SockVector;
+	typedef std::vector<ClientSocket*> SockVector;
+	typedef std::vector<ClientSocketPtr> SockPtrVector;
 	typedef std::map<SOCKET, ClientSocketPtr> Sock2ClientPool;
 
 	class Cell
@@ -57,7 +58,7 @@ namespace knet
 		Sock2ClientPool m_clients;
 
 		std::mutex m_mutex;
-		SockVector m_clientsBuff;
+		SockPtrVector m_clientsBuff;
 
 		std::thread* m_thread = nullptr;
 		INetEvent* m_netEvent = nullptr;
