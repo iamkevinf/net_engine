@@ -54,6 +54,9 @@ int test_shared_ptr5()
 		std::shared_ptr<int> sharedPtr2(new int(2011), IntDeleter());
 		std::shared_ptr<double> sharedPtr3(new double(3.17), DoubleDeleter());
 		std::shared_ptr<MyInt> sharedPtr4(new MyInt(2017), MyIntDeleter());
+		std::shared_ptr<MyInt> sharedPtr5(new MyInt(666), MyIntDeleter());
+		sharedPtr5.reset();
+		getchar();
 	}
 
 	std::cout << "Deleted " << IntDeleter().count << " int values." << std::endl;
@@ -122,30 +125,30 @@ int main()
 	//std::cout << "In Job  Thread g_sum = " << g_sum << " dTime = " << tt2 - tt1 << std::endl;
 	//getchar();
 	//return 0;
-	TestObjectPool* a1 = new TestObjectPool(2);
-	delete a1;
+	//TestObjectPool* a1 = new TestObjectPool(2);
+	//delete a1;
 
-	std::cout << "------------ Not in Object Pool" << std::endl;
+	//std::cout << "------------ Not in Object Pool" << std::endl;
 
-	// Not In Object Pool
-	{
-		std::shared_ptr<TestObjectPool> s1 = std::make_shared<TestObjectPool>(10);
-	}
+	//// Not In Object Pool
+	//{
+	//	std::shared_ptr<TestObjectPool> s1 = std::make_shared<TestObjectPool>(10);
+	//}
 
-	std::cout << "------------ in Object Pool" << std::endl;
-	// In Object Pool
-	{
-		std::shared_ptr<TestObjectPool> s1(new TestObjectPool(10));
-	}
-	getchar();
-	return 0;
-	TestObjectPool* testA = TestObjectPool::CreateObject(2);
-	TestObjectPool::DestroyObject(testA);
-	std::cout << testA->GetA() << std::endl;
-	TestObjectPool* testA2 = TestObjectPool::CreateObject(20);
-	TestObjectPool::DestroyObject(testA2);
-	std::cout << testA2->GetA() << std::endl;
-	return 0;
+	//std::cout << "------------ in Object Pool" << std::endl;
+	//// In Object Pool
+	//{
+	//	std::shared_ptr<TestObjectPool> s1(new TestObjectPool(10));
+	//}
+	//getchar();
+	//return 0;
+	//TestObjectPool* testA = TestObjectPool::CreateObject(2);
+	//TestObjectPool::DestroyObject(testA);
+	//std::cout << testA->GetA() << std::endl;
+	//TestObjectPool* testA2 = TestObjectPool::CreateObject(20);
+	//TestObjectPool::DestroyObject(testA2);
+	//std::cout << testA2->GetA() << std::endl;
+	//return 0;
 
 	test_shared_ptr5();
 	getchar();

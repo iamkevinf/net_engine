@@ -120,7 +120,7 @@ namespace knet
 				}
 			}
 #else
-			SockVector temp;
+			SockPtrVector temp;
 			for (auto iter : m_clients)
 			{
 				if (FD_ISSET(iter.second->Sockfd(), &fdRead))
@@ -131,14 +131,14 @@ namespace knet
 							m_netEvent->OnExit(iter.second);
 
 						m_connDelta = true;
-						temp.push_back(iter.second.get());
+						temp.push_back(iter.second);
 					}
 				}
 			}
 			for (auto client : temp)
 			{
 				m_clients.erase(client->Sockfd());
-				delete client;
+				client.reset();
 			}
 #endif
 		}

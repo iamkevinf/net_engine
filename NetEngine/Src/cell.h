@@ -21,7 +21,6 @@ namespace knet
 
 	typedef std::shared_ptr<class Cell> CellPtr;
 	typedef std::vector<CellPtr> CellPool;
-	typedef std::vector<ClientSocket*> SockVector;
 	typedef std::vector<ClientSocketPtr> SockPtrVector;
 	typedef std::map<SOCKET, ClientSocketPtr> Sock2ClientPool;
 
