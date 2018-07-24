@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "net_time.h"
+#include "object_pool.h"
 
 // 原子操作 也就是不可分割的操作
 std::atomic_int g_atomic_sum = 0;
@@ -84,6 +85,20 @@ int test_shared_ptr5()
 	return 0;
 }
 
+class TestObjectPool : public knet::ObjectPoolBase<TestObjectPool, 10>
+{
+public:
+	TestObjectPool(int a)
+	{
+		m_a = a;
+	}
+
+	int GetA()const { return m_a; }
+
+private:
+	int m_a = 0;
+};
+
 int main()
 {
 	//knet::Time t1;
@@ -100,6 +115,14 @@ int main()
 	//}
 	//double tt2 = t1.GetElapsedTimeMS();
 	//std::cout << "In Job  Thread g_sum = " << g_sum << " dTime = " << tt2 - tt1 << std::endl;
+	TestObjectPool* testA = TestObjectPool::CreateObject(2);
+	TestObjectPool::DestroyObject(testA);
+	std::cout << testA->GetA() << std::endl;
+	TestObjectPool* testA2 = TestObjectPool::CreateObject(20);
+	TestObjectPool::DestroyObject(testA2);
+	std::cout << testA2->GetA() << std::endl;
+	return 0;
+
 	test_shared_ptr5();
 	getchar();
 	return 0;

@@ -6,7 +6,10 @@
 
 #ifdef _DEBUG
 	#include <stdio.h>
-	#define MemTrace(...) printf(__VA_ARGS__)
+
+	#ifndef MemTrace
+		#define MemTrace(...) printf(__VA_ARGS__)
+	#endif // MemTrace
 #else
 	#define MemTrace(...)
 #endif // _DEBUG
@@ -53,6 +56,7 @@ namespace knet
 			ret->m_ref = 1;
 			ret->m_alloc = nullptr;
 			ret->m_next = nullptr;
+			printf("  MemAlloc::Alloc: MemoryPool is Full size=%zd\n", size);
 		}
 		// 还有,可以直接从池中分配
 		else
