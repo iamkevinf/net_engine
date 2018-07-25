@@ -135,19 +135,17 @@ void SendFunc(int thread_id)
 	t1.detach();
 
 	const int package_count = 10;
-	knet::c2s_Login login[package_count];
+	knet::c2s_Heart heart[package_count];
 	for (int i = 0; i < package_count; ++i)
 	{
-		strcpy(login[i].userName, "admin");
-		strcpy(login[i].passWord, "123.com");
 	}
-	const int nLen = sizeof(login);
+	const int nLen = sizeof(heart);
 
 	while (g_runing)//client.IsRun())
 	{
 		for (int i = bgn; i < end; ++i)
 		{
-			if (SOCKET_ERROR != g_clients[i]->Send(login, nLen))
+			if (SOCKET_ERROR != g_clients[i]->Send(heart, nLen))
 				g_sendCount++;
 		}
 

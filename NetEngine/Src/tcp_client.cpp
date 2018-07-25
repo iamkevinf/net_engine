@@ -200,6 +200,14 @@ namespace knet
 		}
 		break;
 
+		case MessageType::MT_S2C_HEART:
+		{
+			s2c_Heart* ret = (s2c_Heart*)header;
+			//std::cout << "s2c_Heart " << "<Socket = " << m_sock  << "> sock: "
+			//	<< ret->sock << " dataLen: " << ret->dataLen << std::endl;
+		}
+		break;
+
 		case MessageType::MT_ERROR:
 		{
 			std::cout << "Error Message " << "<Socket = " << m_sock << ">" << std::endl;

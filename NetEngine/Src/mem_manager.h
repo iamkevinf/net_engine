@@ -99,12 +99,12 @@ namespace knet
 
 	private:
 		static const int s_max_mem_size = 1024;
-		MemAllocImp<  32, 2000000> m_mem32;
-		MemAllocImp<  64, 2000000> m_mem64;
-		MemAllocImp< 128, 2000000> m_mem128;
-		MemAllocImp< 256, 1000000> m_mem256;
-		MemAllocImp< 512, 1000000> m_mem512;
-		MemAllocImp<1024, 1000000> m_mem1024;
+		MemAllocImp<  32, 3000000> m_mem32;
+		MemAllocImp<  64, 3000000> m_mem64;
+		MemAllocImp< 128, 3000000> m_mem128;
+		MemAllocImp< 256, 100000> m_mem256;
+		MemAllocImp< 512, 100000> m_mem512;
+		MemAllocImp<1024, 100000> m_mem1024;
 		MemAlloc* m_szAlloc[s_max_mem_size+1];
 	};
 

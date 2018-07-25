@@ -195,6 +195,8 @@ namespace knet
 			return -1;
 		}
 
+		clientSock->ResetHeart();
+
 		////将收取到的数据拷贝到消息缓冲区
 		//memcpy(clientSock->MsgBuffer() + clientSock->GetLastPos(), m_buffer_recv, nLen);
 		//消息缓冲区的数据尾部位置后移

@@ -31,7 +31,7 @@
 
 #ifndef HEART_NT
 // 客户端心跳时间间隔毫秒
-#define HEART_NT 5000
+#define HEART_NT 60000
 #endif // HEART_NT
 
 #endif // __NET_DEFINED_HPP__

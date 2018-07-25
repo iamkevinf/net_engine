@@ -41,7 +41,6 @@ namespace knet
 
 		char userName[32];
 		char passWord[32];
-		char data[32];
 	};
 
 	struct s2c_Login : public DataHeader
@@ -55,7 +54,6 @@ namespace knet
 
 		int ret;
 		char userName[32];
-		char data[60];
 	};
 
 
@@ -102,6 +100,8 @@ namespace knet
 			dataLen = sizeof(c2s_Heart);
 			cmd = MessageType::MT_C2S_HEART;
 		}
+
+		char data[96];
 	};
 
 	struct s2c_Heart : public DataHeader
@@ -111,6 +111,8 @@ namespace knet
 			dataLen = sizeof(s2c_Heart);
 			cmd = MessageType::MT_S2C_HEART;
 		}
+
+		char data[96];
 	};
 
 }; // end of namespace knet
