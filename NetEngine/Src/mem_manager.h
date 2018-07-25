@@ -99,9 +99,9 @@ namespace knet
 
 	private:
 		static const int s_max_mem_size = 1024;
-		MemAllocImp<  32, 1000000> m_mem32;
-		MemAllocImp<  64, 1000000> m_mem64;
-		MemAllocImp< 128, 1000000> m_mem128;
+		MemAllocImp<  32, 2000000> m_mem32;
+		MemAllocImp<  64, 2000000> m_mem64;
+		MemAllocImp< 128, 2000000> m_mem128;
 		MemAllocImp< 256, 1000000> m_mem256;
 		MemAllocImp< 512, 1000000> m_mem512;
 		MemAllocImp<1024, 1000000> m_mem1024;

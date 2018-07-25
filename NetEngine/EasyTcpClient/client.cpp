@@ -85,6 +85,17 @@ void inputThread2()
 	}
 }
 
+void RecvFunc(int bgn, int end)
+{
+	while (g_runing)//client.IsRun())
+	{
+		for (int i = bgn; i < end; ++i)
+		{
+			g_clients[i]->OnRun();
+		}
+	}
+}
+
 void SendFunc(int thread_id)
 {
 	std::cout << "ThreadID = " << thread_id << " Start" << std::endl;
@@ -119,6 +130,10 @@ void SendFunc(int thread_id)
 		std::this_thread::sleep_for(t);
 	}
 
+	// Æô¶¯RecvÏß³Ì
+	std::thread t1(RecvFunc, bgn, end);
+	t1.detach();
+
 	const int package_count = 1;
 	knet::c2s_Login login[package_count];
 	for (int i = 0; i < package_count; ++i)
@@ -134,9 +149,10 @@ void SendFunc(int thread_id)
 		{
 			if (SOCKET_ERROR != g_clients[i]->Send(login, nLen))
 				g_sendCount++;
-
-			g_clients[i]->OnRun();
 		}
+
+		std::chrono::milliseconds t(10);
+		std::this_thread::sleep_for(t);
 	}
 
 	for (int i = bgn; i < end; ++i)

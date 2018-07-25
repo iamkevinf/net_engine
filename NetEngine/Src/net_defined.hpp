@@ -26,7 +26,7 @@
 #endif // RECV_BUFFER_SIZE
 
 #ifndef SEND_BUFFER_SIZE
-#define SEND_BUFFER_SIZE 512
+#define SEND_BUFFER_SIZE 10240
 #endif // SEND_BUFFER_SIZE
 
 #endif // __NET_DEFINED_HPP__

@@ -181,8 +181,8 @@ namespace knet
 				<< " Socket " << m_sock
 				<< " Time=" << ::std::fixed << ::std::setprecision(6) << t
 				<< " Conn=" << m_connCount
-				<< " Msg=" << int(m_msgCount / t)
 				<< " Rec=" << m_recvCount
+				<< " Msg=" << int(m_msgCount / t)
 				<< ::std::endl;
 
 			m_msgCount = 0;
