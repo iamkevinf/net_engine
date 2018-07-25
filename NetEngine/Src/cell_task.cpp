@@ -5,21 +5,6 @@
 namespace knet
 {
 
-	CellTask::CellTask()
-	{
-
-	}
-
-	CellTask::~CellTask()
-	{
-
-	}
-
-	void CellTask::DoTask()
-	{
-
-	}
-
 	/*******************************************************
 	*
 	*******************************************************/
@@ -33,7 +18,7 @@ namespace knet
 
 	}
 
-	void CellTaskService::AddTask(CellTaskPtr task)
+	void CellTaskService::AddTask(CellTaskFunc task)
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		m_taskBuff.push_back(task);
@@ -69,9 +54,7 @@ namespace knet
 			}
 
 			for (auto& task : m_taskPool)
-			{
-				task->DoTask();
-			}
+				task();
 
 			m_taskPool.clear();
 		}

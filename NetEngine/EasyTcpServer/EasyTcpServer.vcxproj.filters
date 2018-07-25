@@ -39,9 +39,6 @@
     <ClCompile Include="..\Src\cell_task.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\net_msg_task.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Src\mem_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -78,9 +75,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Src\cell_task.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\net_msg_task.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Src\mem_alloctor.h">

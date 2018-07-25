@@ -4,20 +4,12 @@
 #include <thread>
 #include <mutex>
 #include <list>
+#include <functional>
 
 namespace knet
 {
-	typedef std::shared_ptr<class CellTask> CellTaskPtr;
-	typedef std::list<CellTaskPtr> CellTaskList;
-
-	class CellTask
-	{
-	public:
-		CellTask();
-		virtual ~CellTask();
-
-		virtual void DoTask();
-	};
+	typedef std::function<void()> CellTaskFunc;
+	typedef std::list<CellTaskFunc> CellTaskFuncList;
 
 	/*******************************************************
 	 * 
@@ -28,7 +20,7 @@ namespace knet
 		CellTaskService();
 		~CellTaskService();
 
-		void AddTask(CellTaskPtr task);
+		void AddTask(CellTaskFunc task);
 
 		void Start();
 
@@ -36,8 +28,8 @@ namespace knet
 		void OnRun();
 
 	private:
-		CellTaskList m_taskPool;
-		CellTaskList m_taskBuff;
+		CellTaskFuncList m_taskPool;
+		CellTaskFuncList m_taskBuff;
 
 		std::mutex m_mutex;
 	};

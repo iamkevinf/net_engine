@@ -7,8 +7,6 @@
 #include "message.hpp"
 #include "net_event.h"
 
-#include "net_msg_task.h"
-
 namespace knet
 {
 
@@ -228,8 +226,11 @@ namespace knet
 
 	void Cell::AddSendTask(ClientSocketPtr& client, DataHeader* header)
 	{
-		SendTaskPtr task = std::make_shared<SendTask>(client, header);
-		m_taskService.AddTask(task);
+		m_taskService.AddTask([client, header]()
+		{
+			client->Send(header);
+			delete header;
+		});
 	}
 
 }; // end of namespace knet

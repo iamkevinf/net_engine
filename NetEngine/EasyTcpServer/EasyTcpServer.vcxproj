@@ -150,7 +150,6 @@
     <ClCompile Include="..\Src\mem_manager.cpp" />
     <ClCompile Include="..\Src\my_server.cpp" />
     <ClCompile Include="..\Src\net_event.cpp" />
-    <ClCompile Include="..\Src\net_msg_task.cpp" />
     <ClCompile Include="..\Src\net_time.cpp" />
     <ClCompile Include="..\Src\object_pool.cpp" />
     <ClCompile Include="..\Src\tcp_server.cpp" />
@@ -166,7 +165,6 @@
     <ClInclude Include="..\Src\my_server.h" />
     <ClInclude Include="..\Src\net_defined.hpp" />
     <ClInclude Include="..\Src\net_event.h" />
-    <ClInclude Include="..\Src\net_msg_task.h" />
     <ClInclude Include="..\Src\net_time.h" />
     <ClInclude Include="..\Src\object_pool.h" />
     <ClInclude Include="..\Src\tcp_server.h" />
