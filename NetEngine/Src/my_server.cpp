@@ -44,8 +44,8 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::
 		//	<< " password: " << login->passWord << std::endl;
 
 		knet::s2c_Login* ret = new knet::s2c_Login();
-		strcpy(ret->userName, login->userName);
-		ret->ret = 100;
+		//strcpy(ret->userName, login->userName);
+		//ret->ret = 100;
 
 		cell->AddSendTask(client, ret);
 	}

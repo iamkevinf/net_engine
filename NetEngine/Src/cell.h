@@ -52,7 +52,7 @@ namespace knet
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
-		char m_buffer_recv[BUFFER_SIZE] = { 0 };
+		char m_buffer_recv[RECV_BUFFER_SIZE] = { 0 };
 
 		Sock2ClientPool m_clients;
 

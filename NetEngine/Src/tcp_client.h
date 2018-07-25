@@ -47,8 +47,8 @@ namespace knet
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
-		char m_buffer_recv[BUFFER_SIZE] = {};
-		char m_buffer_msg[MSG_BUFFER_SIZE] = {};
+		char m_buffer_recv[RECV_BUFFER_SIZE] = {};
+		char m_buffer_msg[RECV_BUFFER_SIZE * 10] = {};
 		// m_buffer_msgÎ²°ÍµÄÎ»ÖÃ
 		int m_lastPos = 0;
 

@@ -1,23 +1,6 @@
 #ifndef __CLIENT_SOCKET_H__
 #define __CLIENT_SOCKET_H__
 
-#ifdef _WIN32
-	#define WIN32_LEAN_AND_MEAN
-	#define _WINSOCK_DEPRECATED_NO_WARNINGS
-	#define _CRT_SECURE_NO_WARNINGS
-
-	#include <Windows.h>
-	#include <WinSock2.h>
-#else
-	#include <unistd.h>
-	#include <arpa/inet.h>
-
-	#define SOCKET					int
-	#define INVALID_SOCKET	(SOCKET)(~0)
-	#define SOCKET_ERROR			(-1)
-#endif
-
-
 #include "net_defined.hpp"
 #include <memory>
 
@@ -46,9 +29,12 @@ namespace knet
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
 
-		char m_buffer_msg[MSG_BUFFER_SIZE] = { 0 };
+		char m_buffer_msg[RECV_BUFFER_SIZE];
+		char m_send_buffer[SEND_BUFFER_SIZE];
 		// m_buffer_msg尾巴的位置
 		int m_lastPos = 0;
+		// 发送缓冲区的数据尾部位置
+		int m_lastSendPos = 0;
 	};
 
 }; // end of namespace knet

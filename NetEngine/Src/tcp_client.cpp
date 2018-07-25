@@ -130,7 +130,7 @@ namespace knet
 	{
 		const int headerSize = sizeof(DataHeader);
 
-		int nLenRecv = (int)recv(m_sock, m_buffer_recv, BUFFER_SIZE, 0);
+		int nLenRecv = (int)recv(m_sock, m_buffer_recv, RECV_BUFFER_SIZE, 0);
 		if (nLenRecv <= 0)
 		{
 			std::cout << "disconnection from server" << std::endl;

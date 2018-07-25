@@ -148,46 +148,44 @@ namespace knet
 	{
 		const int headerSize = sizeof(DataHeader);
 
-		int nLenRecv = (int)recv(clientSock->Sockfd(), m_buffer_recv, BUFFER_SIZE, 0);
+		//接收客户端数据
+		char* szRecv = clientSock->MsgBuffer() + clientSock->GetLastPos();
+		int nLen = (int)recv(clientSock->Sockfd(), szRecv, (RECV_BUFFER_SIZE)-clientSock->GetLastPos(), 0);
 		m_netEvent->OnRecv(clientSock);
-
-		DataHeader* header = (DataHeader*)m_buffer_recv;
-
-		if (nLenRecv <= 0)
+		if (nLen <= 0)
 		{
 			//std::cout << "client <Socket=" << clientSock->Sockfd() << "> exit!" << std::endl;
 			return -1;
 		}
 
-		memcpy(clientSock->MsgBuffer() + clientSock->GetLastPos(), m_buffer_recv, nLenRecv);
-		// m_buffer_msg尾巴的位置向后移动
-		clientSock->SetLastPos(clientSock->GetLastPos() + nLenRecv);
+		////将收取到的数据拷贝到消息缓冲区
+		//memcpy(clientSock->MsgBuffer() + clientSock->GetLastPos(), m_buffer_recv, nLen);
+		//消息缓冲区的数据尾部位置后移
+		clientSock->SetLastPos(clientSock->GetLastPos() + nLen);
 
-		// 接收到的数据长度 >= 消息头的长度 就可以拿到消息头
+		//判断消息缓冲区的数据长度大于消息头DataHeader长度
 		while (clientSock->GetLastPos() >= headerSize)
 		{
-			// 拿到消息头
+			//这时就可以知道当前消息的长度
 			DataHeader* header = (DataHeader*)clientSock->MsgBuffer();
-
-			// 接收到的数据长度 >= 消息本身的长度 说明一个消息已经收完
+			//判断消息缓冲区的数据长度大于消息长度
 			if (clientSock->GetLastPos() >= header->dataLen)
 			{
-				// 剩余未处理的消息缓冲区的长度
+				//消息缓冲区剩余未处理数据的长度
 				int nSize = clientSock->GetLastPos() - header->dataLen;
-
+				//处理网络消息
 				OnMessageProc(clientSock, header);
-
-				// 消息缓冲区剩余未处理的数据前移
+				//将消息缓冲区剩余未处理数据前移
 				memcpy(clientSock->MsgBuffer(), clientSock->MsgBuffer() + header->dataLen, nSize);
-				// m_buffer_msg尾巴的位置向前移动
+				//消息缓冲区的数据尾部位置前移
 				clientSock->SetLastPos(nSize);
 			}
-			else // 说明没有收完一个消息,也就是剩余的不够一条消息
+			else
 			{
+				//消息缓冲区剩余数据不够一条完整消息
 				break;
 			}
 		}
-
 		return 0;
 	}
 

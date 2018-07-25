@@ -21,12 +21,12 @@
 	#define SOCKET_ERROR			(-1)
 #endif
 
-#ifndef BUFFER_SIZE
-#define BUFFER_SIZE 10240
-#endif // BUFFER_SIZE
+#ifndef RECV_BUFFER_SIZE
+#define RECV_BUFFER_SIZE 10240
+#endif // RECV_BUFFER_SIZE
 
-#ifndef MSG_BUFFER_SIZE
-#define MSG_BUFFER_SIZE (BUFFER_SIZE*5)
-#endif // MSG_BUFFER_SIZE
+#ifndef SEND_BUFFER_SIZE
+#define SEND_BUFFER_SIZE 512
+#endif // SEND_BUFFER_SIZE
 
 #endif // __NET_DEFINED_HPP__
