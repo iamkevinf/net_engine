@@ -110,7 +110,6 @@ namespace knet
 
 		time_t tt = Time::GetCurTime();
 		time_t dTime = tt - m_last_heart;
-		//std::cout << "---------------------- " << tt << " - " << m_last_heart << " = " << dTime << std::endl;
 		m_last_heart = tt;
 		for (auto iter = m_clients.begin(); iter != m_clients.end(); )
 		{
@@ -118,6 +117,8 @@ namespace knet
 			{
 				if (m_netEvent)
 					m_netEvent->OnExit(iter->second);
+
+				closesocket(iter->first);
 
 				m_connDelta = true;
 
@@ -143,6 +144,8 @@ namespace knet
 					if (m_netEvent)
 						m_netEvent->OnExit(iter->second);
 
+					closesocket(iter->first);
+
 					m_connDelta = true;
 
 					m_clients.erase(iter);
@@ -165,6 +168,7 @@ namespace knet
 						m_netEvent->OnExit(iter.second);
 
 					m_connDelta = true;
+					close(client->Sockfd());
 					temp.push_back(iter.second);
 				}
 			}
