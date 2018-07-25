@@ -25,7 +25,7 @@ void MyServer::OnJoin(knet::ClientSocketPtr& client)
 void MyServer::OnExit(knet::ClientSocketPtr& client)
 {
 	knet::TCPServer::OnExit(client);
-	//std::cout << "Client " << client->Sockfd() << " Exit" << std::endl;
+	std::cout << "Client " << client->Sockfd() << " Exit" << std::endl;
 }
 
 void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::DataHeader* header)
@@ -61,6 +61,17 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::
 
 		knet::s2c_Logout* ret = new knet::s2c_Logout();
 		ret->ret = 100;
+		cell->AddSendTask(client, ret);
+	}
+	break;
+
+	case knet::MessageType::MT_C2S_HEART:
+	{
+		//knet::c2s_Heart* heart = (knet::c2s_Heart*)header;
+
+		client->ResetHeart();
+
+		knet::s2c_Heart* ret = new knet::s2c_Heart();
 		cell->AddSendTask(client, ret);
 	}
 	break;

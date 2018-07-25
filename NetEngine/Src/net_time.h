@@ -20,6 +20,8 @@ namespace knet
 		double GetElapsedTimeMS();
 		long long GetElapsedTimeMicroSec();
 
+		static time_t GetCurTime();
+
 	private:
 		std::chrono::time_point<std::chrono::high_resolution_clock> m_begin;
 	};

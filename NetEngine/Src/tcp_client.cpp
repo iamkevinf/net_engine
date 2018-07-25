@@ -90,7 +90,7 @@ namespace knet
 		FD_SET(m_sock, &fdReads);
 
 		timeval tv = { 0,0 };
-		int ret = select(m_sock + 1, &fdReads, 0, 0, &tv);
+		int ret = select((int)(m_sock + 1), &fdReads, 0, 0, &tv);
 		if (ret < 0)
 		{
 			std::cout << "Select Error: <socket=" << m_sock << ">" << std::endl;

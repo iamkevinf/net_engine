@@ -134,7 +134,7 @@ void SendFunc(int thread_id)
 	std::thread t1(RecvFunc, bgn, end);
 	t1.detach();
 
-	const int package_count = 1;
+	const int package_count = 10;
 	knet::c2s_Login login[package_count];
 	for (int i = 0; i < package_count; ++i)
 	{

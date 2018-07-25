@@ -49,6 +49,9 @@ namespace knet
 
 		void AddSendTask(ClientSocketPtr& client, DataHeader* header);
 
+	private:
+		void ReadData(fd_set& fdRead);
+		void CheckTime();
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
@@ -67,6 +70,8 @@ namespace knet
 		SOCKET m_maxSock = INVALID_SOCKET;
 
 		CellTaskService m_taskService;
+
+		time_t m_last_heart = -1;
 	};
 
 }; // end of namespace knet

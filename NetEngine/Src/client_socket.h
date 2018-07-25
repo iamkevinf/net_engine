@@ -26,6 +26,9 @@ namespace knet
 
 		int Send(DataHeader* header);
 
+		void ResetHeart() { m_heart = 0; };
+		bool CheckHeart(time_t dtime);
+
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
 
@@ -35,6 +38,8 @@ namespace knet
 		int m_lastPos = 0;
 		// 发送缓冲区的数据尾部位置
 		int m_lastSendPos = 0;
+		// 死亡计时
+		time_t m_heart = 0;
 	};
 
 }; // end of namespace knet

@@ -13,6 +13,9 @@ namespace knet
 
 		MT_S2C_JOIN,
 
+		MT_C2S_HEART,
+		MT_S2C_HEART,
+
 		MT_ERROR
 	};
 
@@ -90,6 +93,24 @@ namespace knet
 		}
 
 		int sock;
+	};
+
+	struct c2s_Heart : public DataHeader
+	{
+		c2s_Heart()
+		{
+			dataLen = sizeof(c2s_Heart);
+			cmd = MessageType::MT_C2S_HEART;
+		}
+	};
+
+	struct s2c_Heart : public DataHeader
+	{
+		s2c_Heart()
+		{
+			dataLen = sizeof(s2c_Heart);
+			cmd = MessageType::MT_S2C_HEART;
+		}
 	};
 
 }; // end of namespace knet

@@ -55,4 +55,10 @@ namespace knet
 		return ret;
 	}
 
+	bool ClientSocket::CheckHeart(time_t dtime)
+	{
+		m_heart += dtime;
+		return m_heart >= HEART_NT;
+	}
+
 }; // end of namespace knet

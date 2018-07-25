@@ -6,6 +6,7 @@
 
 #include "message.hpp"
 #include "net_event.h"
+#include "net_time.h"
 
 namespace knet
 {
@@ -59,6 +60,7 @@ namespace knet
 			{
 				std::chrono::milliseconds t(1);
 				std::this_thread::sleep_for(t);
+				m_last_heart = Time::GetCurTime();
 				continue;
 			}
 
@@ -83,63 +85,96 @@ namespace knet
 				memcpy(&fdRead, &m_fdReadBak, sizeof(fd_set));
 			}
 
-			timeval t = {0,0};
-			int ret = select(m_maxSock + 1, &fdRead, nullptr, nullptr, &t);
+			timeval t = {0,1};
+			int ret = select((int)(m_maxSock + 1), &fdRead, nullptr, nullptr, &t);
 			if (ret < 0)
 			{
 				std::cout << "select over" << std::endl;
 				CloseSock();
 				break;
 			}
-			else if (ret == 0)
-			{
-				continue;
-			}
+			//else if (ret == 0)
+			//{
+			//	continue;
+			//}
 
-#ifdef _WIN32
-			for (u_int i = 0; i < fdRead.fd_count; ++i)
-			{
-				auto iter = m_clients.find(fdRead.fd_array[i]);
-				if (iter != m_clients.end())
-				{
-					if (-1 == Recv(iter->second))
-					{
-						if (m_netEvent)
-							m_netEvent->OnExit(iter->second);
-
-						m_connDelta = true;
-
-						m_clients.erase(iter->first);
-					}
-				}
-				else
-				{
-					std::cout << "OnRun:: m_clients.find Error" << std::endl;
-				}
-			}
-#else
-			SockPtrVector temp;
-			for (auto iter : m_clients)
-			{
-				if (FD_ISSET(iter.second->Sockfd(), &fdRead))
-				{
-					if (-1 == Recv(iter.second))
-					{
-						if (m_netEvent)
-							m_netEvent->OnExit(iter.second);
-
-						m_connDelta = true;
-						temp.push_back(iter.second);
-					}
-				}
-			}
-			for (auto client : temp)
-			{
-				m_clients.erase(client->Sockfd());
-				client.reset();
-			}
-#endif
+			ReadData(fdRead);
+			CheckTime();
 		}
+	}
+
+	void Cell::CheckTime()
+	{
+		if (m_last_heart < 0)
+			m_last_heart = Time::GetCurTime();
+
+		time_t tt = Time::GetCurTime();
+		time_t dTime = tt - m_last_heart;
+		//std::cout << "---------------------- " << tt << " - " << m_last_heart << " = " << dTime << std::endl;
+		m_last_heart = tt;
+		for (auto iter = m_clients.begin(); iter != m_clients.end(); )
+		{
+			if (iter->second->CheckHeart(dTime))
+			{
+				if (m_netEvent)
+					m_netEvent->OnExit(iter->second);
+
+				m_connDelta = true;
+
+				m_clients.erase(iter++);
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+
+	void Cell::ReadData(fd_set& fdRead)
+	{
+#ifdef _WIN32
+		for (u_int i = 0; i < fdRead.fd_count; ++i)
+		{
+			auto iter = m_clients.find(fdRead.fd_array[i]);
+			if (iter != m_clients.end())
+			{
+				if (-1 == Recv(iter->second))
+				{
+					if (m_netEvent)
+						m_netEvent->OnExit(iter->second);
+
+					m_connDelta = true;
+
+					m_clients.erase(iter);
+				}
+			}
+			else
+			{
+				std::cout << "OnRun:: m_clients.find Error" << std::endl;
+			}
+		}
+#else
+		SockPtrVector temp;
+		for (auto iter : m_clients)
+		{
+			if (FD_ISSET(iter.second->Sockfd(), &fdRead))
+			{
+				if (-1 == Recv(iter.second))
+				{
+					if (m_netEvent)
+						m_netEvent->OnExit(iter.second);
+
+					m_connDelta = true;
+					temp.push_back(iter.second);
+				}
+			}
+		}
+		for (auto client : temp)
+		{
+			m_clients.erase(client->Sockfd());
+			//client.reset();
+		}
+#endif
 	}
 
 	int Cell::Recv(ClientSocketPtr& clientSock)

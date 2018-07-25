@@ -151,7 +151,7 @@ namespace knet
 		FD_SET(m_sock, &fdRead);
 
 		timeval t = { 0,10 };
-		int ret = select(m_sock + 1, &fdRead, nullptr, nullptr, &t);
+		int ret = select((int)(m_sock + 1), &fdRead, nullptr, nullptr, &t);
 		if (ret < 0)
 		{
 			std::cout << "select over" << std::endl;
