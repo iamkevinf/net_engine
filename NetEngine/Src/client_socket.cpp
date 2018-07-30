@@ -39,6 +39,8 @@ namespace knet
 				ret = send(m_sock, m_send_buffer, SEND_BUFFER_SIZE, 0);
 				//数据尾部位置清零
 				m_lastSendPos = 0;
+				// 
+				ResetLastSend();
 				//发送错误
 				if (SOCKET_ERROR == ret)
 					return ret;
@@ -55,10 +57,44 @@ namespace knet
 		return ret;
 	}
 
+	int ClientSocket::SendImm()
+	{
+		int ret = SOCKET_ERROR;
+		if (m_lastSendPos > 0 && SOCKET_ERROR != m_sock)
+		{
+			//发送数据
+			ret = send(m_sock, m_send_buffer, m_lastSendPos, 0);
+			//数据尾部位置清零
+			m_lastSendPos = 0;
+			//
+			ResetLastSend();
+		}
+
+		return ret;
+	}
+
+	void ClientSocket::SendImm(DataHeader* header)
+	{
+		Send(header);
+		SendImm();
+	}
+
 	bool ClientSocket::CheckHeart(time_t dtime)
 	{
 		m_heart += dtime;
 		return m_heart >= HEART_NT;
 	}
 
+	bool ClientSocket::CheckSend(time_t dtime)
+	{
+		m_lastSendDT += dtime;
+		bool ret = m_lastSendDT >= SEND_BUFF_NT;
+		if (ret)
+		{
+			SendImm();
+			ResetLastSend();
+		}
+
+		return ret;
+	}
 }; // end of namespace knet

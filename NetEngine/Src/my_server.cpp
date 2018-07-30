@@ -47,7 +47,8 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::
 		strcpy(ret->userName, login->userName);
 		ret->ret = 100;
 
-		cell->AddSendTask(client, ret);
+		//cell->AddSendTask(client, ret);
+		client->Send(ret);
 	}
 	break;
 
@@ -61,7 +62,8 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::
 
 		knet::s2c_Logout* ret = new knet::s2c_Logout();
 		ret->ret = 100;
-		cell->AddSendTask(client, ret);
+		//cell->AddSendTask(client, ret);
+		client->Send(ret);
 	}
 	break;
 
@@ -72,7 +74,8 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::
 		client->ResetHeart();
 
 		knet::s2c_Heart* ret = new knet::s2c_Heart();
-		cell->AddSendTask(client, ret);
+		//cell->AddSendTask(client, ret);
+		client->Send(ret);
 	}
 	break;
 
@@ -82,7 +85,8 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::
 			<< " len: " << header->dataLen << std::endl;
 
 		header->cmd = knet::MessageType::MT_ERROR;
-		cell->AddSendTask(client, header);
+		//cell->AddSendTask(client, header);
+		client->Send(header);
 	}
 	break;
 	}

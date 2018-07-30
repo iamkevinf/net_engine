@@ -123,11 +123,12 @@ namespace knet
 				m_connDelta = true;
 
 				m_clients.erase(iter++);
+				continue;
 			}
-			else
-			{
-				iter++;
-			}
+
+			iter->second->CheckSend(dTime);
+
+			iter++;
 		}
 	}
 

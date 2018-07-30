@@ -34,4 +34,9 @@
 #define HEART_NT 60000
 #endif // HEART_NT
 
+#ifndef SEND_BUFF_NT
+// 发送缓冲区发送的时间
+#define SEND_BUFF_NT 100
+#endif // SEND_BUFF_NT
+
 #endif // __NET_DEFINED_HPP__

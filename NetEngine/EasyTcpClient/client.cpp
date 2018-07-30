@@ -149,8 +149,8 @@ void SendFunc(int thread_id)
 				g_sendCount++;
 		}
 
-		std::chrono::milliseconds t(10);
-		std::this_thread::sleep_for(t);
+		//std::chrono::milliseconds t(10);
+		//std::this_thread::sleep_for(t);
 	}
 
 	for (int i = bgn; i < end; ++i)

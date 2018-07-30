@@ -25,9 +25,14 @@ namespace knet
 		void SetLastPos(int pos) { m_lastPos = pos; }
 
 		int Send(DataHeader* header);
+		int SendImm();
+		void SendImm(DataHeader* header);
 
 		void ResetHeart() { m_heart = 0; };
+		void ResetLastSend() { m_lastSendDT = 0; }
+
 		bool CheckHeart(time_t dtime);
+		bool CheckSend(time_t dtine);
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;
@@ -40,6 +45,7 @@ namespace knet
 		int m_lastSendPos = 0;
 		// À¿Õˆº∆ ±
 		time_t m_heart = 0;
+		time_t m_lastSendDT = 0;
 	};
 
 }; // end of namespace knet
