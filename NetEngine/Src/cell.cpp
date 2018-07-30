@@ -184,7 +184,7 @@ namespace knet
 
 					m_connDelta = true;
 
-					iter->second.reset();
+					iter.second.reset();
 
 					temp.push_back(iter.second);
 				}
