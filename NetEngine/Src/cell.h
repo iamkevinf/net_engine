@@ -13,6 +13,7 @@
 #include <memory>
 
 #include "client_socket.h"
+#include "semaphore.h"
 
 namespace knet
 {
@@ -27,7 +28,7 @@ namespace knet
 	class Cell
 	{
 	public:
-		Cell(SOCKET sock=INVALID_SOCKET);
+		Cell(int id);
 		virtual ~Cell();
 		
 		void SetNetEvent(INetEvent* netEvent) { m_netEvent = netEvent; }
@@ -41,7 +42,7 @@ namespace knet
 
 		void OnMessageProc(ClientSocketPtr& client, DataHeader* header);
 
-		void CloseSock();
+		void Close();
 
 		void AddClient(ClientSocketPtr& client);
 
@@ -49,12 +50,15 @@ namespace knet
 
 		void AddSendTask(ClientSocketPtr& client, DataHeader* header);
 
+		const int GetID()const { return m_id; }
+
 	private:
 		void ReadData(fd_set& fdRead);
 		void CheckTime();
 
+		void ClrClient();
+
 	private:
-		SOCKET m_sock = INVALID_SOCKET;
 		char m_buffer_recv[RECV_BUFFER_SIZE] = { 0 };
 
 		Sock2ClientPool m_clients;
@@ -66,12 +70,18 @@ namespace knet
 		INetEvent* m_netEvent = nullptr;
 
 		fd_set m_fdReadBak = {0};
-		bool m_connDelta = true;
 		SOCKET m_maxSock = INVALID_SOCKET;
 
 		CellTaskService m_taskService;
 
 		time_t m_last_heart = -1;
+
+		int m_id = -1;
+
+		Semaphore m_semaphore;
+
+		bool m_connDelta = true;
+		bool m_isRun = false;
 	};
 
 }; // end of namespace knet

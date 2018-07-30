@@ -36,7 +36,7 @@ namespace knet
 
 		void Time4Msg();
 
-		void CloseSock();
+		void Close();
 
 		bool IsRun()const { return m_sock != INVALID_SOCKET; }
 		bool OnRun();

@@ -1,5 +1,6 @@
 ﻿#include "client_socket.h"
 #include <string.h>
+#include <iostream>
 #include "message.hpp"
 
 namespace knet
@@ -13,6 +14,19 @@ namespace knet
 
 	ClientSocket::~ClientSocket()
 	{
+		std::cout << "ClientSocket::~ClientSocket " << m_sock << std::endl;
+
+		if (INVALID_SOCKET != m_sock)
+		{
+
+#ifdef _WIN32
+			closesocket(m_sock);
+#else
+			close(m_sock);
+#endif // _WIN32
+
+			m_sock = INVALID_SOCKET;
+		}
 	}
 
 	int ClientSocket::Send(DataHeader* header)

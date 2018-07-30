@@ -1,6 +1,9 @@
 #include "cell_task.h"
 
+#include "cell.h"
+
 #include <functional>   // std::mem_fn
+#include <iostream>
 
 namespace knet
 {
@@ -26,13 +29,21 @@ namespace knet
 
 	void CellTaskService::Start()
 	{
+		m_isRun = true;
 		std::thread thread(std::mem_fn(&CellTaskService::OnRun), this);
 		thread.detach();
 	}
 
+	void CellTaskService::Close()
+	{
+		std::cout << "CellTaskService::Close" << m_owner->GetID() << std::endl;
+		m_isRun = false;
+		m_semaphore.Wait();
+	}
+
 	void CellTaskService::OnRun()
 	{
-		while (true)
+		while (m_isRun)
 		{
 			// lock block
 			if (!m_taskBuff.empty())
@@ -58,6 +69,9 @@ namespace knet
 
 			m_taskPool.clear();
 		}
+
+		std::cout << "\tCellTaskService::Closed" << m_owner->GetID() << std::endl;
+		m_semaphore.Weakup();
 	}
 
 }; // end of namespace knet

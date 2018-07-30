@@ -11,14 +11,14 @@
 namespace knet
 {
 
-	Cell::Cell(SOCKET sock/*= INVALID_SOCKET*/) :m_sock(sock)
+	Cell::Cell(int id):m_id(id)
 	{
+		m_taskService.SetOwner(this);
 	}
 
 	Cell::~Cell()
 	{
-		CloseSock();
-		m_sock = INVALID_SOCKET;
+		Close();
 
 		if (m_thread)
 		{
@@ -29,13 +29,20 @@ namespace knet
 
 	void Cell::Start()
 	{
+		if (m_isRun)
+			return;
+
+		m_isRun = true;
+
 		m_thread = new std::thread(std::mem_fn(&Cell::OnRun), this);
+		m_thread->detach();
+
 		m_taskService.Start();
 	}
 
 	bool Cell::IsRun()
 	{
-		return m_sock != INVALID_SOCKET;
+		return m_isRun;
 	}
 
 	void Cell::OnRun()
@@ -45,11 +52,14 @@ namespace knet
 		while (IsRun())
 		{
 			// lock block
-			if(m_clientsBuff.size() > 0)
+			if (m_clientsBuff.size() > 0)
 			{
 				std::lock_guard<std::mutex> lock(m_mutex);
 				for (auto client : m_clientsBuff)
 				{
+					if (m_netEvent)
+						m_netEvent->OnJoin(client);
+
 					m_clients[client->Sockfd()] = client;
 				}
 				m_clientsBuff.clear();
@@ -71,7 +81,7 @@ namespace knet
 			{
 				m_connDelta = false;
 				m_maxSock = m_clients.begin()->second->Sockfd();
-				for(auto iter : m_clients)
+				for (auto iter : m_clients)
 				{
 					FD_SET(iter.second->Sockfd(), &fdRead);
 					if (m_maxSock < iter.second->Sockfd())
@@ -85,12 +95,12 @@ namespace knet
 				memcpy(&fdRead, &m_fdReadBak, sizeof(fd_set));
 			}
 
-			timeval t = {0,1};
+			timeval t = { 0,1 };
 			int ret = select((int)(m_maxSock + 1), &fdRead, nullptr, nullptr, &t);
 			if (ret < 0)
 			{
 				std::cout << "select over" << std::endl;
-				CloseSock();
+				Close();
 				break;
 			}
 			//else if (ret == 0)
@@ -101,6 +111,10 @@ namespace knet
 			ReadData(fdRead);
 			CheckTime();
 		}
+
+		std::cout << "Cell::OnRun exit" << std::endl;
+		ClrClient();
+		m_semaphore.Weakup();
 	}
 
 	void Cell::CheckTime()
@@ -118,9 +132,9 @@ namespace knet
 				if (m_netEvent)
 					m_netEvent->OnExit(iter->second);
 
-				closesocket(iter->first);
-
 				m_connDelta = true;
+
+				iter->second.reset();
 
 				m_clients.erase(iter++);
 				continue;
@@ -145,9 +159,9 @@ namespace knet
 					if (m_netEvent)
 						m_netEvent->OnExit(iter->second);
 
-					closesocket(iter->first);
-
 					m_connDelta = true;
+
+					iter->second.reset();
 
 					m_clients.erase(iter);
 				}
@@ -169,7 +183,9 @@ namespace knet
 						m_netEvent->OnExit(iter.second);
 
 					m_connDelta = true;
-					close(client->Sockfd());
+
+					iter->second.reset();
+
 					temp.push_back(iter.second);
 				}
 			}
@@ -235,30 +251,30 @@ namespace knet
 		m_netEvent->OnMessage(this, client, header);
 	}
 
-	void Cell::CloseSock()
+	void Cell::Close()
 	{
-		if (m_sock != INVALID_SOCKET)
-		{
+		std::cout << "Cell::Close " << m_id << std::endl;
 
-			for(auto iter : m_clients)
-			{
-#ifdef _WIN32
-				closesocket(iter.second->Sockfd());
-#else
-				close(iter.second->Sockfd());
-#endif
-		}
+		m_taskService.Close();
+		m_isRun = false;
 
-			m_clients.clear();
-
-#ifdef _WIN32
-			closesocket(m_sock);
-#else
-			close(m_sock);
-#endif
-
+		m_semaphore.Wait();
 	}
-}
+
+	void Cell::ClrClient()
+	{
+		for (auto iter : m_clients)
+		{
+			iter.second.reset();
+		}
+		m_clients.clear();
+
+		for (auto client : m_clientsBuff)
+		{
+			client.reset();
+		}
+		m_clientsBuff.clear();
+	}
 
 	void Cell::AddClient(ClientSocketPtr& client)
 	{

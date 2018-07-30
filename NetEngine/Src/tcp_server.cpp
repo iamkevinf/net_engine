@@ -16,7 +16,7 @@ namespace knet
 
 	TCPServer::~TCPServer()
 	{
-		CloseSock();
+		Close();
 	}
 
 	void TCPServer::CreateSock()
@@ -30,7 +30,7 @@ namespace knet
 		if (m_sock != INVALID_SOCKET)
 		{
 			std::cout << "close old conn" << std::endl;
-			CloseSock();
+			Close();
 		}
 
 		m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -108,14 +108,13 @@ namespace knet
 		}
 
 		minCell->AddClient(client);
-		OnJoin(client);
 	}
 
 	void TCPServer::Start(int threadCount)
 	{
 		for (int i = 0; i < threadCount; ++i)
 		{
-			CellPtr cell = std::make_shared<Cell>(m_sock);
+			CellPtr cell = std::make_shared<Cell>(i);
 			cell->SetNetEvent(this);
 			m_cells.push_back(cell);
 
@@ -123,10 +122,18 @@ namespace knet
 		}
 	}
 
-	void TCPServer::CloseSock()
+	void TCPServer::Close()
 	{
+		std::cout << "TCPServer::Close" << std::endl;
+
 		if (m_sock != INVALID_SOCKET)
 		{
+			for (auto cell : m_cells)
+			{
+				cell.reset();
+			}
+			m_cells.clear();
+
 #ifdef _WIN32
 			closesocket(m_sock);
 #else
@@ -136,6 +143,8 @@ namespace knet
 #ifdef _WIN32
 			WSACleanup();
 #endif
+
+			m_sock = INVALID_SOCKET;
 		}
 	}
 
@@ -155,7 +164,7 @@ namespace knet
 		if (ret < 0)
 		{
 			std::cout << "select over" << std::endl;
-			CloseSock();
+			Close();
 			return false;
 		}
 

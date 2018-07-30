@@ -6,10 +6,14 @@
 #include <list>
 #include <functional>
 
+#include "semaphore.h"
+
 namespace knet
 {
 	typedef std::function<void()> CellTaskFunc;
 	typedef std::list<CellTaskFunc> CellTaskFuncList;
+
+	class Cell;
 
 	/*******************************************************
 	 * 
@@ -23,6 +27,9 @@ namespace knet
 		void AddTask(CellTaskFunc task);
 
 		void Start();
+		void Close();
+
+		void SetOwner(Cell* owner) { m_owner = owner; }
 
 	private:
 		void OnRun();
@@ -31,7 +38,12 @@ namespace knet
 		CellTaskFuncList m_taskPool;
 		CellTaskFuncList m_taskBuff;
 
+		Cell* m_owner = nullptr;
+
 		std::mutex m_mutex;
+		bool m_isRun = false;
+
+		Semaphore m_semaphore;
 	};
 
 }; // end of namespace knet
