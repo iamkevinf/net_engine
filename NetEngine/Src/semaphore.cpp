@@ -1,5 +1,6 @@
 #include "semaphore.h"
 
+#include <iostream>
 #include <thread>
 
 namespace knet
@@ -17,17 +18,29 @@ namespace knet
 
 	void Semaphore::Wait()
 	{
-		m_isWaitToExit = true;
-		while (m_isWaitToExit)
+		std::unique_lock<std::mutex> lock(m_mutex);
+		if (--m_wait_ref < 0)
 		{
-			std::chrono::milliseconds t(1);
-			std::this_thread::sleep_for(t);
+			// Spurious Wakeup
+			auto func = [this]()->bool 
+			{
+				return m_weakup_ref > 0;
+			};
+			m_cv.wait(lock, func);
+
+			m_weakup_ref--;
 		}
 	}
 
 	void Semaphore::Weakup()
 	{
-		m_isWaitToExit = false;
+		std::unique_lock<std::mutex> lock(m_mutex);
+
+		if (++m_wait_ref <= 0)
+		{
+			m_weakup_ref++;
+			m_cv.notify_one();
+		}
 	}
 
 }; // end of namespace knet

@@ -55,7 +55,15 @@ int main()
 	{
 		std::chrono::milliseconds t(100);
 		std::this_thread::sleep_for(t);
+
+		char cmdBuff[256] = { 0 };
+		std::cout << "input a cmd: " << std::endl;
+		std::cin >> cmdBuff;
+		if (0 == strcmp(cmdBuff, "exit"))
+		{
+			g_runing = false;
+			break;
+		}
 	}
-	getchar();
 	return 0;
 }

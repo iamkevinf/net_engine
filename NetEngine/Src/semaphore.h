@@ -1,6 +1,9 @@
 #ifndef __SEMAPHORE_H__
 #define __SEMAPHORE_H__
 
+#include <mutex>
+#include <condition_variable>
+
 namespace knet
 {
 
@@ -14,7 +17,10 @@ namespace knet
 		void Weakup();
 
 	private:
-		bool m_isWaitToExit = false;
+		std::condition_variable m_cv;
+		std::mutex m_mutex;
+		int m_wait_ref = 0;
+		int m_weakup_ref = 0;
 	};
 
 }; // end of namespace knet

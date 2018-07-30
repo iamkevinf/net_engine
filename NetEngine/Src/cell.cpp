@@ -112,7 +112,7 @@ namespace knet
 			CheckTime();
 		}
 
-		std::cout << "Cell::OnRun exit" << std::endl;
+		std::cout << "Cell::OnRun exit " << m_id << std::endl;
 		ClrClient();
 		m_semaphore.Weakup();
 	}
@@ -253,6 +253,9 @@ namespace knet
 
 	void Cell::Close()
 	{
+		if (!m_isRun)
+			return;
+
 		std::cout << "Cell::Close " << m_id << std::endl;
 
 		m_taskService.Close();
