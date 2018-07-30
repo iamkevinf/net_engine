@@ -184,7 +184,7 @@ namespace knet
 
 					m_connDelta = true;
 
-					iter.second.reset();
+					//iter.second.reset();
 
 					temp.push_back(iter.second);
 				}
@@ -193,7 +193,7 @@ namespace knet
 		for (auto client : temp)
 		{
 			m_clients.erase(client->Sockfd());
-			//client.reset();
+			client.reset();
 		}
 #endif
 	}
