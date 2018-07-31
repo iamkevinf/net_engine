@@ -35,11 +35,14 @@ void inputThread()
 
 int main()
 {
+	int thread_count = 4;
+	std::cout << "input thread count" << std::endl;
+	std::cin >> thread_count;
 	MyServer server;
 	server.CreateSock();
 	server.Bind("", port);
 	server.Listen(64);
-	server.Start(4);
+	server.Start(thread_count);
 
 	while (g_runing)
 	{
