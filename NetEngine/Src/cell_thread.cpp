@@ -38,7 +38,11 @@ namespace knet
 
 	void CellThreadService::Close()
 	{
-		CloseWithoutWait();
+		std::lock_guard<std::mutex> lock(m_mutex);
+		if (!m_isRun)
+			return;
+
+		m_isRun = false;
 		m_sem.Wait();
 	}
 

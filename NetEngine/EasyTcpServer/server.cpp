@@ -61,6 +61,17 @@ int main()
 	}
 	
 	std::cout << "Server::Exit!" << std::endl;
-	getchar();
+	while (1)
+	{
+		std::chrono::milliseconds t(100);
+		std::this_thread::sleep_for(t);
+
+		char cmdBuff[256] = { 0 };
+		std::cout << "input a cmd: " << std::endl;
+		std::cin >> cmdBuff;
+		if (0 == strcmp(cmdBuff, "exit"))
+			break;
+	}
+
 	return 0;
 }
