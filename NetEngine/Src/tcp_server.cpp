@@ -27,7 +27,7 @@ namespace knet
 		WSADATA data;
 		WSAStartup(ver, &data);
 #else
-		singnal(SIGPIPE, SIG_IGN);
+		signal(SIGPIPE, SIG_IGN);
 #endif
 
 		if (m_sock != INVALID_SOCKET)
