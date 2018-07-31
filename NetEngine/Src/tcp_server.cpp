@@ -120,11 +120,19 @@ namespace knet
 
 			cell->Start();
 		}
+
+		auto onRun = [this](CellThreadService* thread)
+		{
+			OnRun(thread);
+		};
+
+		m_threadService.Start(nullptr, onRun, nullptr);
 	}
 
 	void TCPServer::Close()
 	{
 		std::cout << "TCPServer::Close" << std::endl;
+		m_threadService.Close();
 
 		if (m_sock != INVALID_SOCKET)
 		{
@@ -148,36 +156,34 @@ namespace knet
 		}
 	}
 
-	bool TCPServer::OnRun()
+	void TCPServer::OnRun(CellThreadService* thread)
 	{
-		if (!IsRun())
-			return false;
-
-		Time4Msg();
-
-		fd_set fdRead;
-		FD_ZERO(&fdRead);
-		FD_SET(m_sock, &fdRead);
-
-		timeval t = { 0,10 };
-		int ret = select((int)(m_sock + 1), &fdRead, nullptr, nullptr, &t);
-		if (ret < 0)
+		while (thread->IsRun())
 		{
-			std::cout << "select over" << std::endl;
-			Close();
-			return false;
+
+			Time4Msg();
+
+			fd_set fdRead;
+			FD_ZERO(&fdRead);
+			FD_SET(m_sock, &fdRead);
+
+			timeval t = { 0, 1 };
+			int ret = select((int)(m_sock + 1), &fdRead, nullptr, nullptr, &t);
+			if (ret < 0)
+			{
+				std::cout << "TCPServer::OnRun Select Error" << std::endl;
+				thread->CloseWithoutWait();
+				break;
+			}
+
+			if (FD_ISSET(m_sock, &fdRead))
+			{
+				FD_CLR(m_sock, &fdRead);
+
+				Accept();
+			}
+
 		}
-
-		if (FD_ISSET(m_sock, &fdRead))
-		{
-			FD_CLR(m_sock, &fdRead);
-
-			Accept();
-
-			return true;
-		}
-
-		return true;
 	}
 
 	void TCPServer::Time4Msg()

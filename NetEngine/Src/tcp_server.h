@@ -4,6 +4,7 @@
 #include "net_defined.hpp"
 #include "net_time.h"
 #include "net_event.h"
+#include "cell_thread.h"
 
 #include <atomic>
 #include <vector>
@@ -38,13 +39,13 @@ namespace knet
 
 		void Close();
 
-		bool IsRun()const { return m_sock != INVALID_SOCKET; }
-		bool OnRun();
-
 		virtual void OnJoin(ClientSocketPtr& client) override;
 		virtual void OnExit(ClientSocketPtr& client) override;
 		virtual void OnMessage(Cell* cell, ClientSocketPtr& client, DataHeader* header) override;
 		virtual void OnRecv(ClientSocketPtr& client) override;
+
+	protected:
+		void OnRun(CellThreadService* thread);
 
 	protected:
 		std::atomic<int> m_msgCount{0};
@@ -59,6 +60,7 @@ namespace knet
 
 		Time m_time;
 
+		CellThreadService m_threadService;
 	};
 
 }; // end of namespace knet

@@ -6,7 +6,7 @@
 #include <list>
 #include <functional>
 
-#include "semaphore.h"
+#include "cell_thread.h"
 
 namespace knet
 {
@@ -32,7 +32,7 @@ namespace knet
 		void SetOwner(Cell* owner) { m_owner = owner; }
 
 	private:
-		void OnRun();
+		void OnRun(CellThreadService* thread);
 
 	private:
 		CellTaskFuncList m_taskPool;
@@ -41,9 +41,8 @@ namespace knet
 		Cell* m_owner = nullptr;
 
 		std::mutex m_mutex;
-		bool m_isRun = false;
 
-		Semaphore m_semaphore;
+		CellThreadService m_threadService;
 	};
 
 }; // end of namespace knet

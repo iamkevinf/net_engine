@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="..\Src\cell.cpp" />
     <ClCompile Include="..\Src\cell_task.cpp" />
+    <ClCompile Include="..\Src\cell_thread.cpp" />
     <ClCompile Include="..\Src\client_socket.cpp" />
     <ClCompile Include="..\Src\mem_alloctor.cpp" />
     <ClCompile Include="..\Src\mem_manager.cpp" />
@@ -159,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="..\Src\cell.h" />
     <ClInclude Include="..\Src\cell_task.h" />
+    <ClInclude Include="..\Src\cell_thread.h" />
     <ClInclude Include="..\Src\client_socket.h" />
     <ClInclude Include="..\Src\mem_alloctor.h" />
     <ClInclude Include="..\Src\mem_manager.h" />

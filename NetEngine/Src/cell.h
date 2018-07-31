@@ -13,7 +13,7 @@
 #include <memory>
 
 #include "client_socket.h"
-#include "semaphore.h"
+#include "cell_thread.h"
 
 namespace knet
 {
@@ -35,8 +35,7 @@ namespace knet
 
 		void Start();
 
-		bool IsRun();
-		void OnRun();
+		void OnRun(CellThreadService* thread);
 
 		int Recv(ClientSocketPtr& clientSock);
 
@@ -76,12 +75,11 @@ namespace knet
 
 		time_t m_last_heart = -1;
 
+		CellThreadService m_threadService;
+
 		int m_id = -1;
 
-		Semaphore m_semaphore;
-
 		bool m_connDelta = true;
-		bool m_isRun = false;
 	};
 
 }; // end of namespace knet

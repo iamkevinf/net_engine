@@ -29,21 +29,23 @@ namespace knet
 
 	void CellTaskService::Start()
 	{
-		m_isRun = true;
-		std::thread thread(std::mem_fn(&CellTaskService::OnRun), this);
-		thread.detach();
+		auto onRun = [this](CellThreadService* thread)
+		{
+			OnRun(thread);
+		};
+
+		m_threadService.Start(nullptr, onRun, nullptr);
 	}
 
 	void CellTaskService::Close()
 	{
 		std::cout << "CellTaskService::Close" << m_owner->GetID() << std::endl;
-		m_isRun = false;
-		m_semaphore.Wait();
+		m_threadService.Close();
 	}
 
-	void CellTaskService::OnRun()
+	void CellTaskService::OnRun(CellThreadService* thread)
 	{
-		while (m_isRun)
+		while (thread->IsRun())
 		{
 			// lock block
 			if (!m_taskBuff.empty())
@@ -71,7 +73,6 @@ namespace knet
 		}
 
 		std::cout << "\tCellTaskService::Closed" << m_owner->GetID() << std::endl;
-		m_semaphore.Weakup();
 	}
 
 }; // end of namespace knet

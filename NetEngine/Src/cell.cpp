@@ -29,27 +29,27 @@ namespace knet
 
 	void Cell::Start()
 	{
-		if (m_isRun)
-			return;
-
-		m_isRun = true;
-
-		m_thread = new std::thread(std::mem_fn(&Cell::OnRun), this);
-		m_thread->detach();
-
 		m_taskService.Start();
+
+		auto onRun = [this](CellThreadService* thread)
+		{
+			OnRun(thread);
+		};
+
+		auto onDestroy = [this](CellThreadService* thread)
+		{
+			ClrClient();
+		};
+
+		m_threadService.Start(nullptr, onRun, onDestroy);
 	}
 
-	bool Cell::IsRun()
-	{
-		return m_isRun;
-	}
 
-	void Cell::OnRun()
+	void Cell::OnRun(CellThreadService* thread)
 	{
 		m_connDelta = true;
 
-		while (IsRun())
+		while (thread->IsRun())
 		{
 			// lock block
 			if (m_clientsBuff.size() > 0)
@@ -99,8 +99,8 @@ namespace knet
 			int ret = select((int)(m_maxSock + 1), &fdRead, nullptr, nullptr, &t);
 			if (ret < 0)
 			{
-				std::cout << "select over" << std::endl;
-				Close();
+				std::cout << "Cell::OnRun:: Select Error" << std::endl;
+				thread->CloseWithoutWait();
 				break;
 			}
 			//else if (ret == 0)
@@ -114,7 +114,6 @@ namespace knet
 
 		std::cout << "Cell::OnRun exit " << m_id << std::endl;
 		ClrClient();
-		m_semaphore.Weakup();
 	}
 
 	void Cell::CheckTime()
@@ -253,15 +252,8 @@ namespace knet
 
 	void Cell::Close()
 	{
-		if (!m_isRun)
-			return;
-
-		std::cout << "Cell::Close " << m_id << std::endl;
-
 		m_taskService.Close();
-		m_isRun = false;
-
-		m_semaphore.Wait();
+		m_threadService.Close();
 	}
 
 	void Cell::ClrClient()

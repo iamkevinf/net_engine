@@ -41,17 +41,7 @@ int main()
 	server.Listen(5);
 	server.Start(4);
 
-	std::thread input(inputThread);
-	input.detach();
-
-	while (server.IsRun() && g_runing)
-	{
-		server.OnRun();
-	}
-
-	server.Close();
-
-	while (1)
+	while (g_runing)
 	{
 		std::chrono::milliseconds t(100);
 		std::this_thread::sleep_for(t);
@@ -62,8 +52,10 @@ int main()
 		if (0 == strcmp(cmdBuff, "exit"))
 		{
 			g_runing = false;
+			server.Close();
 			break;
 		}
 	}
+	
 	return 0;
 }
