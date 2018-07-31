@@ -87,10 +87,14 @@ void inputThread2()
 
 void RecvFunc(int bgn, int end)
 {
+	knet::Time t;
 	while (g_runing)//client.IsRun())
 	{
 		for (int i = bgn; i < end; ++i)
 		{
+			if (t.GetElapsedSecond() > 3 && i == bgn)
+				continue;
+
 			g_clients[i]->OnRun();
 		}
 	}
@@ -149,8 +153,8 @@ void SendFunc(int thread_id)
 				g_sendCount++;
 		}
 
-		//std::chrono::milliseconds t(10);
-		//std::this_thread::sleep_for(t);
+		std::chrono::milliseconds t(100);
+		std::this_thread::sleep_for(t);
 	}
 
 	for (int i = bgn; i < end; ++i)

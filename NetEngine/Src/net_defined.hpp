@@ -22,7 +22,7 @@
 #endif
 
 #ifndef RECV_BUFFER_SIZE
-#define RECV_BUFFER_SIZE 10240
+#define RECV_BUFFER_SIZE 8192
 #endif // RECV_BUFFER_SIZE
 
 #ifndef SEND_BUFFER_SIZE

@@ -48,7 +48,11 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::
 		ret->ret = 100;
 
 		//cell->AddSendTask(client, ret);
-		client->Send(ret);
+		if (SOCKET_ERROR == client->Send(ret))
+		{
+			// 消息缓冲区满了
+			std::cout << "Msg Send Buffer Is Full <Socket=" << client->Sockfd() << ">" << std::endl;
+		}
 	}
 	break;
 
@@ -63,7 +67,11 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::
 		knet::s2c_Logout* ret = new knet::s2c_Logout();
 		ret->ret = 100;
 		//cell->AddSendTask(client, ret);
-		client->Send(ret);
+		if (SOCKET_ERROR == client->Send(ret))
+		{
+			// 消息缓冲区满了
+			std::cout << "Msg Send Buffer Is Full <Socket=" << client->Sockfd() << ">" << std::endl;
+		}
 	}
 	break;
 
@@ -75,7 +83,11 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::
 
 		knet::s2c_Heart* ret = new knet::s2c_Heart();
 		//cell->AddSendTask(client, ret);
-		client->Send(ret);
+		if (SOCKET_ERROR == client->Send(ret))
+		{
+			// 消息缓冲区满了
+			std::cout << "Msg Send Buffer Is Full <Socket=" << client->Sockfd() << ">" << std::endl;
+		}
 	}
 	break;
 
@@ -86,7 +98,11 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::
 
 		header->cmd = knet::MessageType::MT_ERROR;
 		//cell->AddSendTask(client, header);
-		client->Send(header);
+		if (SOCKET_ERROR == client->Send(header))
+		{
+			// 消息缓冲区满了
+			std::cout << "Msg Send Buffer Is Full <Socket=" << client->Sockfd() << ">" << std::endl;
+		}
 	}
 	break;
 	}

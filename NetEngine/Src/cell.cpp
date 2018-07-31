@@ -75,11 +75,17 @@ namespace knet
 			}
 
 			fd_set fdRead;
-			FD_ZERO(&fdRead);
+			fd_set fdWrite;
+			//fd_set fdExcp;
 
 			if (m_connDelta)
 			{
 				m_connDelta = false;
+
+				FD_ZERO(&fdRead);
+				FD_ZERO(&fdWrite);
+				//FD_ZERO(&fdExcp);
+
 				m_maxSock = m_clients.begin()->second->Sockfd();
 				for (auto iter : m_clients)
 				{
@@ -95,8 +101,11 @@ namespace knet
 				memcpy(&fdRead, &m_fdReadBak, sizeof(fd_set));
 			}
 
+			memcpy(&fdWrite, &m_fdReadBak, sizeof(fd_set));
+			//memcpy(&fdExcp, &m_fdReadBak, sizeof(fd_set));
+
 			timeval t = { 0,1 };
-			int ret = select((int)(m_maxSock + 1), &fdRead, nullptr, nullptr, &t);
+			int ret = select((int)(m_maxSock + 1), &fdRead, &fdWrite, nullptr, &t);
 			if (ret < 0)
 			{
 				std::cout << "Cell::OnRun:: Select Error" << std::endl;
@@ -109,6 +118,20 @@ namespace knet
 			//}
 
 			ReadData(fdRead);
+			WriteData(fdWrite);
+			//WriteData(fdExcp);
+
+#if _WIN32
+			//std::cout << "Cell::OnRun Select: fdRead=" << fdRead.fd_count
+			//	<< " fdWrite=" << fdWrite.fd_count
+			//	<< std::endl;
+
+			//if (fdExcp.fd_count > 0)
+			//{
+			//	std::cout << "Cell::OnRun::Select::Excp=" << fdExcp.fd_count << std::endl;
+			//}
+#endif
+
 			CheckTime();
 		}
 
@@ -139,7 +162,7 @@ namespace knet
 				continue;
 			}
 
-			iter->second->CheckSend(dTime);
+			//iter->second->CheckSend(dTime);
 
 			iter++;
 		}
@@ -155,13 +178,7 @@ namespace knet
 			{
 				if (-1 == Recv(iter->second))
 				{
-					if (m_netEvent)
-						m_netEvent->OnExit(iter->second);
-
-					m_connDelta = true;
-
-					iter->second.reset();
-
+					OnClientExit(iter->second);
 					m_clients.erase(iter);
 				}
 			}
@@ -171,30 +188,62 @@ namespace knet
 			}
 		}
 #else
-		SockPtrVector temp;
-		for (auto iter : m_clients)
+		for (auto iter = m_clients.begin(); iter != m_clients.end();)
 		{
-			if (FD_ISSET(iter.second->Sockfd(), &fdRead))
+			if (FD_ISSET(iter->second->Sockfd(), &fdRead))
 			{
-				if (-1 == Recv(iter.second))
+				if (-1 == Recv(iter->second))
 				{
-					if (m_netEvent)
-						m_netEvent->OnExit(iter.second);
+					OnClientExit(iter->second);
+					m_clients.erase(iter++);
+					continue;
+				}
+			}
+			iter++;
+		}
+#endif
+	}
 
-					m_connDelta = true;
-
-					//iter.second.reset();
-
-					temp.push_back(iter.second);
+	void Cell::WriteData(fd_set& fdWrite)
+	{
+#ifdef _WIN32
+		for (u_int i = 0; i < fdWrite.fd_count; ++i)
+		{
+			auto iter = m_clients.find(fdWrite.fd_array[i]);
+			if (iter != m_clients.end())
+			{
+				if (-1 == iter->second->SendImm())
+				{
+					OnClientExit(iter->second);
+					m_clients.erase(iter);
 				}
 			}
 		}
-		for (auto client : temp)
+#else
+		for (auto iter = m_clients.begin(); iter != m_clients.end();)
 		{
-			m_clients.erase(client->Sockfd());
-			client.reset();
+			if (FD_ISSET(iter->second->Sockfd(), &fdWrite))
+			{
+				if (-1 == iter->second->SendImm())
+				{
+					OnClientExit(iter->second);
+					m_clients.erase(iter++);
+					continue;
+				}
+			}
+			iter++;
 		}
 #endif
+	}
+
+	void Cell::OnClientExit(ClientSocketPtr client)
+	{
+		if (m_netEvent)
+			m_netEvent->OnExit(client);
+
+		m_connDelta = true;
+
+		client.reset();
 	}
 
 	int Cell::Recv(ClientSocketPtr& clientSock)

@@ -38,7 +38,7 @@ int main()
 	MyServer server;
 	server.CreateSock();
 	server.Bind("", port);
-	server.Listen(5);
+	server.Listen(64);
 	server.Start(4);
 
 	while (g_runing)
@@ -57,5 +57,7 @@ int main()
 		}
 	}
 	
+	std::cout << "Server::Exit!" << std::endl;
+	getchar();
 	return 0;
 }

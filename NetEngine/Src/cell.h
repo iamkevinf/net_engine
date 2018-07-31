@@ -52,7 +52,11 @@ namespace knet
 		const int GetID()const { return m_id; }
 
 	private:
+
+		void OnClientExit(ClientSocketPtr client);
+
 		void ReadData(fd_set& fdRead);
+		void WriteData(fd_set& fdWrite);
 		void CheckTime();
 
 		void ClrClient();

@@ -46,6 +46,7 @@ namespace knet
 		// 死亡计时
 		time_t m_heart = 0;
 		time_t m_lastSendDT = 0;
+		int m_sendBuffFullCount = 0;
 	};
 
 }; // end of namespace knet
