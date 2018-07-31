@@ -3,7 +3,7 @@
 
 namespace knet
 {
-	enum class MessageType : short
+	enum class MessageType : unsigned short
 	{
 		MT_C2S_LOGIN,
 		MT_S2C_LOGIN,
@@ -27,7 +27,7 @@ namespace knet
 			cmd = MessageType::MT_ERROR;
 		}
 
-		short dataLen;
+		unsigned short dataLen;
 		MessageType cmd;
 	};
 
