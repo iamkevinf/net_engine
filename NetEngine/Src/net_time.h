@@ -1,4 +1,4 @@
-#ifndef __NET_TIME_H__
+﻿#ifndef __NET_TIME_H__
 #define __NET_TIME_H__
 
 #include <chrono>

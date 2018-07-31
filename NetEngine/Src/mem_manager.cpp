@@ -1,4 +1,4 @@
-#include "mem_manager.h"
+ï»¿#include "mem_manager.h"
 
 #include <stdlib.h>
 #include <assert.h>
@@ -45,10 +45,10 @@ namespace knet
 			Init();
 
 		MemBlock* ret = nullptr;
-		// Ã»ÓÐÄÚ´æ,Ö±½ÓÏò²Ù×÷ÏµÍ³ÉêÇë
+		// æ²¡æœ‰å†…å­˜,ç›´æŽ¥å‘æ“ä½œç³»ç»Ÿç”³è¯·
 		if (!m_header)
 		{
-			// ÕâÀïÐèÒª¶à·ÖÅäs_MemBlockSizeÄÚ´æÓÃÀ´´æ´¢blockÐÅÏ¢
+			// è¿™é‡Œéœ€è¦å¤šåˆ†é…s_MemBlockSizeå†…å­˜ç”¨æ¥å­˜å‚¨blockä¿¡æ¯
 			ret = (MemBlock*)malloc(size + s_MemBlockSize);
 
 			ret->m_inPool = false;
@@ -58,7 +58,7 @@ namespace knet
 			ret->m_next = nullptr;
 			printf("  MemAlloc::Alloc: MemoryPool is Full size=%zd\n", size);
 		}
-		// »¹ÓÐ,¿ÉÒÔÖ±½Ó´Ó³ØÖÐ·ÖÅä
+		// è¿˜æœ‰,å¯ä»¥ç›´æŽ¥ä»Žæ± ä¸­åˆ†é…
 		else
 		{
 			ret = m_header;
@@ -74,7 +74,7 @@ namespace knet
 	void MemAlloc::Free(void* p)
 	{
 		char* data = (char*)p;
-		// »ØÍË s_MemBlockSize Ö¸ÏòMemBlockÎ»ÖÃ
+		// å›žé€€ s_MemBlockSize æŒ‡å‘MemBlockä½ç½®
 		MemBlock* block = (MemBlock*)(data - s_MemBlockSize);
 		assert(block->m_ref > 0);
 
@@ -82,7 +82,7 @@ namespace knet
 		{
 			std::lock_guard<std::mutex> lock(m_mutex);
 
-			// ËµÃ÷»¹ÓÐÒýÓÃ
+			// è¯´æ˜Žè¿˜æœ‰å¼•ç”¨
 			if (--block->m_ref != 0)
 				return;
 
@@ -91,7 +91,7 @@ namespace knet
 		}
 		else
 		{
-			// ËµÃ÷»¹ÓÐÒýÓÃ
+			// è¯´æ˜Žè¿˜æœ‰å¼•ç”¨
 			if (--block->m_ref != 0)
 				return;
 
@@ -175,7 +175,7 @@ namespace knet
 	void MemManager::Free(void* p)
 	{
 		char* data = (char*)p;
-		// »ØÍË s_MemBlockSize Ö¸ÏòMemBlockÎ»ÖÃ
+		// å›žé€€ s_MemBlockSize æŒ‡å‘MemBlockä½ç½®
 		MemBlock* block = (MemBlock*)(data - s_MemBlockSize);
 		MemTrace("MemManager::Free:  0X%p, m_id=%d\n", block, block->m_id);
 		if (block->m_inPool)

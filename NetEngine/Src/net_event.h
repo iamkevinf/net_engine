@@ -1,4 +1,4 @@
-#ifndef __NET_EVENT_H__
+﻿#ifndef __NET_EVENT_H__
 #define __NET_EVENT_H__
 
 #include "net_defined.hpp"

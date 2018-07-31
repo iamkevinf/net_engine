@@ -1,4 +1,4 @@
-#ifndef __MEM_ALLOCTOR_H__
+﻿#ifndef __MEM_ALLOCTOR_H__
 #define __MEM_ALLOCTOR_H__
 
 #include <stdlib.h>

@@ -1,4 +1,4 @@
-#ifndef __CELL_THREAD_H__
+﻿#ifndef __CELL_THREAD_H__
 #define __CELL_THREAD_H__
 
 #include <thread>

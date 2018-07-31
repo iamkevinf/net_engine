@@ -1,4 +1,4 @@
-#ifndef __OBJECT_POOL_H__
+ï»¿#ifndef __OBJECT_POOL_H__
 #define __OBJECT_POOL_H__
 
 #include <stdlib.h>
@@ -87,7 +87,7 @@ namespace knet
 			std::lock_guard<std::mutex> lock(m_mutex);
 
 			ObjectNode* ret = nullptr;
-			// Ã»ÓÐÄÚ´æ,Ö±½ÓÏò²Ù×÷ÏµÍ³ÉêÇë
+			// æ²¡æœ‰å†…å­˜,ç›´æŽ¥å‘æ“ä½œç³»ç»Ÿç”³è¯·
 			if (nullptr == m_header)
 			{
 				ret = (ObjectNode*)new char[sizeof(Type) + sizeof(ObjectNode)];
@@ -96,7 +96,7 @@ namespace knet
 				ret->m_ref = 1;
 				ret->m_next = nullptr;
 			}
-			// »¹ÓÐ,¿ÉÒÔÖ±½Ó´Ó³ØÖÐ·ÖÅä
+			// è¿˜æœ‰,å¯ä»¥ç›´æŽ¥ä»Žæ± ä¸­åˆ†é…
 			else
 			{
 				ret = m_header;
@@ -113,7 +113,7 @@ namespace knet
 		void Free(void* p)
 		{
 			char* data = (char*)p;
-			// »ØÍË s_MemBlockSize Ö¸ÏòMemBlockÎ»ÖÃ
+			// å›žé€€ s_MemBlockSize æŒ‡å‘MemBlockä½ç½®
 			ObjectNode* block = (ObjectNode*)(data - sizeof(ObjectNode));
 			assert(block->m_ref > 0);
 
@@ -121,7 +121,7 @@ namespace knet
 			{
 				std::lock_guard<std::mutex> lock(m_mutex);
 
-				// ËµÃ÷»¹ÓÐÒýÓÃ
+				// è¯´æ˜Žè¿˜æœ‰å¼•ç”¨
 				if (--block->m_ref != 0)
 					return;
 
@@ -130,7 +130,7 @@ namespace knet
 			}
 			else
 			{
-				// ËµÃ÷»¹ÓÐÒýÓÃ
+				// è¯´æ˜Žè¿˜æœ‰å¼•ç”¨
 				if (--block->m_ref != 0)
 					return;
 

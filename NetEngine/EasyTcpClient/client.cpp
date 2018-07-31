@@ -1,4 +1,4 @@
-#include "tcp_client.h"
+ï»¿#include "tcp_client.h"
 #include "message.hpp"
 #include "net_time.h"
 
@@ -130,7 +130,7 @@ void SendFunc(int thread_id)
 		std::this_thread::sleep_for(t);
 	}
 
-	// Æô¶¯RecvÏß³Ì
+	// å¯åŠ¨Recvçº¿ç¨‹
 	std::thread t1(RecvFunc, bgn, end);
 	t1.detach();
 

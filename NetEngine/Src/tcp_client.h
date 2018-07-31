@@ -1,4 +1,4 @@
-#ifndef __TCP_CLIENT_H__
+﻿#ifndef __TCP_CLIENT_H__
 #define __TCP_CLIENT_H__
 
 #ifdef _WIN32
@@ -49,7 +49,7 @@ namespace knet
 		SOCKET m_sock = INVALID_SOCKET;
 		char m_buffer_recv[RECV_BUFFER_SIZE] = {};
 		char m_buffer_msg[RECV_BUFFER_SIZE * 10] = {};
-		// m_buffer_msgβ�͵�λ��
+		// m_buffer_msg尾巴的位置
 		int m_lastPos = 0;
 
 

@@ -1,4 +1,4 @@
-#ifndef _MY_SERVER_H__
+﻿#ifndef _MY_SERVER_H__
 #define _MY_SERVER_H__
 
 #include "tcp_server.h"

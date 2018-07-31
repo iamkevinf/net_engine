@@ -1,4 +1,4 @@
-#ifndef __CLIENT_SOCKET_H__
+ï»¿#ifndef __CLIENT_SOCKET_H__
 #define __CLIENT_SOCKET_H__
 
 #include "net_defined.hpp"
@@ -39,11 +39,11 @@ namespace knet
 
 		char m_buffer_msg[RECV_BUFFER_SIZE];
 		char m_send_buffer[SEND_BUFFER_SIZE];
-		// m_buffer_msgÎ²°ÍµÄÎ»ÖÃ
+		// m_buffer_msgå°¾å·´çš„ä½ç½®
 		int m_lastPos = 0;
-		// ·¢ËÍ»º³åÇøµÄÊı¾İÎ²²¿Î»ÖÃ
+		// å‘é€ç¼“å†²åŒºçš„æ•°æ®å°¾éƒ¨ä½ç½®
 		int m_lastSendPos = 0;
-		// ËÀÍö¼ÆÊ±
+		// æ­»äº¡è®¡æ—¶
 		time_t m_heart = 0;
 		time_t m_lastSendDT = 0;
 	};

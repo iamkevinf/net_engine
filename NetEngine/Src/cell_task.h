@@ -1,4 +1,4 @@
-#ifndef __CELL_TASK_H__
+﻿#ifndef __CELL_TASK_H__
 #define __CELL_TASK_H__
 
 #include <thread>

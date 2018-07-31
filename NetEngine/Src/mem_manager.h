@@ -1,4 +1,4 @@
-#ifndef __MEM_MANAGER_H__
+ï»¿#ifndef __MEM_MANAGER_H__
 #define __MEM_MANAGER_H__
 
 #include <mutex>
@@ -16,19 +16,19 @@ namespace knet
 		MemBlock();
 		~MemBlock();
 	public:
-		// ±àºÅ
+		// ç¼–å·
 		int m_id = 0; 
-		// ÒıÓÃ´ÎÊı
+		// å¼•ç”¨æ¬¡æ•°
 		int m_ref = 0;
-		// ËùÊôÄÚ´æ³Ø
+		// æ‰€å±å†…å­˜æ± 
 		MemAlloc* m_alloc = nullptr;
-		// ÏÂÒ»¸ö¿éµÄÎ»ÖÃ
+		// ä¸‹ä¸€ä¸ªå—çš„ä½ç½®
 		MemBlock* m_next = nullptr;
-		// ÊÇ·ñÔÚÄÚ´æ³ØÖĞ
+		// æ˜¯å¦åœ¨å†…å­˜æ± ä¸­
 		bool m_inPool = false;
 
 	private:
-		// Ô¤Áô ÓÃÀ´¶ÔÆä
+		// é¢„ç•™ ç”¨æ¥å¯¹å…¶
 		char c1, c2, c3;
 	};
 
@@ -47,16 +47,16 @@ namespace knet
 		void Init();
 
 	protected:
-		// ÄÚ´æµ¥ÔªµÄ´óĞ¡
+		// å†…å­˜å•å…ƒçš„å¤§å°
 		size_t m_size = 0;
-		// ÄÚ´æ¿éµÄÊıÁ¿
+		// å†…å­˜å—çš„æ•°é‡
 		size_t m_blockCount = 0;
 
-		// ³Ø
+		// æ± 
 		char* m_poolData = nullptr;
-		// Í·
+		// å¤´
 		MemBlock* m_header = nullptr;
-		// Ëø
+		// é”
 		std::mutex m_mutex;
 	};
 	/***********************************************
@@ -68,9 +68,9 @@ namespace knet
 	public:
 		MemAllocImp():MemAlloc()
 		{
-			// ²Ù×÷ÏµÍ³µÄÄÚ´æ¶ÔÆäÊı
+			// æ“ä½œç³»ç»Ÿçš„å†…å­˜å¯¹å…¶æ•°
 			size_t n = sizeof(void*);
-			// ÖØËãÄÚ´æ¶ÔÆä
+			// é‡ç®—å†…å­˜å¯¹å…¶
 			m_size = size / n * n + (size % n ? n : 0);
 			m_blockCount = blockCount;
 		}

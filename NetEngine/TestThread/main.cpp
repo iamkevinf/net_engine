@@ -1,4 +1,4 @@
-#include "mem_alloctor.h"
+ï»¿#include "mem_alloctor.h"
 
 #include <iostream>
 #include <thread>
@@ -10,7 +10,7 @@
 #include "net_time.h"
 #include "object_pool.h"
 
-// Ô­×Ó²Ù×÷ Ò²¾ÍÊÇ²»¿É·Ö¸îµÄ²Ù×÷
+// åŸå­æ“ä½œ ä¹Ÿå°±æ˜¯ä¸å¯åˆ†å‰²çš„æ“ä½œ
 std::atomic_int g_atomic_sum = 0;
 
 std::mutex g_mutex;
