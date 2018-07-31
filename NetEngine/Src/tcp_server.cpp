@@ -6,6 +6,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string.h>
+#include <signal.h>
 
 namespace knet
 {
@@ -25,6 +26,8 @@ namespace knet
 		WORD ver = MAKEWORD(2, 2);
 		WSADATA data;
 		WSAStartup(ver, &data);
+#else
+		singnal(SIGPIPE, SIG_IGN);
 #endif
 
 		if (m_sock != INVALID_SOCKET)
