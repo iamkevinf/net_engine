@@ -133,7 +133,7 @@ namespace knet
 		int nLenRecv = (int)recv(m_sock, m_buffer_recv, RECV_BUFFER_SIZE, 0);
 		if (nLenRecv <= 0)
 		{
-			std::cout << "disconnection from server" << std::endl;
+			std::cout << "TCPClient::Recv Disconnection From Server" << std::endl;
 			return -1;
 		}
 
@@ -205,6 +205,15 @@ namespace knet
 			s2c_Heart* ret = (s2c_Heart*)header;
 			//std::cout << "s2c_Heart " << "<Socket = " << m_sock  << "> sock: "
 			//	<< ret->sock << " dataLen: " << ret->dataLen << std::endl;
+		}
+		break;
+		case MessageType::MT_S2C_BODY:
+		{
+			s2c_Body* ret = (s2c_Body*)header;
+			int value = 0;
+			memcpy(&value, ret->data, ret->nLen);
+			std::cout << "s2c_Body " << "<Socket = " << m_sock  << "> value: "
+				<< value << " nLen: " << ret->nLen << std::endl;
 		}
 		break;
 

@@ -272,6 +272,7 @@ namespace knet
 		{
 			//这时就可以知道当前消息的长度
 			DataHeader* header = (DataHeader*)clientSock->MsgBuffer();
+
 			//判断消息缓冲区的数据长度大于消息长度
 			if (clientSock->GetLastPos() >= header->dataLen)
 			{

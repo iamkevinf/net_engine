@@ -191,6 +191,9 @@ namespace knet
 
 	void TCPServer::Time4Msg()
 	{
+		if (!m_logEnabled)
+			return;
+
 		double t = m_time.GetElapsedSecond();
 		if (t >= 1.0)
 		{

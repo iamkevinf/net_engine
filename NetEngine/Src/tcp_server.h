@@ -36,6 +36,7 @@ namespace knet
 		void AddClient2Cell(ClientSocketPtr client);
 
 		void Time4Msg();
+		void EnableLog(bool enable) { m_logEnabled = enable; };
 
 		void Close();
 
@@ -61,6 +62,7 @@ namespace knet
 		Time m_time;
 
 		CellThreadService m_threadService;
+		bool m_logEnabled = true;
 	};
 
 }; // end of namespace knet

@@ -15,7 +15,7 @@ std::string host = "192.168.1.102";
 	std::string host = "192.168.35.3";
 #endif
 
-uint16_t port = 10086;
+uint16_t port = 10010;
 ////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////
@@ -56,6 +56,14 @@ void inputThread(knet::TCPClient* client)
 			strcpy(logout.userName, "admin");
 
 			client->Send(&logout, logout.dataLen);
+		}
+		else if (0 == strcmp(cmdBuff, "msg"))
+		{
+			knet::c2s_Body msg;
+			memset(&msg, 100, sizeof(int));
+
+			int len = sizeof(knet::c2s_Body);
+			client->Send(&msg, len);
 		}
 		else
 		{
@@ -138,12 +146,21 @@ void SendFunc(int thread_id)
 	std::thread t1(RecvFunc, bgn, end);
 	t1.detach();
 
-	const int package_count = 10;
+	const int package_count = 1;
 	knet::c2s_Heart heart[package_count];
 	for (int i = 0; i < package_count; ++i)
 	{
 	}
 	const int nLen = sizeof(heart);
+
+	knet::c2s_Body body[package_count];
+	int value = 100;
+	for (int i = 0; i < package_count; ++i)
+	{
+		memcpy(body[i].data, (const char*)&value, sizeof(int));
+		body[i].nLen = sizeof(int);
+	}
+	const int nLenBody = sizeof(body);
 
 	while (g_runing)//client.IsRun())
 	{
@@ -151,6 +168,8 @@ void SendFunc(int thread_id)
 		{
 			if (SOCKET_ERROR != g_clients[i]->Send(heart, nLen))
 				g_sendCount++;
+			//if (SOCKET_ERROR != g_clients[i]->Send(body, nLenBody))
+			//	g_sendCount++;
 		}
 
 		std::chrono::milliseconds t(100);
