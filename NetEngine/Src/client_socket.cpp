@@ -46,7 +46,7 @@ namespace knet
 	{
 		int ret = SOCKET_ERROR;
 		//要发送的数据长度
-		int nSendLen = header->size;
+		int nSendLen = header->size + MessageBody::HEADER_LEN_BYTES;
 		//要发送的数据
 		const char* pSendData = (const char*)header;
 

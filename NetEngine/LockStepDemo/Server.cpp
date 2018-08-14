@@ -7,6 +7,9 @@
 #include <iostream>
 #include <string.h>
 
+#include "Proto/player.pb.h"
+#include "message.hpp"
+
 Server::Server()
 {
 
@@ -30,19 +33,32 @@ void Server::OnExit(knet::ClientSocketPtr& client)
 
 void Server::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::MessageBody* body)
 {
-	int v = 0;
-	::memcpy(&v, body->data, 4);
-	std::cout << "Server::OnMessage type: " << body->type
-		<< " size: " << body->size 
-		<< " data: " << v
-		<< std::endl;
+	if (body->type == 100)
+	{
+		int size = body->size - knet::MessageBody::HEADER_TYPE_BYTES;
 
-	knet::MessageBody s2cMsg;
-	int size = 4;
-	s2cMsg.size = size + knet::MessageBody::HEADER_TYPE_BYTES;
-	s2cMsg.type = body->type + 1;
-	::memcpy(s2cMsg.data, body->data, size);
-	client->Send(&s2cMsg);
+		CSLogin proto;
+		if (proto.ParseFromArray(body->data, size))
+		{
+			std::cout << "Server::OnMessage type: " << body->type
+				<< " size: " << body->size
+				<< " username: " << proto.username()
+				<< " password: " << proto.password()
+				<< std::endl;
+
+			SCLogin ret;
+			ret.set_ret(true);
+			int size = ret.ByteSize();
+
+			knet::MessageBody s2cMsg;
+			s2cMsg.size = size + knet::MessageBody::HEADER_TYPE_BYTES;
+			s2cMsg.type = body->type + 1;
+
+			ret.SerializeToArray(&s2cMsg.data, size);
+
+			client->SendImm(&s2cMsg);
+		}
+	}
 }
 
 void Server::OnRecv(knet::ClientSocketPtr& client)

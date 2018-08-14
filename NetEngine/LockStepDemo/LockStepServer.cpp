@@ -1,8 +1,14 @@
-﻿#include "server.h"
+﻿#ifdef _WIN32
+	#define _CRT_SECURE_NO_WARNINGS
+#else
+#endif // _WIN32
+
+#include "server.h"
 
 #include <iostream>
 #include <string.h>
 #include <thread>
+
 
 int port = 10086;
 

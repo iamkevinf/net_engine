@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+message CSLogin
+{
+	optional string UserName = 1;
+	optional string PassWord = 2;
+}
+
+message SCLogin
+{
+	optional bool Ret = 1;
+}

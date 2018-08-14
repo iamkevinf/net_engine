@@ -146,6 +146,7 @@ namespace knet
 	int TCPClient::Recv()
 	{
 		int nLen = (int)recv(m_sock, m_buffer_recv, RECV_BUFFER_SIZE, 0);
+		m_lastPos += nLen;
 
 		if (nLen <= 0)
 			return -1;
