@@ -29,11 +29,24 @@ namespace knet
 		}
 	}
 
-	int ClientSocket::Send(DataHeader* header)
+	int ClientSocket::GetPackageLength()
+	{
+		if (GetLastPos() < MessageBody::HEADER_SIZE)
+			return -1;
+
+		int len = -1;
+		::memcpy(&len, m_buffer_msg, MessageBody::HEADER_LEN_BYTES);
+		if (GetLastPos() >= len + MessageBody::HEADER_LEN_BYTES)
+			return len;
+
+		return -1;
+	}
+
+	int ClientSocket::Send(MessageBody* header)
 	{
 		int ret = SOCKET_ERROR;
 		//要发送的数据长度
-		int nSendLen = header->dataLen;
+		int nSendLen = header->size;
 		//要发送的数据
 		const char* pSendData = (const char*)header;
 
@@ -75,7 +88,7 @@ namespace knet
 		return ret;
 	}
 
-	void ClientSocket::SendImm(DataHeader* header)
+	void ClientSocket::SendImm(MessageBody* header)
 	{
 		Send(header);
 		SendImm();

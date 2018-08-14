@@ -12,10 +12,10 @@
 #ifdef _WIN32
 std::string host = "192.168.1.102";
 #else 
-	std::string host = "192.168.35.3";
+std::string host = "192.168.35.3";
 #endif
 
-uint16_t port = 10010;
+uint16_t port = 10086;
 ////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////
@@ -23,55 +23,12 @@ uint16_t port = 10010;
 int g_client_count = 2000;
 int g_thread_count = 8;
 std::vector<knet::TCPClient*> g_clients;
-std::atomic_int g_sendCount{0};
-std::atomic_int g_readyCount{0};
+std::atomic_int g_sendCount{ 0 };
+std::atomic_int g_readyCount{ 0 };
 
 ////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////
-void inputThread(knet::TCPClient* client)
-{
-	while (true)
-	{
-		char cmdBuff[256] = { 0 };
-		std::cout << "input a cmd: " << std::endl;
-		std::cin >> cmdBuff;
-
-		if (0 == strcmp(cmdBuff, "exit"))
-		{
-			client->CloseSock();
-			break;
-		}
-		else if (0 == strcmp(cmdBuff, "login"))
-		{
-			knet::c2s_Login login;
-			strcpy(login.userName, "admin");
-			strcpy(login.passWord, "123.com");
-
-			client->Send(&login, login.dataLen);
-		}
-		else if (0 == strcmp(cmdBuff, "logout"))
-		{
-			knet::c2s_Logout logout;
-			strcpy(logout.userName, "admin");
-
-			client->Send(&logout, logout.dataLen);
-		}
-		else if (0 == strcmp(cmdBuff, "msg"))
-		{
-			knet::c2s_Body msg;
-			memset(&msg, 100, sizeof(int));
-
-			int len = sizeof(knet::c2s_Body);
-			client->Send(&msg, len);
-		}
-		else
-		{
-			std::cout << "not support cmd!" << std::endl;
-		}
-	}
-}
-
 bool g_runing = true;
 void inputThread2()
 {
@@ -146,27 +103,20 @@ void SendFunc(int thread_id)
 	std::thread t1(RecvFunc, bgn, end);
 	t1.detach();
 
-	const int package_count = 1;
-	knet::c2s_Heart heart[package_count];
-	for (int i = 0; i < package_count; ++i)
-	{
-	}
-	const int nLen = sizeof(heart);
-
-	knet::c2s_Body body[package_count];
-	int value = 100;
-	for (int i = 0; i < package_count; ++i)
-	{
-		memcpy(body[i].data, (const char*)&value, sizeof(int));
-		body[i].nLen = sizeof(int);
-	}
-	const int nLenBody = sizeof(body);
+	knet::MessageBody message;
+	int size = 4;
+	message.size = size + knet::MessageBody::HEADER_TYPE_BYTES;
+	message.type = 8;
 
 	while (g_runing)//client.IsRun())
 	{
 		for (int i = bgn; i < end; ++i)
 		{
-			if (SOCKET_ERROR != g_clients[i]->Send(heart, nLen))
+			int tmp = rand();
+			::memcpy(message.data, &tmp, size);
+
+			//if (SOCKET_ERROR != g_clients[i]->Send(heart, nLen))
+			if (SOCKET_ERROR != g_clients[i]->Send(&message))
 				g_sendCount++;
 			//if (SOCKET_ERROR != g_clients[i]->Send(body, nLenBody))
 			//	g_sendCount++;
@@ -217,7 +167,7 @@ int main()
 			std::cout << "Thread=" << g_thread_count
 				<< " Time=" << ::std::fixed << ::std::setprecision(6) << t
 				<< " Conn=" << g_client_count
-				<< " Send=" << (int)(g_sendCount/t)
+				<< " Send=" << (int)(g_sendCount / t)
 				<< std::endl;
 
 			g_sendCount = 0;

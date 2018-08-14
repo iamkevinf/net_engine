@@ -222,7 +222,7 @@ namespace knet
 		m_connCount--;
 	}
 
-	void TCPServer::OnMessage(Cell* cell, ClientSocketPtr& client, DataHeader* header)
+	void TCPServer::OnMessage(Cell* cell, ClientSocketPtr& client, MessageBody* header)
 	{
 		m_msgCount++;
 	}

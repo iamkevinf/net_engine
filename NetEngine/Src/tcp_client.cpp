@@ -113,12 +113,16 @@ namespace knet
 		return true;
 	}
 
-	int TCPClient::Send(DataHeader* msg, int nLen)
+
+	int TCPClient::Send(MessageBody* body)
 	{
+		int32_t size = body->GetSize();
+		const char* buf = (const char*)body;
+
 		int ret = SOCKET_ERROR;
-		if (IsRun() && msg)
+		if (IsRun() && body)
 		{
-			ret = send(m_sock, (const char*)msg, nLen, 0);
+			ret = send(m_sock, buf, size, 0);
 			if (ret == SOCKET_ERROR)
 				CloseSock();
 		}
@@ -126,111 +130,65 @@ namespace knet
 		return ret;
 	}
 
-	int TCPClient::Recv()
+	int TCPClient::GetPackageLength()
 	{
-		const int headerSize = sizeof(DataHeader);
-
-		int nLenRecv = (int)recv(m_sock, m_buffer_recv, RECV_BUFFER_SIZE, 0);
-		if (nLenRecv <= 0)
-		{
-			std::cout << "TCPClient::Recv Disconnection From Server" << std::endl;
+		if (m_lastPos < MessageBody::HEADER_SIZE)
 			return -1;
-		}
 
-		//将m_buffer_recv拷贝到m_buffer_msg
-		memcpy(m_buffer_msg + m_lastPos, m_buffer_recv, nLenRecv);
-		// m_buffer_msg数据尾部位置后移
-		m_lastPos += nLenRecv;
+		int len = -1;
+		::memcpy(&len, m_buffer_msg, MessageBody::HEADER_LEN_BYTES);
+		if (m_lastPos >= len + MessageBody::HEADER_LEN_BYTES)
+			return len;
 
-		//判断m_buffer_msg的长度 >= headerSize
-		while (m_lastPos >= headerSize)
-		{
-			DataHeader* header = (DataHeader*)m_buffer_msg;
-
-			//判断m_buffer_msg的数据长度 >= 消息长度
-			if (m_lastPos >= header->dataLen)
-			{
-				//m_buffer_msg剩余未处理数据的长度
-				int nSize = m_lastPos - header->dataLen;
-
-				OnMessageProc(header);
-
-				//将消息缓冲区剩余未处理数据前移
-				memcpy(m_buffer_msg, m_buffer_msg + header->dataLen, nSize);
-				//消息缓冲区的数据尾部位置前移
-				m_lastPos = nSize;
-			}
-			else //消息缓冲区剩余数据不够一条完整消息
-			{
-				break;
-			}
-		}
-
-		return 0;
+		return -1;
 	}
 
-	void TCPClient::OnMessageProc(DataHeader* header)
+	int TCPClient::Recv()
 	{
-		switch (header->cmd)
-		{
-		case MessageType::MT_S2C_LOGIN:
-		{
-			s2c_Login* ret = (s2c_Login*)header;
-			//std::cout << "s2c_Login " << "<Socket = " << m_sock 
-			//	<< "> userName: " << ret->userName
-			//	<< " ret: " << ret->ret
-			//	<< " dataLen: " << ret->dataLen << std::endl;
-		}
-		break;
+		int nLen = (int)recv(m_sock, m_buffer_recv, RECV_BUFFER_SIZE, 0);
 
-		case MessageType::MT_S2C_LOGOUT:
-		{
-			s2c_Logout* ret = (s2c_Logout*)header;
-			//std::cout << "s2c_Logout " << "<Socket=" << m_sock << "> ret: "
-			//	<< ret->ret << " dataLen: " << ret->dataLen << std::endl;
+		if (nLen <= 0)
+			return -1;
 
-		}
-		break;
-
-		case MessageType::MT_S2C_JOIN:
+		while (true)
 		{
-			s2c_Join* ret = (s2c_Join*)header;
-			//std::cout << "s2c_Join " << "<Socket = " << m_sock  << "> sock: "
-			//	<< ret->sock << " dataLen: " << ret->dataLen << std::endl;
-		}
-		break;
+			if (m_lastPos < MessageBody::HEADER_SIZE)
+				break;
 
-		case MessageType::MT_S2C_HEART:
-		{
-			s2c_Heart* ret = (s2c_Heart*)header;
-			//std::cout << "s2c_Heart " << "<Socket = " << m_sock  << "> sock: "
-			//	<< ret->sock << " dataLen: " << ret->dataLen << std::endl;
-		}
-		break;
-		case MessageType::MT_S2C_BODY:
-		{
-			s2c_Body* ret = (s2c_Body*)header;
-			int value = 0;
-			memcpy(&value, ret->data, ret->nLen);
-			std::cout << "s2c_Body " << "<Socket = " << m_sock  << "> value: "
-				<< value << " nLen: " << ret->nLen << std::endl;
-		}
-		break;
+			int len = GetPackageLength();
+			if (len < 0)
+				break;
 
-		case MessageType::MT_ERROR:
-		{
-			std::cout << "Error Message " << "<Socket = " << m_sock << ">" << std::endl;
-		}
-		break;
+			MessageBody body;
+			size_t copysize = sizeof(MessageBody) <= m_lastPos ? sizeof(MessageBody) : m_lastPos;
 
-		default:
-		{
-			std::cout << "Undefined Message: " << "<Socket=" << m_sock << "> dataLen: "
-				<< header->dataLen << std::endl;
-		}
-		break;
+			::memcpy(&body, m_buffer_recv, copysize);
 
+			int body_size = len + MessageBody::HEADER_LEN_BYTES;
+			if (body_size > m_lastPos)
+				body_size = m_lastPos;
+
+			::memmove(m_buffer_recv, m_buffer_recv + body_size, body_size);
+			m_lastPos = m_lastPos - body_size;
+
+			OnMessageProc(&body);
+
+			bool isFinish = false;
+			if (m_lastPos <= 0)
+				isFinish = true;
+
+			if (isFinish)
+				break;
 		}
+
+		return nLen;
+	}
+
+	void TCPClient::OnMessageProc(MessageBody* body)
+	{
+		std::cout << "TCPClient::OnMessageProc type: " << body->type
+			<< " size: " << body->size
+			<< std::endl;
 	}
 
 }; // end of namespace knet

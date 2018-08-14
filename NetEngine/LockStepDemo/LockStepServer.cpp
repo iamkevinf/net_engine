@@ -4,7 +4,7 @@
 #include <string.h>
 #include <thread>
 
-int port = 10010;
+int port = 10086;
 
 ////////////////////////////////////////////////////////
 //

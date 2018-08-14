@@ -3,142 +3,29 @@
 
 namespace knet
 {
-	enum class MessageType : unsigned short
+	struct MessageBody
 	{
-		MT_C2S_LOGIN,
-		MT_S2C_LOGIN,
+		static const int32_t DATA_SIZE = 1024 * 128;
 
-		MT_C2S_LOGOUT,
-		MT_S2C_LOGOUT,
+		static const int32_t HEADER_TYPE_BYTES = sizeof(uint16_t);
+		static const int32_t HEADER_LEN_BYTES = sizeof(uint32_t);
+		static const int32_t HEADER_SIZE = HEADER_LEN_BYTES + HEADER_TYPE_BYTES;;
 
-		MT_S2C_JOIN,
+		uint32_t size;
+		uint16_t type;
+		uint8_t data[DATA_SIZE];
 
-		MT_C2S_HEART,
-		MT_S2C_HEART,
-
-		MT_C2S_BODY,
-		MT_S2C_BODY,
-
-		MT_ERROR
-	};
-
-	struct DataHeader
-	{
-		DataHeader()
+		MessageBody()
 		{
-			dataLen = (unsigned short)sizeof(DataHeader);
-			cmd = MessageType::MT_ERROR;
+			size = 0;
+			type = 0;
+			::memset(data, 0, DATA_SIZE);
 		}
 
-		unsigned short dataLen;
-		MessageType cmd;
-	};
-
-	struct c2s_Login : public DataHeader
-	{
-		c2s_Login()
+		int32_t GetSize()
 		{
-			dataLen = (unsigned short)sizeof(c2s_Login);
-			cmd = MessageType::MT_C2S_LOGIN;
+			return size + HEADER_LEN_BYTES;
 		}
-
-		char userName[32];
-		char passWord[32];
-	};
-
-	struct s2c_Login : public DataHeader
-	{
-		s2c_Login()
-		{
-			dataLen = (unsigned short)sizeof(s2c_Login);
-			cmd = MessageType::MT_S2C_LOGIN;
-			ret = 0;
-		}
-
-		int ret;
-		char userName[32];
-	};
-
-
-	struct c2s_Logout : public DataHeader
-	{
-		c2s_Logout()
-		{
-			dataLen = (unsigned short)sizeof(c2s_Logout);
-			cmd = MessageType::MT_C2S_LOGOUT;
-		}
-
-		char userName[32];
-	};
-
-	struct s2c_Logout : public DataHeader
-	{
-		s2c_Logout()
-		{
-			dataLen = (unsigned short)sizeof(s2c_Logout);
-			cmd = MessageType::MT_S2C_LOGOUT;
-			ret = 0;
-		}
-
-		int ret;
-		char userName[32];
-	};
-
-	struct s2c_Join : public DataHeader
-	{
-		s2c_Join()
-		{
-			dataLen = (unsigned short)sizeof(s2c_Join);
-			cmd = MessageType::MT_S2C_JOIN;
-			sock = 0;
-		}
-
-		int sock;
-	};
-
-	struct c2s_Heart : public DataHeader
-	{
-		c2s_Heart()
-		{
-			dataLen = (unsigned short)sizeof(c2s_Heart);
-			cmd = MessageType::MT_C2S_HEART;
-		}
-
-		char data[96];
-	};
-
-	struct s2c_Heart : public DataHeader
-	{
-		s2c_Heart()
-		{
-			dataLen = (unsigned short)sizeof(s2c_Heart);
-			cmd = MessageType::MT_S2C_HEART;
-		}
-
-		char data[96];
-	};
-
-	struct c2s_Body : public DataHeader
-	{
-		c2s_Body()
-		{
-			dataLen = (unsigned short)sizeof(c2s_Body);
-			cmd = MessageType::MT_C2S_BODY;
-		}
-		unsigned short nLen = 0;
-		char data[4096];
-	};
-
-	struct s2c_Body : public DataHeader
-	{
-		s2c_Body()
-		{
-			dataLen = (unsigned short)sizeof(s2c_Body);
-			cmd = MessageType::MT_S2C_BODY;
-		}
-
-		unsigned short nLen = 0;
-		char data[4096];
 	};
 
 }; // end of namespace knet

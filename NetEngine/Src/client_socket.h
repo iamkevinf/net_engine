@@ -8,7 +8,7 @@
 
 namespace knet
 {
-	struct DataHeader;
+	struct MessageBody;
 
 	typedef std::shared_ptr<class ClientSocket> ClientSocketPtr;
 
@@ -23,10 +23,13 @@ namespace knet
 
 		int GetLastPos() const { return m_lastPos; }
 		void SetLastPos(int pos) { m_lastPos = pos; }
+		int GetBufferSize() const { return RECV_BUFFER_SIZE ; }
 
-		int Send(DataHeader* header);
+		int GetPackageLength();
+
+		int Send(MessageBody* header);
 		int SendImm();
-		void SendImm(DataHeader* header);
+		void SendImm(MessageBody* header);
 
 		void ResetHeart() { m_heart = 0; };
 		void ResetLastSend() { m_lastSendDT = 0; }

@@ -6,7 +6,7 @@
 
 namespace knet
 {
-	struct DataHeader;
+	struct MessageBody;
 	class Cell;
 
 	class INetEvent
@@ -14,7 +14,7 @@ namespace knet
 	public:
 		virtual void OnJoin(ClientSocketPtr& client) = 0;
 		virtual void OnExit(ClientSocketPtr& client) = 0;
-		virtual void OnMessage(Cell* cell, ClientSocketPtr& client, DataHeader* header) = 0;
+		virtual void OnMessage(Cell* cell, ClientSocketPtr& client, MessageBody* header) = 0;
 		virtual void OnRecv(ClientSocketPtr& client) = 0;
 	};
 

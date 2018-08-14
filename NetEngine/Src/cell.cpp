@@ -11,7 +11,7 @@
 namespace knet
 {
 
-	Cell::Cell(int id):m_id(id)
+	Cell::Cell(int id) :m_id(id)
 	{
 		m_taskService.SetOwner(this);
 	}
@@ -132,7 +132,7 @@ namespace knet
 			//}
 #endif
 
-			CheckTime();
+			//CheckTime();
 		}
 
 		std::cout << "Cell::OnRun exit " << m_id << std::endl;
@@ -248,56 +248,50 @@ namespace knet
 
 	int Cell::Recv(ClientSocketPtr& clientSock)
 	{
-		const int headerSize = sizeof(DataHeader);
-
-		//接收客户端数据
 		char* szRecv = clientSock->MsgBuffer() + clientSock->GetLastPos();
 		int nLen = (int)recv(clientSock->Sockfd(), szRecv, (RECV_BUFFER_SIZE)-clientSock->GetLastPos(), 0);
-		m_netEvent->OnRecv(clientSock);
-		if (nLen <= 0)
-		{
-			//std::cout << "client <Socket=" << clientSock->Sockfd() << "> exit!" << std::endl;
-			return -1;
-		}
-
-		clientSock->ResetHeart();
-
-		////将收取到的数据拷贝到消息缓冲区
-		//memcpy(clientSock->MsgBuffer() + clientSock->GetLastPos(), m_buffer_recv, nLen);
-		//消息缓冲区的数据尾部位置后移
 		clientSock->SetLastPos(clientSock->GetLastPos() + nLen);
 
-		//判断消息缓冲区的数据长度大于消息头DataHeader长度
-		while (clientSock->GetLastPos() >= headerSize)
-		{
-			//这时就可以知道当前消息的长度
-			DataHeader* header = (DataHeader*)clientSock->MsgBuffer();
+		if (nLen <= 0)
+			return -1;
 
-			//判断消息缓冲区的数据长度大于消息长度
-			if (clientSock->GetLastPos() >= header->dataLen)
-			{
-				//消息缓冲区剩余未处理数据的长度
-				int nSize = clientSock->GetLastPos() - header->dataLen;
-				//处理网络消息
-				OnMessageProc(clientSock, header);
-				//将消息缓冲区剩余未处理数据前移
-				memcpy(clientSock->MsgBuffer(), clientSock->MsgBuffer() + header->dataLen, nSize);
-				//消息缓冲区的数据尾部位置前移
-				clientSock->SetLastPos(nSize);
-			}
-			else
-			{
-				//消息缓冲区剩余数据不够一条完整消息
+		while (true)
+		{
+			if (clientSock->GetLastPos() < MessageBody::HEADER_SIZE)
 				break;
-			}
+
+			int len = clientSock->GetPackageLength();
+			if (len < 0)
+				break;
+
+			MessageBody body;
+			size_t copysize = sizeof(MessageBody) <= clientSock->GetLastPos() ? sizeof(MessageBody) : clientSock->GetLastPos();
+
+			::memcpy(&body, clientSock->MsgBuffer(), copysize);
+
+			int body_size = len + MessageBody::HEADER_LEN_BYTES;
+			if (body_size > clientSock->GetLastPos())
+				body_size = clientSock->GetLastPos();
+
+			::memmove(clientSock->MsgBuffer(), clientSock->MsgBuffer() + body_size, body_size);
+			clientSock->SetLastPos(clientSock->GetLastPos() - body_size);
+
+			OnMessageProc(clientSock, &body);
+
+			bool isFinish = false;
+			if (clientSock->GetLastPos() <= 0)
+				isFinish = true;
+
+			if (isFinish)
+				break;
 		}
-		return 0;
+
+		return nLen;
 	}
 
-
-	void Cell::OnMessageProc(ClientSocketPtr& client, DataHeader* header)
+	void Cell::OnMessageProc(ClientSocketPtr& client, MessageBody* body)
 	{
-		m_netEvent->OnMessage(this, client, header);
+		m_netEvent->OnMessage(this, client, body);
 	}
 
 	void Cell::Close()
@@ -327,7 +321,7 @@ namespace knet
 		m_clientsBuff.push_back(client);
 	}
 
-	void Cell::AddSendTask(ClientSocketPtr& client, DataHeader* header)
+	void Cell::AddSendTask(ClientSocketPtr& client, MessageBody* header)
 	{
 		m_taskService.AddTask([client, header]()
 		{

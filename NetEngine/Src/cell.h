@@ -17,7 +17,7 @@
 
 namespace knet
 {
-	struct DataHeader;
+	struct MessageBody;
 	class INetEvent;
 
 	typedef std::shared_ptr<class Cell> CellPtr;
@@ -39,7 +39,7 @@ namespace knet
 
 		int Recv(ClientSocketPtr& clientSock);
 
-		void OnMessageProc(ClientSocketPtr& client, DataHeader* header);
+		void OnMessageProc(ClientSocketPtr& client, MessageBody* body);
 
 		void Close();
 
@@ -47,7 +47,7 @@ namespace knet
 
 		size_t GetClientSize() const { return m_clients.size() + m_clientsBuff.size(); }
 
-		void AddSendTask(ClientSocketPtr& client, DataHeader* header);
+		void AddSendTask(ClientSocketPtr& client, MessageBody* header);
 
 		const int GetID()const { return m_id; }
 

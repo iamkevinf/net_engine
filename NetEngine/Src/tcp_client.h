@@ -22,7 +22,7 @@
 
 namespace knet
 {
-	struct DataHeader;
+	struct MessageBody;
 
 	class TCPClient
 	{
@@ -34,16 +34,18 @@ namespace knet
 
 		int Conn(const std::string& ip, uint16_t port);
 
-		int Send(DataHeader* msg, int nLen);
+		int Send(MessageBody* body);
 
 		int Recv();
+
+		int GetPackageLength();
 
 		void CloseSock();
 
 		bool OnRun();
 		bool IsRun()const { return m_sock != INVALID_SOCKET && m_isConn; }
 
-		void OnMessageProc(DataHeader* header);
+		void OnMessageProc(MessageBody* header);
 
 	private:
 		SOCKET m_sock = INVALID_SOCKET;

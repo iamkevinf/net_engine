@@ -18,8 +18,6 @@ namespace knet
 	typedef std::shared_ptr<class Cell> CellPtr;
 	typedef std::vector<CellPtr> CellPool;
 
-	struct DataHeader;
-
 	class TCPServer : INetEvent
 	{
 	public:
@@ -42,7 +40,7 @@ namespace knet
 
 		virtual void OnJoin(ClientSocketPtr& client) override;
 		virtual void OnExit(ClientSocketPtr& client) override;
-		virtual void OnMessage(Cell* cell, ClientSocketPtr& client, DataHeader* header) override;
+		virtual void OnMessage(Cell* cell, ClientSocketPtr& client, MessageBody* header) override;
 		virtual void OnRecv(ClientSocketPtr& client) override;
 
 	protected:
