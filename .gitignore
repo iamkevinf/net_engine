@@ -4,6 +4,12 @@
 .vs/
 .vscode/
 
+UnityLockStepDemo/.vs
+UnityLockStepDemo/Library
+UnityLockStepDemo/Temp
+UnityLockStepDemo/*.csproj
+UnityLockStepDemo/*sln
+
 # Prerequisites
 *.d
 
