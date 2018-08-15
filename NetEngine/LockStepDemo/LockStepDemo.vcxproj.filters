@@ -316,6 +316,15 @@
     <ClCompile Include="..\Src\google\protobuf\util\internal\utility.cc">
       <Filter>protobuf\util\internal</Filter>
     </ClCompile>
+    <ClCompile Include="Proto\message_type.pb.cc">
+      <Filter>Proto</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -755,6 +764,15 @@
     </ClInclude>
     <ClInclude Include="..\Src\google\protobuf\util\internal\utility.h">
       <Filter>protobuf\util\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Proto\message_type.pb.h">
+      <Filter>Proto</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

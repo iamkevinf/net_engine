@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+enum EMessageType
+{
+	ENone = 0;
+
+	ESCFrameInit = 100;
+	ECSFrame = 101;
+	ESCFrame = 102;
+
+	ECSLogin = 10001;
+	ESCLogin = 10002;	
+
+	EMax = 999999;
+}

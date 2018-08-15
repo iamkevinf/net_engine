@@ -235,8 +235,11 @@
     <ClCompile Include="..\Src\tcp_client.cpp" />
     <ClCompile Include="..\Src\tcp_server.cpp" />
     <ClCompile Include="LockStepServer.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Proto\message_type.pb.cc" />
     <ClCompile Include="Proto\player.pb.cc" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\cell.h" />
@@ -383,8 +386,11 @@
     <ClInclude Include="..\Src\semaphore.h" />
     <ClInclude Include="..\Src\tcp_client.h" />
     <ClInclude Include="..\Src\tcp_server.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Proto\message_type.pb.h" />
     <ClInclude Include="Proto\player.pb.h" />
     <ClInclude Include="Server.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

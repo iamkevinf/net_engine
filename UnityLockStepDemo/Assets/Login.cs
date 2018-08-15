@@ -6,6 +6,7 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
+using proto.message_type;
 using proto.player;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace TVR
 
         void Start()
         {
-            MessageCenter.Instance.AddListener(101, OnLogin);
+            MessageCenter.Instance.AddListener((int)EMessageType.ESCLogin, OnLogin);
         }
 
         void Update()
@@ -43,7 +44,7 @@ namespace TVR
 
             MessageBody body = new MessageBody();
             body.size = (uint)(size + MessageBody.HEADER_TYPE_BYTES);
-            body.type = 100;
+            body.type = (ushort)EMessageType.ECSLogin;
             body.data = bytes;
 
             TCPClient.Instance.OnConnect();

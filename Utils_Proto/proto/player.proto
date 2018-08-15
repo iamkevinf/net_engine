@@ -10,3 +10,29 @@ message SCLogin
 {
 	optional bool Ret = 1;
 }
+
+message SCFrameInit
+{
+	optional uint64 CurFrameID = 1;
+	optional uint64 NxtFrameID = 2;
+}
+
+message UserFrame
+{
+	optional uint32 UUID = 1;
+	repeated uint32 KeyInfo = 2;
+}
+
+message CSFrame
+{
+	optional uint32 UUID = 1;
+	optional uint64 FrameID = 2;
+	repeated uint32 KeyInfo = 3;
+}
+
+message SCFrame
+{
+	optional uint32 FrameID = 1;
+	optional uint32 NextFrameID = 2;
+	repeated UserFrame Users = 3;
+}

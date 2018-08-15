@@ -4,6 +4,7 @@
 #endif // _WIN32
 
 #include "server.h"
+#include "World.h"
 
 #include <iostream>
 #include <string.h>
@@ -20,6 +21,8 @@ int main()
 {
 	int thread_count = 1;
 
+	World::GetInstance()->Start();
+
 	Server server;
 	server.CreateSock();
 	server.Bind("", port);
@@ -29,9 +32,13 @@ int main()
 	
 	while (true)
 	{
-		if(getchar() == 'q')
-			server.Close();
+		World::GetInstance()->Tick();
+
+		std::chrono::milliseconds t(100);
+		std::this_thread::sleep_for(t);
 	}
+
+	server.Close();
 
 	std::cout << "Server::Exit!" << std::endl;
 	return 0;

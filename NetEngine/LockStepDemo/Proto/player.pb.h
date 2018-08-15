@@ -36,7 +36,7 @@ namespace protobuf_player_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[2];
+  static const ::google::protobuf::internal::ParseTable schema[6];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -46,17 +46,41 @@ void InitDefaultsCSLoginImpl();
 void InitDefaultsCSLogin();
 void InitDefaultsSCLoginImpl();
 void InitDefaultsSCLogin();
+void InitDefaultsSCFrameInitImpl();
+void InitDefaultsSCFrameInit();
+void InitDefaultsUserFrameImpl();
+void InitDefaultsUserFrame();
+void InitDefaultsCSFrameImpl();
+void InitDefaultsCSFrame();
+void InitDefaultsSCFrameImpl();
+void InitDefaultsSCFrame();
 inline void InitDefaults() {
   InitDefaultsCSLogin();
   InitDefaultsSCLogin();
+  InitDefaultsSCFrameInit();
+  InitDefaultsUserFrame();
+  InitDefaultsCSFrame();
+  InitDefaultsSCFrame();
 }
 }  // namespace protobuf_player_2eproto
+class CSFrame;
+class CSFrameDefaultTypeInternal;
+extern CSFrameDefaultTypeInternal _CSFrame_default_instance_;
 class CSLogin;
 class CSLoginDefaultTypeInternal;
 extern CSLoginDefaultTypeInternal _CSLogin_default_instance_;
+class SCFrame;
+class SCFrameDefaultTypeInternal;
+extern SCFrameDefaultTypeInternal _SCFrame_default_instance_;
+class SCFrameInit;
+class SCFrameInitDefaultTypeInternal;
+extern SCFrameInitDefaultTypeInternal _SCFrameInit_default_instance_;
 class SCLogin;
 class SCLoginDefaultTypeInternal;
 extern SCLoginDefaultTypeInternal _SCLogin_default_instance_;
+class UserFrame;
+class UserFrameDefaultTypeInternal;
+extern UserFrameDefaultTypeInternal _UserFrame_default_instance_;
 
 // ===================================================================
 
@@ -304,6 +328,515 @@ class SCLogin : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   friend struct ::protobuf_player_2eproto::TableStruct;
   friend void ::protobuf_player_2eproto::InitDefaultsSCLoginImpl();
 };
+// -------------------------------------------------------------------
+
+class SCFrameInit : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SCFrameInit) */ {
+ public:
+  SCFrameInit();
+  virtual ~SCFrameInit();
+
+  SCFrameInit(const SCFrameInit& from);
+
+  inline SCFrameInit& operator=(const SCFrameInit& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  SCFrameInit(SCFrameInit&& from) noexcept
+    : SCFrameInit() {
+    *this = ::std::move(from);
+  }
+
+  inline SCFrameInit& operator=(SCFrameInit&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SCFrameInit& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SCFrameInit* internal_default_instance() {
+    return reinterpret_cast<const SCFrameInit*>(
+               &_SCFrameInit_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    2;
+
+  void Swap(SCFrameInit* other);
+  friend void swap(SCFrameInit& a, SCFrameInit& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SCFrameInit* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  SCFrameInit* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const SCFrameInit& from);
+  void MergeFrom(const SCFrameInit& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(SCFrameInit* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint64 CurFrameID = 1;
+  bool has_curframeid() const;
+  void clear_curframeid();
+  static const int kCurFrameIDFieldNumber = 1;
+  ::google::protobuf::uint64 curframeid() const;
+  void set_curframeid(::google::protobuf::uint64 value);
+
+  // optional uint64 NxtFrameID = 2;
+  bool has_nxtframeid() const;
+  void clear_nxtframeid();
+  static const int kNxtFrameIDFieldNumber = 2;
+  ::google::protobuf::uint64 nxtframeid() const;
+  void set_nxtframeid(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:SCFrameInit)
+ private:
+  void set_has_curframeid();
+  void clear_has_curframeid();
+  void set_has_nxtframeid();
+  void clear_has_nxtframeid();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::uint64 curframeid_;
+  ::google::protobuf::uint64 nxtframeid_;
+  friend struct ::protobuf_player_2eproto::TableStruct;
+  friend void ::protobuf_player_2eproto::InitDefaultsSCFrameInitImpl();
+};
+// -------------------------------------------------------------------
+
+class UserFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:UserFrame) */ {
+ public:
+  UserFrame();
+  virtual ~UserFrame();
+
+  UserFrame(const UserFrame& from);
+
+  inline UserFrame& operator=(const UserFrame& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  UserFrame(UserFrame&& from) noexcept
+    : UserFrame() {
+    *this = ::std::move(from);
+  }
+
+  inline UserFrame& operator=(UserFrame&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UserFrame& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const UserFrame* internal_default_instance() {
+    return reinterpret_cast<const UserFrame*>(
+               &_UserFrame_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    3;
+
+  void Swap(UserFrame* other);
+  friend void swap(UserFrame& a, UserFrame& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline UserFrame* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  UserFrame* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const UserFrame& from);
+  void MergeFrom(const UserFrame& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(UserFrame* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated uint32 KeyInfo = 2;
+  int keyinfo_size() const;
+  void clear_keyinfo();
+  static const int kKeyInfoFieldNumber = 2;
+  ::google::protobuf::uint32 keyinfo(int index) const;
+  void set_keyinfo(int index, ::google::protobuf::uint32 value);
+  void add_keyinfo(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      keyinfo() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_keyinfo();
+
+  // optional uint32 UUID = 1;
+  bool has_uuid() const;
+  void clear_uuid();
+  static const int kUUIDFieldNumber = 1;
+  ::google::protobuf::uint32 uuid() const;
+  void set_uuid(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:UserFrame)
+ private:
+  void set_has_uuid();
+  void clear_has_uuid();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > keyinfo_;
+  ::google::protobuf::uint32 uuid_;
+  friend struct ::protobuf_player_2eproto::TableStruct;
+  friend void ::protobuf_player_2eproto::InitDefaultsUserFrameImpl();
+};
+// -------------------------------------------------------------------
+
+class CSFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CSFrame) */ {
+ public:
+  CSFrame();
+  virtual ~CSFrame();
+
+  CSFrame(const CSFrame& from);
+
+  inline CSFrame& operator=(const CSFrame& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  CSFrame(CSFrame&& from) noexcept
+    : CSFrame() {
+    *this = ::std::move(from);
+  }
+
+  inline CSFrame& operator=(CSFrame&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CSFrame& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const CSFrame* internal_default_instance() {
+    return reinterpret_cast<const CSFrame*>(
+               &_CSFrame_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    4;
+
+  void Swap(CSFrame* other);
+  friend void swap(CSFrame& a, CSFrame& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline CSFrame* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  CSFrame* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const CSFrame& from);
+  void MergeFrom(const CSFrame& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(CSFrame* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated uint32 KeyInfo = 3;
+  int keyinfo_size() const;
+  void clear_keyinfo();
+  static const int kKeyInfoFieldNumber = 3;
+  ::google::protobuf::uint32 keyinfo(int index) const;
+  void set_keyinfo(int index, ::google::protobuf::uint32 value);
+  void add_keyinfo(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      keyinfo() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_keyinfo();
+
+  // optional uint64 FrameID = 2;
+  bool has_frameid() const;
+  void clear_frameid();
+  static const int kFrameIDFieldNumber = 2;
+  ::google::protobuf::uint64 frameid() const;
+  void set_frameid(::google::protobuf::uint64 value);
+
+  // optional uint32 UUID = 1;
+  bool has_uuid() const;
+  void clear_uuid();
+  static const int kUUIDFieldNumber = 1;
+  ::google::protobuf::uint32 uuid() const;
+  void set_uuid(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:CSFrame)
+ private:
+  void set_has_uuid();
+  void clear_has_uuid();
+  void set_has_frameid();
+  void clear_has_frameid();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > keyinfo_;
+  ::google::protobuf::uint64 frameid_;
+  ::google::protobuf::uint32 uuid_;
+  friend struct ::protobuf_player_2eproto::TableStruct;
+  friend void ::protobuf_player_2eproto::InitDefaultsCSFrameImpl();
+};
+// -------------------------------------------------------------------
+
+class SCFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SCFrame) */ {
+ public:
+  SCFrame();
+  virtual ~SCFrame();
+
+  SCFrame(const SCFrame& from);
+
+  inline SCFrame& operator=(const SCFrame& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  SCFrame(SCFrame&& from) noexcept
+    : SCFrame() {
+    *this = ::std::move(from);
+  }
+
+  inline SCFrame& operator=(SCFrame&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SCFrame& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SCFrame* internal_default_instance() {
+    return reinterpret_cast<const SCFrame*>(
+               &_SCFrame_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    5;
+
+  void Swap(SCFrame* other);
+  friend void swap(SCFrame& a, SCFrame& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SCFrame* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  SCFrame* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const SCFrame& from);
+  void MergeFrom(const SCFrame& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(SCFrame* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .UserFrame Users = 3;
+  int users_size() const;
+  void clear_users();
+  static const int kUsersFieldNumber = 3;
+  const ::UserFrame& users(int index) const;
+  ::UserFrame* mutable_users(int index);
+  ::UserFrame* add_users();
+  ::google::protobuf::RepeatedPtrField< ::UserFrame >*
+      mutable_users();
+  const ::google::protobuf::RepeatedPtrField< ::UserFrame >&
+      users() const;
+
+  // optional uint32 FrameID = 1;
+  bool has_frameid() const;
+  void clear_frameid();
+  static const int kFrameIDFieldNumber = 1;
+  ::google::protobuf::uint32 frameid() const;
+  void set_frameid(::google::protobuf::uint32 value);
+
+  // optional uint32 NextFrameID = 2;
+  bool has_nextframeid() const;
+  void clear_nextframeid();
+  static const int kNextFrameIDFieldNumber = 2;
+  ::google::protobuf::uint32 nextframeid() const;
+  void set_nextframeid(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:SCFrame)
+ private:
+  void set_has_frameid();
+  void clear_has_frameid();
+  void set_has_nextframeid();
+  void clear_has_nextframeid();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::UserFrame > users_;
+  ::google::protobuf::uint32 frameid_;
+  ::google::protobuf::uint32 nextframeid_;
+  friend struct ::protobuf_player_2eproto::TableStruct;
+  friend void ::protobuf_player_2eproto::InitDefaultsSCFrameImpl();
+};
 // ===================================================================
 
 
@@ -469,9 +1002,291 @@ inline void SCLogin::set_ret(bool value) {
   // @@protoc_insertion_point(field_set:SCLogin.Ret)
 }
 
+// -------------------------------------------------------------------
+
+// SCFrameInit
+
+// optional uint64 CurFrameID = 1;
+inline bool SCFrameInit::has_curframeid() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void SCFrameInit::set_has_curframeid() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void SCFrameInit::clear_has_curframeid() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void SCFrameInit::clear_curframeid() {
+  curframeid_ = GOOGLE_ULONGLONG(0);
+  clear_has_curframeid();
+}
+inline ::google::protobuf::uint64 SCFrameInit::curframeid() const {
+  // @@protoc_insertion_point(field_get:SCFrameInit.CurFrameID)
+  return curframeid_;
+}
+inline void SCFrameInit::set_curframeid(::google::protobuf::uint64 value) {
+  set_has_curframeid();
+  curframeid_ = value;
+  // @@protoc_insertion_point(field_set:SCFrameInit.CurFrameID)
+}
+
+// optional uint64 NxtFrameID = 2;
+inline bool SCFrameInit::has_nxtframeid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void SCFrameInit::set_has_nxtframeid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void SCFrameInit::clear_has_nxtframeid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void SCFrameInit::clear_nxtframeid() {
+  nxtframeid_ = GOOGLE_ULONGLONG(0);
+  clear_has_nxtframeid();
+}
+inline ::google::protobuf::uint64 SCFrameInit::nxtframeid() const {
+  // @@protoc_insertion_point(field_get:SCFrameInit.NxtFrameID)
+  return nxtframeid_;
+}
+inline void SCFrameInit::set_nxtframeid(::google::protobuf::uint64 value) {
+  set_has_nxtframeid();
+  nxtframeid_ = value;
+  // @@protoc_insertion_point(field_set:SCFrameInit.NxtFrameID)
+}
+
+// -------------------------------------------------------------------
+
+// UserFrame
+
+// optional uint32 UUID = 1;
+inline bool UserFrame::has_uuid() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void UserFrame::set_has_uuid() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void UserFrame::clear_has_uuid() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void UserFrame::clear_uuid() {
+  uuid_ = 0u;
+  clear_has_uuid();
+}
+inline ::google::protobuf::uint32 UserFrame::uuid() const {
+  // @@protoc_insertion_point(field_get:UserFrame.UUID)
+  return uuid_;
+}
+inline void UserFrame::set_uuid(::google::protobuf::uint32 value) {
+  set_has_uuid();
+  uuid_ = value;
+  // @@protoc_insertion_point(field_set:UserFrame.UUID)
+}
+
+// repeated uint32 KeyInfo = 2;
+inline int UserFrame::keyinfo_size() const {
+  return keyinfo_.size();
+}
+inline void UserFrame::clear_keyinfo() {
+  keyinfo_.Clear();
+}
+inline ::google::protobuf::uint32 UserFrame::keyinfo(int index) const {
+  // @@protoc_insertion_point(field_get:UserFrame.KeyInfo)
+  return keyinfo_.Get(index);
+}
+inline void UserFrame::set_keyinfo(int index, ::google::protobuf::uint32 value) {
+  keyinfo_.Set(index, value);
+  // @@protoc_insertion_point(field_set:UserFrame.KeyInfo)
+}
+inline void UserFrame::add_keyinfo(::google::protobuf::uint32 value) {
+  keyinfo_.Add(value);
+  // @@protoc_insertion_point(field_add:UserFrame.KeyInfo)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+UserFrame::keyinfo() const {
+  // @@protoc_insertion_point(field_list:UserFrame.KeyInfo)
+  return keyinfo_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+UserFrame::mutable_keyinfo() {
+  // @@protoc_insertion_point(field_mutable_list:UserFrame.KeyInfo)
+  return &keyinfo_;
+}
+
+// -------------------------------------------------------------------
+
+// CSFrame
+
+// optional uint32 UUID = 1;
+inline bool CSFrame::has_uuid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void CSFrame::set_has_uuid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void CSFrame::clear_has_uuid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void CSFrame::clear_uuid() {
+  uuid_ = 0u;
+  clear_has_uuid();
+}
+inline ::google::protobuf::uint32 CSFrame::uuid() const {
+  // @@protoc_insertion_point(field_get:CSFrame.UUID)
+  return uuid_;
+}
+inline void CSFrame::set_uuid(::google::protobuf::uint32 value) {
+  set_has_uuid();
+  uuid_ = value;
+  // @@protoc_insertion_point(field_set:CSFrame.UUID)
+}
+
+// optional uint64 FrameID = 2;
+inline bool CSFrame::has_frameid() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CSFrame::set_has_frameid() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CSFrame::clear_has_frameid() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CSFrame::clear_frameid() {
+  frameid_ = GOOGLE_ULONGLONG(0);
+  clear_has_frameid();
+}
+inline ::google::protobuf::uint64 CSFrame::frameid() const {
+  // @@protoc_insertion_point(field_get:CSFrame.FrameID)
+  return frameid_;
+}
+inline void CSFrame::set_frameid(::google::protobuf::uint64 value) {
+  set_has_frameid();
+  frameid_ = value;
+  // @@protoc_insertion_point(field_set:CSFrame.FrameID)
+}
+
+// repeated uint32 KeyInfo = 3;
+inline int CSFrame::keyinfo_size() const {
+  return keyinfo_.size();
+}
+inline void CSFrame::clear_keyinfo() {
+  keyinfo_.Clear();
+}
+inline ::google::protobuf::uint32 CSFrame::keyinfo(int index) const {
+  // @@protoc_insertion_point(field_get:CSFrame.KeyInfo)
+  return keyinfo_.Get(index);
+}
+inline void CSFrame::set_keyinfo(int index, ::google::protobuf::uint32 value) {
+  keyinfo_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CSFrame.KeyInfo)
+}
+inline void CSFrame::add_keyinfo(::google::protobuf::uint32 value) {
+  keyinfo_.Add(value);
+  // @@protoc_insertion_point(field_add:CSFrame.KeyInfo)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+CSFrame::keyinfo() const {
+  // @@protoc_insertion_point(field_list:CSFrame.KeyInfo)
+  return keyinfo_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+CSFrame::mutable_keyinfo() {
+  // @@protoc_insertion_point(field_mutable_list:CSFrame.KeyInfo)
+  return &keyinfo_;
+}
+
+// -------------------------------------------------------------------
+
+// SCFrame
+
+// optional uint32 FrameID = 1;
+inline bool SCFrame::has_frameid() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void SCFrame::set_has_frameid() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void SCFrame::clear_has_frameid() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void SCFrame::clear_frameid() {
+  frameid_ = 0u;
+  clear_has_frameid();
+}
+inline ::google::protobuf::uint32 SCFrame::frameid() const {
+  // @@protoc_insertion_point(field_get:SCFrame.FrameID)
+  return frameid_;
+}
+inline void SCFrame::set_frameid(::google::protobuf::uint32 value) {
+  set_has_frameid();
+  frameid_ = value;
+  // @@protoc_insertion_point(field_set:SCFrame.FrameID)
+}
+
+// optional uint32 NextFrameID = 2;
+inline bool SCFrame::has_nextframeid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void SCFrame::set_has_nextframeid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void SCFrame::clear_has_nextframeid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void SCFrame::clear_nextframeid() {
+  nextframeid_ = 0u;
+  clear_has_nextframeid();
+}
+inline ::google::protobuf::uint32 SCFrame::nextframeid() const {
+  // @@protoc_insertion_point(field_get:SCFrame.NextFrameID)
+  return nextframeid_;
+}
+inline void SCFrame::set_nextframeid(::google::protobuf::uint32 value) {
+  set_has_nextframeid();
+  nextframeid_ = value;
+  // @@protoc_insertion_point(field_set:SCFrame.NextFrameID)
+}
+
+// repeated .UserFrame Users = 3;
+inline int SCFrame::users_size() const {
+  return users_.size();
+}
+inline void SCFrame::clear_users() {
+  users_.Clear();
+}
+inline const ::UserFrame& SCFrame::users(int index) const {
+  // @@protoc_insertion_point(field_get:SCFrame.Users)
+  return users_.Get(index);
+}
+inline ::UserFrame* SCFrame::mutable_users(int index) {
+  // @@protoc_insertion_point(field_mutable:SCFrame.Users)
+  return users_.Mutable(index);
+}
+inline ::UserFrame* SCFrame::add_users() {
+  // @@protoc_insertion_point(field_add:SCFrame.Users)
+  return users_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::UserFrame >*
+SCFrame::mutable_users() {
+  // @@protoc_insertion_point(field_mutable_list:SCFrame.Users)
+  return &users_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::UserFrame >&
+SCFrame::users() const {
+  // @@protoc_insertion_point(field_list:SCFrame.Users)
+  return users_;
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 
