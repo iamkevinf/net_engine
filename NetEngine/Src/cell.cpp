@@ -118,7 +118,7 @@ namespace knet
 			//}
 
 			ReadData(fdRead);
-			WriteData(fdWrite);
+			//WriteData(fdWrite);
 			//WriteData(fdExcp);
 
 #if _WIN32

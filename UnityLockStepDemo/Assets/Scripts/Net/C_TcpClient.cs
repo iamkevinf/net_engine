@@ -27,7 +27,7 @@ namespace TVR
         protected byte[] m_sendData = new byte[SEND_SOCKET_BUFFER_SIZE];
         protected IoBuffer m_sendBuffer = ByteBuffer.Allocate(SEND_SOCKET_BUFFER_SIZE);
 
-        protected System.Collections.Generic.Queue<MessageBody> m_recievedMsgs = new System.Collections.Generic.Queue<MessageBody>();
+        protected System.Collections.Generic.List<MessageBody> m_recievedMsgs = new System.Collections.Generic.List<MessageBody>();
         protected System.Collections.Generic.Queue<MessageBody> m_sendMsgs = new System.Collections.Generic.Queue<MessageBody>();
 
         //测试连线使用
@@ -269,16 +269,14 @@ namespace TVR
                 }
 
                 MessageBody msg = new MessageBody();
-                CPacket.PopPacketLength(m_readBuffer);
+                msg.size = (uint)CPacket.PopPacketLength(m_readBuffer);
                 msg.type = (ushort)CPacket.PopPacketType(m_readBuffer);
                 byte[] data = new byte[len - CPacket.HEADER_TYPE_BYTES];
                 m_readBuffer.Get(data, 0, len - CPacket.HEADER_TYPE_BYTES);
                 msg.data = data;
 
-                lock(this)
-                {
-                    m_recievedMsgs.Enqueue(msg);
-                }
+                DEBUG.Log("---------GetMsg::Msg type = {0}, size = {1}", msg.type, msg.size);
+                m_recievedMsgs.Add(msg);
 
                 bool isFinish = false;
                 if (m_readBuffer.HasRemaining)
@@ -376,11 +374,12 @@ namespace TVR
 
         private void HandleRecieveMsg()
         {
-            lock(this)
+            lock((m_recievedMsgs as System.Collections.ICollection).SyncRoot)
             {
                 while (m_recievedMsgs.Count > 0)
                 {
-                    MessageBody msg = m_recievedMsgs.Dequeue();
+                    MessageBody msg = m_recievedMsgs[0];
+                    m_recievedMsgs.RemoveAt(0);
 
                     if (msg != null)
                         OnMessageProc(msg);

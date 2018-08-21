@@ -34,7 +34,7 @@ int main()
 	{
 		World::GetInstance()->Tick();
 
-		std::chrono::milliseconds t(100);
+		std::chrono::milliseconds t(1);
 		std::this_thread::sleep_for(t);
 	}
 

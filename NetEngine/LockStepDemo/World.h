@@ -8,6 +8,7 @@
 
 #include "message.hpp"
 #include "client_socket.h"
+#include "net_time.h"
 
 #include "Proto/player.pb.h"
 
@@ -42,6 +43,7 @@ public:
 
 	void Start();
 	void Tick();
+	void Turn();
 
 	void PushMsg(const knet::ClientSocketPtr& client, knet::MessageBody* msg);
 	void MessageProc();
@@ -86,6 +88,8 @@ private:
 
 	UID2KeyPool m_curFrameInfo;
 	std::map<uint64_t, UID2KeyPool> m_oldFrameInfo;
+
+	knet::Time m_timer;
 };
 
 

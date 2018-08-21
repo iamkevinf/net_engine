@@ -38,6 +38,7 @@ namespace TVR
         void Start()
         {
             MessageCenter.Instance.AddListener((int)EMessageType.ESCLogin, OnLogin);
+            MessageCenter.Instance.AddListener((int)EMessageType.ESCReady, OnReady);
             MessageCenter.Instance.AddListener((int)EMessageType.ESCFrameInit, OnFrameInit);
             MessageCenter.Instance.AddListener((int)EMessageType.ESCFrame, OnFrameTurn);
 
@@ -99,6 +100,23 @@ namespace TVR
             DEBUG.Log("OnLogin:: UUID={0}", ret.UUID);
         }
 
+
+        void OnReady(params object[] args)
+        {
+            MessageBody body = args[0] as MessageBody;
+            if (body == null)
+                return;
+
+            SCReady ret = ProtoSerialize.DeSerialize<SCReady>(body.data);
+            if (ret == null)
+            {
+                DEBUG.Error("Invalid Proto");
+                return;
+            }
+
+            DEBUG.Log("OnReady");
+        }
+
         void OnFrameInit(params object[] args)
         {
             MessageBody body = args[0] as MessageBody;
@@ -150,7 +168,7 @@ namespace TVR
 
             FrameTurn(frameInfo);
             CurFrameID = frameInfo.NxtFrameID;
-            DEBUG.Log("OnFrameTurn:: CurFrameID={0}", CurFrameID);
+           // DEBUG.Log("OnFrameTurn:: CurFrameID={0}, Size={1}", CurFrameID, body.size);
         }
 
         public void PlayerReady()
@@ -242,7 +260,7 @@ namespace TVR
                 if (!PlayerManager.Instance.GetPlayer(uid, ref player))
                     continue;
 
-                for(int i =0; i < iter.Value.Count; ++i)
+                for (int i =0; i < iter.Value.Count; ++i)
                 {
                     EPlayerEvent e = iter.Value[i];
                     switch(e)
@@ -268,7 +286,7 @@ namespace TVR
 
         void FrameTurn(FrameInfo frameInfo)
         {
-            DEBUG.Log("CurFrameID = {0} frameInfo.CurFrameID = {1}, frameInfo.UUID2FrameInfoPool.Num = {2}", CurFrameID, frameInfo.CurFrameID, frameInfo.UUID2FrameInfoPool.Count);
+            //DEBUG.Log("CurFrameID = {0} frameInfo.CurFrameID = {1}, frameInfo.UUID2FrameInfoPool.Num = {2}", CurFrameID, frameInfo.CurFrameID, frameInfo.UUID2FrameInfoPool.Count);
             if(CurFrameID == frameInfo.CurFrameID)
             {
                 // 上报

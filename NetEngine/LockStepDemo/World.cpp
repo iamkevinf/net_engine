@@ -16,13 +16,21 @@ World::~World()
 
 void World::Start()
 {
-
+	Tick();
 }
 
 void World::Tick()
 {
 	MessageProc();
 
+	auto curTime = m_timer.GetElapsedTimeMS();
+	if (curTime > 100)
+		Turn();
+}
+
+void World::Turn()
+{
+	m_timer.Update();
 	if (m_gameState == EGameState::EGS_RUNNING)
 	{
 		FrameTurn();
