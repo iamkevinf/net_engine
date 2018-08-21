@@ -275,7 +275,6 @@ namespace TVR
                 m_readBuffer.Get(data, 0, len - CPacket.HEADER_TYPE_BYTES);
                 msg.data = data;
 
-                DEBUG.Log("---------GetMsg::Msg type = {0}, size = {1}", msg.type, msg.size);
                 m_recievedMsgs.Add(msg);
 
                 bool isFinish = false;
