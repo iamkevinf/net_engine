@@ -36,30 +36,6 @@ namespace TVR
         {
             return (int)size + HEADER_LEN_BYTES;
         }
-
-        public byte[] Serialize()
-        {
-            CIOData iodata = CIOData.GetCIOData();
-            iodata.PushData<System.UInt32>(size);
-            iodata.PushData<System.UInt16>(type);
-
-            iodata.PushBytes(data, (int)size - HEADER_TYPE_BYTES);
-
-            byte[] ret = new byte[iodata.Size];
-            iodata.GetData(ref ret);
-            CIOData.BackCIOData(iodata);
-            return ret;
-        }
-
-        public void UnSerialize(byte[] buffer)
-        {
-            CIOData iodata = CIOData.GetCIOData();
-            iodata.SetData(buffer);
-            size = iodata.PopUInt();
-            type = iodata.PopWord();
-            data = iodata.PopAllData();
-            CIOData.BackCIOData(iodata);
-        }
     }
 
 } // end of namespace TVR

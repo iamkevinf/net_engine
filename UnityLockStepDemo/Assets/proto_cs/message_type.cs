@@ -32,6 +32,12 @@ namespace proto.message_type
       [global::ProtoBuf.ProtoEnum(Name=@"ESCLogin", Value=10002)]
       ESCLogin = 10002,
             
+      [global::ProtoBuf.ProtoEnum(Name=@"ECSReady", Value=11001)]
+      ECSReady = 11001,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"ESCReady", Value=11002)]
+      ESCReady = 11002,
+            
       [global::ProtoBuf.ProtoEnum(Name=@"EMax", Value=999999)]
       EMax = 999999
     }

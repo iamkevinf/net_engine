@@ -20,23 +20,43 @@ namespace TVR
        /////////////////////
     }
 
-    public class MessageCenter : ISingleton<MessageCenter>
+    public class MessageCenter
     {
+        private static MessageCenter m_instance = null;
+        public static MessageCenter Instance
+        {
+            get
+            {
+                if(m_instance == null)
+                {
+                    m_instance = new MessageCenter();
+                    m_instance.InitInstance();
+                }
+
+                return m_instance;
+            }
+        }
+
         protected MessageCenter() { }
 
         private Dictionary<int, Delegate> m_Listeners = null; 
 
-        protected override void InitInstance()
+        protected void InitInstance()
         {
             m_Listeners = new Dictionary<int, Delegate>();
         }
 
-        protected override void ClearInstance()
+        protected void ClearInstance()
         {
             m_Listeners.Clear();
             m_Listeners = null;
 
             m_instance = null;
+        }
+
+        public void Fini()
+        {
+            ClearInstance();
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 #define __WORLD_H__
 
 #include <map>
+#include <vector>
 #include <string>
 #include <queue>
 
@@ -14,6 +15,13 @@
 
 #define REGISTER_CMD_CALLBACK(cmdId, func) \
     m_command[uint16_t(cmdId)]  = std::bind(&World::func, this, std::placeholders::_1, std::placeholders::_2)
+
+enum class EGameState
+{
+	EGS_Ready = 1,
+	EGS_RUNNING = 2,
+	EGS_OVER = 3
+};
 
 class World
 {
@@ -30,6 +38,7 @@ public:
 	typedef std::map<SOCKET, PlayerPtr> MapConnections;
 	typedef std::function<bool(PlayerPtr&, knet::MessageBody*)> ServiceFunc;
 	typedef std::queue<MsgNode> MsgQueue;
+	typedef std::map<uint32_t, std::vector<uint32_t>> UID2KeyPool;
 
 	void Start();
 	void Tick();
@@ -39,8 +48,15 @@ public:
 	void DispatchCommand(MsgNode node);
 
 	PlayerPtr GetUser(SOCKET id);
+	uint32_t GetUserSize()const { return m_sessions.size(); }
 	bool RegisterUser(const knet::ClientSocketPtr& client);
 	bool DeleteUser(const knet::ClientSocketPtr& client);
+
+	void Broadcast(knet::MessageBody* msg);
+	void Broadcast_but(knet::MessageBody* msg, const PlayerPtr& client);
+
+	void FrameInit(const PlayerPtr& player);
+	void FrameTurn();
 
 public:
 
@@ -52,10 +68,14 @@ public:
 
 public:
 	bool HandleLogin(PlayerPtr& player, knet::MessageBody* msg);
+	bool HandleReady(PlayerPtr& player, knet::MessageBody* msg);
+	bool HandleFrame(PlayerPtr& player, knet::MessageBody* msg);
 
 private:
 	MapConnections m_sessions;
 	MsgQueue m_msgQueue;
+	EGameState m_gameState = EGameState::EGS_Ready;
+	uint32_t m_readyCount = 0;
 
 	std::map<uint16_t, ServiceFunc> m_command;
 
@@ -63,6 +83,9 @@ private:
 	uint64_t m_nxtFrameID = 0;
 
 	uint32_t m_uuid_counter = 0;
+
+	UID2KeyPool m_curFrameInfo;
+	std::map<uint64_t, UID2KeyPool> m_oldFrameInfo;
 };
 
 

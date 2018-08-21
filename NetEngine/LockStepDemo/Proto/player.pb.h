@@ -36,7 +36,7 @@ namespace protobuf_player_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[6];
+  static const ::google::protobuf::internal::ParseTable schema[8];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -46,6 +46,10 @@ void InitDefaultsCSLoginImpl();
 void InitDefaultsCSLogin();
 void InitDefaultsSCLoginImpl();
 void InitDefaultsSCLogin();
+void InitDefaultsCSReadyImpl();
+void InitDefaultsCSReady();
+void InitDefaultsSCReadyImpl();
+void InitDefaultsSCReady();
 void InitDefaultsSCFrameInitImpl();
 void InitDefaultsSCFrameInit();
 void InitDefaultsUserFrameImpl();
@@ -57,6 +61,8 @@ void InitDefaultsSCFrame();
 inline void InitDefaults() {
   InitDefaultsCSLogin();
   InitDefaultsSCLogin();
+  InitDefaultsCSReady();
+  InitDefaultsSCReady();
   InitDefaultsSCFrameInit();
   InitDefaultsUserFrame();
   InitDefaultsCSFrame();
@@ -69,6 +75,9 @@ extern CSFrameDefaultTypeInternal _CSFrame_default_instance_;
 class CSLogin;
 class CSLoginDefaultTypeInternal;
 extern CSLoginDefaultTypeInternal _CSLogin_default_instance_;
+class CSReady;
+class CSReadyDefaultTypeInternal;
+extern CSReadyDefaultTypeInternal _CSReady_default_instance_;
 class SCFrame;
 class SCFrameDefaultTypeInternal;
 extern SCFrameDefaultTypeInternal _SCFrame_default_instance_;
@@ -78,6 +87,9 @@ extern SCFrameInitDefaultTypeInternal _SCFrameInit_default_instance_;
 class SCLogin;
 class SCLoginDefaultTypeInternal;
 extern SCLoginDefaultTypeInternal _SCLogin_default_instance_;
+class SCReady;
+class SCReadyDefaultTypeInternal;
+extern SCReadyDefaultTypeInternal _SCReady_default_instance_;
 class UserFrame;
 class UserFrameDefaultTypeInternal;
 extern UserFrameDefaultTypeInternal _UserFrame_default_instance_;
@@ -173,48 +185,12 @@ class CSLogin : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 
   // accessors -------------------------------------------------------
 
-  // optional string UserName = 1;
-  bool has_username() const;
-  void clear_username();
-  static const int kUserNameFieldNumber = 1;
-  const ::std::string& username() const;
-  void set_username(const ::std::string& value);
-  #if LANG_CXX11
-  void set_username(::std::string&& value);
-  #endif
-  void set_username(const char* value);
-  void set_username(const char* value, size_t size);
-  ::std::string* mutable_username();
-  ::std::string* release_username();
-  void set_allocated_username(::std::string* username);
-
-  // optional string PassWord = 2;
-  bool has_password() const;
-  void clear_password();
-  static const int kPassWordFieldNumber = 2;
-  const ::std::string& password() const;
-  void set_password(const ::std::string& value);
-  #if LANG_CXX11
-  void set_password(::std::string&& value);
-  #endif
-  void set_password(const char* value);
-  void set_password(const char* value, size_t size);
-  ::std::string* mutable_password();
-  ::std::string* release_password();
-  void set_allocated_password(::std::string* password);
-
   // @@protoc_insertion_point(class_scope:CSLogin)
  private:
-  void set_has_username();
-  void clear_has_username();
-  void set_has_password();
-  void clear_has_password();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::HasBits<1> _has_bits_;
   mutable int _cached_size_;
-  ::google::protobuf::internal::ArenaStringPtr username_;
-  ::google::protobuf::internal::ArenaStringPtr password_;
   friend struct ::protobuf_player_2eproto::TableStruct;
   friend void ::protobuf_player_2eproto::InitDefaultsCSLoginImpl();
 };
@@ -309,24 +285,224 @@ class SCLogin : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 
   // accessors -------------------------------------------------------
 
-  // optional bool Ret = 1;
-  bool has_ret() const;
-  void clear_ret();
-  static const int kRetFieldNumber = 1;
-  bool ret() const;
-  void set_ret(bool value);
+  // optional uint32 UUID = 1;
+  bool has_uuid() const;
+  void clear_uuid();
+  static const int kUUIDFieldNumber = 1;
+  ::google::protobuf::uint32 uuid() const;
+  void set_uuid(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:SCLogin)
  private:
-  void set_has_ret();
-  void clear_has_ret();
+  void set_has_uuid();
+  void clear_has_uuid();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::HasBits<1> _has_bits_;
   mutable int _cached_size_;
-  bool ret_;
+  ::google::protobuf::uint32 uuid_;
   friend struct ::protobuf_player_2eproto::TableStruct;
   friend void ::protobuf_player_2eproto::InitDefaultsSCLoginImpl();
+};
+// -------------------------------------------------------------------
+
+class CSReady : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CSReady) */ {
+ public:
+  CSReady();
+  virtual ~CSReady();
+
+  CSReady(const CSReady& from);
+
+  inline CSReady& operator=(const CSReady& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  CSReady(CSReady&& from) noexcept
+    : CSReady() {
+    *this = ::std::move(from);
+  }
+
+  inline CSReady& operator=(CSReady&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CSReady& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const CSReady* internal_default_instance() {
+    return reinterpret_cast<const CSReady*>(
+               &_CSReady_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    2;
+
+  void Swap(CSReady* other);
+  friend void swap(CSReady& a, CSReady& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline CSReady* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  CSReady* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const CSReady& from);
+  void MergeFrom(const CSReady& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(CSReady* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:CSReady)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_player_2eproto::TableStruct;
+  friend void ::protobuf_player_2eproto::InitDefaultsCSReadyImpl();
+};
+// -------------------------------------------------------------------
+
+class SCReady : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SCReady) */ {
+ public:
+  SCReady();
+  virtual ~SCReady();
+
+  SCReady(const SCReady& from);
+
+  inline SCReady& operator=(const SCReady& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  SCReady(SCReady&& from) noexcept
+    : SCReady() {
+    *this = ::std::move(from);
+  }
+
+  inline SCReady& operator=(SCReady&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SCReady& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SCReady* internal_default_instance() {
+    return reinterpret_cast<const SCReady*>(
+               &_SCReady_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    3;
+
+  void Swap(SCReady* other);
+  friend void swap(SCReady& a, SCReady& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SCReady* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  SCReady* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const SCReady& from);
+  void MergeFrom(const SCReady& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(SCReady* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:SCReady)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_player_2eproto::TableStruct;
+  friend void ::protobuf_player_2eproto::InitDefaultsSCReadyImpl();
 };
 // -------------------------------------------------------------------
 
@@ -372,7 +548,7 @@ class SCFrameInit : public ::google::protobuf::Message /* @@protoc_insertion_poi
                &_SCFrameInit_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    2;
+    4;
 
   void Swap(SCFrameInit* other);
   friend void swap(SCFrameInit& a, SCFrameInit& b) {
@@ -492,7 +668,7 @@ class UserFrame : public ::google::protobuf::Message /* @@protoc_insertion_point
                &_UserFrame_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    3;
+    5;
 
   void Swap(UserFrame* other);
   friend void swap(UserFrame& a, UserFrame& b) {
@@ -615,7 +791,7 @@ class CSFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_CSFrame_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    4;
+    6;
 
   void Swap(CSFrame* other);
   friend void swap(CSFrame& a, CSFrame& b) {
@@ -748,7 +924,7 @@ class SCFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_SCFrame_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    5;
+    7;
 
   void Swap(SCFrame* other);
   friend void swap(SCFrame& a, SCFrame& b) {
@@ -807,19 +983,19 @@ class SCFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   const ::google::protobuf::RepeatedPtrField< ::UserFrame >&
       users() const;
 
-  // optional uint32 FrameID = 1;
+  // optional uint64 FrameID = 1;
   bool has_frameid() const;
   void clear_frameid();
   static const int kFrameIDFieldNumber = 1;
-  ::google::protobuf::uint32 frameid() const;
-  void set_frameid(::google::protobuf::uint32 value);
+  ::google::protobuf::uint64 frameid() const;
+  void set_frameid(::google::protobuf::uint64 value);
 
-  // optional uint32 NextFrameID = 2;
+  // optional uint64 NextFrameID = 2;
   bool has_nextframeid() const;
   void clear_nextframeid();
   static const int kNextFrameIDFieldNumber = 2;
-  ::google::protobuf::uint32 nextframeid() const;
-  void set_nextframeid(::google::protobuf::uint32 value);
+  ::google::protobuf::uint64 nextframeid() const;
+  void set_nextframeid(::google::protobuf::uint64 value);
 
   // @@protoc_insertion_point(class_scope:SCFrame)
  private:
@@ -832,8 +1008,8 @@ class SCFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::google::protobuf::internal::HasBits<1> _has_bits_;
   mutable int _cached_size_;
   ::google::protobuf::RepeatedPtrField< ::UserFrame > users_;
-  ::google::protobuf::uint32 frameid_;
-  ::google::protobuf::uint32 nextframeid_;
+  ::google::protobuf::uint64 frameid_;
+  ::google::protobuf::uint64 nextframeid_;
   friend struct ::protobuf_player_2eproto::TableStruct;
   friend void ::protobuf_player_2eproto::InitDefaultsSCFrameImpl();
 };
@@ -848,159 +1024,41 @@ class SCFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 #endif  // __GNUC__
 // CSLogin
 
-// optional string UserName = 1;
-inline bool CSLogin::has_username() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void CSLogin::set_has_username() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void CSLogin::clear_has_username() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void CSLogin::clear_username() {
-  username_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_username();
-}
-inline const ::std::string& CSLogin::username() const {
-  // @@protoc_insertion_point(field_get:CSLogin.UserName)
-  return username_.GetNoArena();
-}
-inline void CSLogin::set_username(const ::std::string& value) {
-  set_has_username();
-  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:CSLogin.UserName)
-}
-#if LANG_CXX11
-inline void CSLogin::set_username(::std::string&& value) {
-  set_has_username();
-  username_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:CSLogin.UserName)
-}
-#endif
-inline void CSLogin::set_username(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  set_has_username();
-  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:CSLogin.UserName)
-}
-inline void CSLogin::set_username(const char* value, size_t size) {
-  set_has_username();
-  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:CSLogin.UserName)
-}
-inline ::std::string* CSLogin::mutable_username() {
-  set_has_username();
-  // @@protoc_insertion_point(field_mutable:CSLogin.UserName)
-  return username_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* CSLogin::release_username() {
-  // @@protoc_insertion_point(field_release:CSLogin.UserName)
-  clear_has_username();
-  return username_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CSLogin::set_allocated_username(::std::string* username) {
-  if (username != NULL) {
-    set_has_username();
-  } else {
-    clear_has_username();
-  }
-  username_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), username);
-  // @@protoc_insertion_point(field_set_allocated:CSLogin.UserName)
-}
-
-// optional string PassWord = 2;
-inline bool CSLogin::has_password() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void CSLogin::set_has_password() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void CSLogin::clear_has_password() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void CSLogin::clear_password() {
-  password_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_password();
-}
-inline const ::std::string& CSLogin::password() const {
-  // @@protoc_insertion_point(field_get:CSLogin.PassWord)
-  return password_.GetNoArena();
-}
-inline void CSLogin::set_password(const ::std::string& value) {
-  set_has_password();
-  password_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:CSLogin.PassWord)
-}
-#if LANG_CXX11
-inline void CSLogin::set_password(::std::string&& value) {
-  set_has_password();
-  password_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:CSLogin.PassWord)
-}
-#endif
-inline void CSLogin::set_password(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  set_has_password();
-  password_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:CSLogin.PassWord)
-}
-inline void CSLogin::set_password(const char* value, size_t size) {
-  set_has_password();
-  password_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:CSLogin.PassWord)
-}
-inline ::std::string* CSLogin::mutable_password() {
-  set_has_password();
-  // @@protoc_insertion_point(field_mutable:CSLogin.PassWord)
-  return password_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* CSLogin::release_password() {
-  // @@protoc_insertion_point(field_release:CSLogin.PassWord)
-  clear_has_password();
-  return password_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CSLogin::set_allocated_password(::std::string* password) {
-  if (password != NULL) {
-    set_has_password();
-  } else {
-    clear_has_password();
-  }
-  password_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), password);
-  // @@protoc_insertion_point(field_set_allocated:CSLogin.PassWord)
-}
-
 // -------------------------------------------------------------------
 
 // SCLogin
 
-// optional bool Ret = 1;
-inline bool SCLogin::has_ret() const {
+// optional uint32 UUID = 1;
+inline bool SCLogin::has_uuid() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void SCLogin::set_has_ret() {
+inline void SCLogin::set_has_uuid() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void SCLogin::clear_has_ret() {
+inline void SCLogin::clear_has_uuid() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void SCLogin::clear_ret() {
-  ret_ = false;
-  clear_has_ret();
+inline void SCLogin::clear_uuid() {
+  uuid_ = 0u;
+  clear_has_uuid();
 }
-inline bool SCLogin::ret() const {
-  // @@protoc_insertion_point(field_get:SCLogin.Ret)
-  return ret_;
+inline ::google::protobuf::uint32 SCLogin::uuid() const {
+  // @@protoc_insertion_point(field_get:SCLogin.UUID)
+  return uuid_;
 }
-inline void SCLogin::set_ret(bool value) {
-  set_has_ret();
-  ret_ = value;
-  // @@protoc_insertion_point(field_set:SCLogin.Ret)
+inline void SCLogin::set_uuid(::google::protobuf::uint32 value) {
+  set_has_uuid();
+  uuid_ = value;
+  // @@protoc_insertion_point(field_set:SCLogin.UUID)
 }
+
+// -------------------------------------------------------------------
+
+// CSReady
+
+// -------------------------------------------------------------------
+
+// SCReady
 
 // -------------------------------------------------------------------
 
@@ -1198,7 +1256,7 @@ CSFrame::mutable_keyinfo() {
 
 // SCFrame
 
-// optional uint32 FrameID = 1;
+// optional uint64 FrameID = 1;
 inline bool SCFrame::has_frameid() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -1209,20 +1267,20 @@ inline void SCFrame::clear_has_frameid() {
   _has_bits_[0] &= ~0x00000001u;
 }
 inline void SCFrame::clear_frameid() {
-  frameid_ = 0u;
+  frameid_ = GOOGLE_ULONGLONG(0);
   clear_has_frameid();
 }
-inline ::google::protobuf::uint32 SCFrame::frameid() const {
+inline ::google::protobuf::uint64 SCFrame::frameid() const {
   // @@protoc_insertion_point(field_get:SCFrame.FrameID)
   return frameid_;
 }
-inline void SCFrame::set_frameid(::google::protobuf::uint32 value) {
+inline void SCFrame::set_frameid(::google::protobuf::uint64 value) {
   set_has_frameid();
   frameid_ = value;
   // @@protoc_insertion_point(field_set:SCFrame.FrameID)
 }
 
-// optional uint32 NextFrameID = 2;
+// optional uint64 NextFrameID = 2;
 inline bool SCFrame::has_nextframeid() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -1233,14 +1291,14 @@ inline void SCFrame::clear_has_nextframeid() {
   _has_bits_[0] &= ~0x00000002u;
 }
 inline void SCFrame::clear_nextframeid() {
-  nextframeid_ = 0u;
+  nextframeid_ = GOOGLE_ULONGLONG(0);
   clear_has_nextframeid();
 }
-inline ::google::protobuf::uint32 SCFrame::nextframeid() const {
+inline ::google::protobuf::uint64 SCFrame::nextframeid() const {
   // @@protoc_insertion_point(field_get:SCFrame.NextFrameID)
   return nextframeid_;
 }
-inline void SCFrame::set_nextframeid(::google::protobuf::uint32 value) {
+inline void SCFrame::set_nextframeid(::google::protobuf::uint64 value) {
   set_has_nextframeid();
   nextframeid_ = value;
   // @@protoc_insertion_point(field_set:SCFrame.NextFrameID)
@@ -1279,6 +1337,10 @@ SCFrame::users() const {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

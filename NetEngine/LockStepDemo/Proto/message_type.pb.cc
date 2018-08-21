@@ -52,13 +52,14 @@ void protobuf_RegisterTypes(const ::std::string&) {
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\022message_type.proto*q\n\014EMessageType\022\t\n\005"
-      "ENone\020\000\022\020\n\014ESCFrameInit\020d\022\014\n\010ECSFrame\020e\022"
-      "\014\n\010ESCFrame\020f\022\r\n\010ECSLogin\020\221N\022\r\n\010ESCLogin"
-      "\020\222N\022\n\n\004EMax\020\277\204="
+      "\n\022message_type.proto*\217\001\n\014EMessageType\022\t\n"
+      "\005ENone\020\000\022\020\n\014ESCFrameInit\020d\022\014\n\010ECSFrame\020e"
+      "\022\014\n\010ESCFrame\020f\022\r\n\010ECSLogin\020\221N\022\r\n\010ESCLogi"
+      "n\020\222N\022\r\n\010ECSReady\020\371U\022\r\n\010ESCReady\020\372U\022\n\n\004EM"
+      "ax\020\277\204="
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 135);
+      descriptor, 166);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "message_type.proto", &protobuf_RegisterTypes);
 }
@@ -86,6 +87,8 @@ bool EMessageType_IsValid(int value) {
     case 102:
     case 10001:
     case 10002:
+    case 11001:
+    case 11002:
     case 999999:
       return true;
     default:

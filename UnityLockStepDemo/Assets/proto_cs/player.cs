@@ -15,24 +15,6 @@ namespace proto.player
   {
     public CSLogin() {}
     
-
-    private string _UserName = "";
-    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"UserName", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string UserName
-    {
-      get { return _UserName; }
-      set { _UserName = value; }
-    }
-
-    private string _PassWord = "";
-    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"PassWord", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string PassWord
-    {
-      get { return _PassWord; }
-      set { _PassWord = value; }
-    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -44,14 +26,34 @@ namespace proto.player
     public SCLogin() {}
     
 
-    private bool _Ret = default(bool);
-    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"Ret", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue(default(bool))]
-    public bool Ret
+    private uint _UUID = default(uint);
+    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"UUID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint UUID
     {
-      get { return _Ret; }
-      set { _Ret = value; }
+      get { return _UUID; }
+      set { _UUID = value; }
     }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSReady")]
+  public partial class CSReady : global::ProtoBuf.IExtensible
+  {
+    public CSReady() {}
+    
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"SCReady")]
+  public partial class SCReady : global::ProtoBuf.IExtensible
+  {
+    public SCReady() {}
+    
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -152,19 +154,19 @@ namespace proto.player
     public SCFrame() {}
     
 
-    private uint _FrameID = default(uint);
+    private ulong _FrameID = default(ulong);
     [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"FrameID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(uint))]
-    public uint FrameID
+    [global::System.ComponentModel.DefaultValue(default(ulong))]
+    public ulong FrameID
     {
       get { return _FrameID; }
       set { _FrameID = value; }
     }
 
-    private uint _NextFrameID = default(uint);
+    private ulong _NextFrameID = default(ulong);
     [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"NextFrameID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(uint))]
-    public uint NextFrameID
+    [global::System.ComponentModel.DefaultValue(default(ulong))]
+    public ulong NextFrameID
     {
       get { return _NextFrameID; }
       set { _NextFrameID = value; }

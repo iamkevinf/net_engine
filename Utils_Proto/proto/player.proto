@@ -2,13 +2,19 @@ syntax = "proto2";
 
 message CSLogin
 {
-	optional string UserName = 1;
-	optional string PassWord = 2;
 }
 
 message SCLogin
 {
-	optional bool Ret = 1;
+	optional uint32 UUID = 1;
+}
+
+message CSReady
+{
+}
+
+message SCReady
+{
 }
 
 message SCFrameInit
@@ -32,7 +38,7 @@ message CSFrame
 
 message SCFrame
 {
-	optional uint32 FrameID = 1;
-	optional uint32 NextFrameID = 2;
+	optional uint64 FrameID = 1;
+	optional uint64 NextFrameID = 2;
 	repeated UserFrame Users = 3;
 }
