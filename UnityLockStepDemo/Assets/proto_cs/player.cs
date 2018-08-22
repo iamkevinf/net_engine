@@ -10,6 +10,52 @@
 // Generated from: proto/player.proto
 namespace proto.player
 {
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"PlayerInfo")]
+  public partial class PlayerInfo : global::ProtoBuf.IExtensible
+  {
+    public PlayerInfo() {}
+    
+
+    private uint _UUID = default(uint);
+    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"UUID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint UUID
+    {
+      get { return _UUID; }
+      set { _UUID = value; }
+    }
+
+    private double _PosX = default(double);
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"PosX", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(double))]
+    public double PosX
+    {
+      get { return _PosX; }
+      set { _PosX = value; }
+    }
+
+    private double _PosY = default(double);
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"PosY", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(double))]
+    public double PosY
+    {
+      get { return _PosY; }
+      set { _PosY = value; }
+    }
+
+    private double _PosZ = default(double);
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"PosZ", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(double))]
+    public double PosZ
+    {
+      get { return _PosZ; }
+      set { _PosZ = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CSLogin")]
   public partial class CSLogin : global::ProtoBuf.IExtensible
   {
@@ -176,6 +222,23 @@ namespace proto.player
     public global::System.Collections.Generic.List<UserFrame> Users
     {
       get { return _Users; }
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"SCSight")]
+  public partial class SCSight : global::ProtoBuf.IExtensible
+  {
+    public SCSight() {}
+    
+    private readonly global::System.Collections.Generic.List<PlayerInfo> _Players = new global::System.Collections.Generic.List<PlayerInfo>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"Players", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<PlayerInfo> Players
+    {
+      get { return _Players; }
     }
   
     private global::ProtoBuf.IExtension extensionObject;

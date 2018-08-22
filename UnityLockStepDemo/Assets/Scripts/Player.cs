@@ -25,6 +25,9 @@ namespace TVR
     public class Player : MonoBehaviour
     {
         public System.UInt32 UUID = 0;
+        public double PosX = 0;
+        public double PosY = 0;
+        public double PosZ = 0;
 
         public System.UInt64 CurFrameID = 0;
         public System.UInt64 NxtFrameID = 0;
@@ -33,40 +36,11 @@ namespace TVR
 
         public List<EPlayerEvent> CurFrameInfo = new List<EPlayerEvent>();
 
-        bool m_connected = false;
-
         void Start()
         {
-            MessageCenter.Instance.AddListener((int)EMessageType.ESCLogin, OnLogin);
             MessageCenter.Instance.AddListener((int)EMessageType.ESCReady, OnReady);
             MessageCenter.Instance.AddListener((int)EMessageType.ESCFrameInit, OnFrameInit);
             MessageCenter.Instance.AddListener((int)EMessageType.ESCFrame, OnFrameTurn);
-
-            PlayerManager.Instance.PlayerAvatar = this;
-        }
-
-        void OnConnected()
-        {
-            CSLogin proto = new CSLogin();
-
-            byte[] bytes = ProtoSerialize.Serialize<CSLogin>(proto);
-            int size = bytes.Length;
-
-            MessageBody body = new MessageBody();
-            body.size = (uint)(size + MessageBody.HEADER_TYPE_BYTES);
-            body.type = (ushort)EMessageType.ECSLogin;
-            body.data = bytes;
-
-            TCPClient.Instance.Send(body);
-        }
-
-        private void Update()
-        {
-            if(!m_connected && TCPClient.Instance.Connected)
-            {
-                m_connected = true;
-                OnConnected();
-            }
         }
 
         void FixedUpdate()
@@ -74,19 +48,14 @@ namespace TVR
             KeyPressEvent();
         }
 
-        void OnLogin(params object[] args)
+        public void OnLogin(SCLogin ret)
         {
-            MessageBody body = args[0] as MessageBody;
-            if (body == null)
-                return;
-
-            if(UUID != 0)
+            if (UUID != 0)
             {
                 DEBUG.Error("Invalid HandeLogin UUID = {0}", UUID);
                 return;
             }
 
-            SCLogin ret = ProtoSerialize.DeSerialize<SCLogin>(body.data);
             if (ret == null)
             {
                 DEBUG.Error("Invalid Proto");
@@ -100,6 +69,36 @@ namespace TVR
             DEBUG.Log("OnLogin:: UUID={0}", ret.UUID);
         }
 
+        public void OnSight(SCSight ret)
+        {
+            if (ret == null)
+            {
+                DEBUG.Error("Invalid Proto");
+                return;
+            }
+
+            DEBUG.Log("OnSight");
+
+            for(int i = 0; i < ret.Players.Count; ++i)
+            {
+                PlayerInfo info = ret.Players[i];
+                SetPlayerInfo(info);
+                PlayerManager.Instance.AddOne(this);
+            }
+        }
+
+        public void SetPlayerInfo(PlayerInfo info)
+        {
+            UUID = info.UUID;
+            SetPosition(info.PosX, info.PosY, info.PosZ);
+        }
+
+        void SetPosition(double x, double y, double z)
+        {
+            PosX = x; PosY = y; PosZ = z;
+            Vector3 pos = new Vector3((float)x, (float)y, (float)z);
+            transform.position = pos;
+        }
 
         void OnReady(params object[] args)
         {
@@ -232,23 +231,25 @@ namespace TVR
         void MoveForward()
         {
             transform.position = transform.position + (float)speed * transform.forward;
+            SetPosition(transform.position.x, transform.position.y, transform.position.z);
         }
 
         void MoveBack()
         {
             transform.position = transform.position - (float)speed * transform.forward;
+            SetPosition(transform.position.x, transform.position.y, transform.position.z);
         }
 
         void MoveLeft()
         {
-
             transform.position = transform.position - (float)speed * transform.right;
+            SetPosition(transform.position.x, transform.position.y, transform.position.z);
         }
 
         void MoveRight()
         {
-
             transform.position = transform.position + (float)speed * transform.right;
+            SetPosition(transform.position.x, transform.position.y, transform.position.z);
         }
 
         void RunKeyInfo(Dictionary<System.UInt32, List<EPlayerEvent>> info)

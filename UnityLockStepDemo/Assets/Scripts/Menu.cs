@@ -6,6 +6,8 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
+using proto.message_type;
+using proto.player;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,7 +26,17 @@ namespace TVR
 
         public void OnClickReady()
         {
-            PlayerManager.Instance.PlayerAvatar.PlayerReady();
+            CSReady proto = new CSReady();
+
+            byte[] bytes = ProtoSerialize.Serialize<CSReady>(proto);
+            int size = bytes.Length;
+
+            MessageBody body = new MessageBody();
+            body.size = (uint)(size + MessageBody.HEADER_TYPE_BYTES);
+            body.type = (ushort)EMessageType.ECSReady;
+            body.data = bytes;
+
+            TCPClient.Instance.Send(body);
         }
     }
 
