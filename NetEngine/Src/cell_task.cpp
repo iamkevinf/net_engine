@@ -39,7 +39,7 @@ namespace knet
 
 	void CellTaskService::Close()
 	{
-		std::cout << "CellTaskService::Close" << m_owner->GetID() << std::endl;
+		LOG_TRACE("CellTaskService::Close %d", m_owner->GetID());
 		m_threadService.Close();
 	}
 
@@ -72,7 +72,10 @@ namespace knet
 			m_taskPool.clear();
 		}
 
-		std::cout << "\tCellTaskService::Closed" << m_owner->GetID() << std::endl;
+		for (auto& task : m_taskBuff)
+			task();
+
+		LOG_TRACE("\tCellTaskService::Closed %d", m_owner->GetID());
 	}
 
 }; // end of namespace knet

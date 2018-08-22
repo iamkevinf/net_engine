@@ -40,6 +40,6 @@ int main()
 
 	server.Close();
 
-	std::cout << "Server::Exit!" << std::endl;
+	LOG_INFO("Server::Exit!");
 	return 0;
 }

@@ -18,7 +18,7 @@ void inputThread()
 	while (true)
 	{
 		char cmdBuff[256] = { 0 };
-		std::cout << "input a cmd: " << std::endl;
+		LOG_INFO("input a cmd: ");
 		std::cin >> cmdBuff;
 
 		if (0 == strcmp(cmdBuff, "exit"))
@@ -28,7 +28,7 @@ void inputThread()
 		}
 		else
 		{
-			std::cout << "not support cmd!" << std::endl;
+			LOG_ERROR("not support cmd!");
 		}
 	}
 }
@@ -36,7 +36,7 @@ void inputThread()
 int main()
 {
 	int thread_count = 4;
-	std::cout << "input thread count" << std::endl;
+	LOG_INFO("input thread count");
 	std::cin >> thread_count;
 	MyServer server;
 	server.CreateSock();
@@ -50,7 +50,7 @@ int main()
 		std::this_thread::sleep_for(t);
 
 		char cmdBuff[256] = { 0 };
-		std::cout << "input a cmd: " << std::endl;
+		LOG_INFO("input a cmd: ");
 		std::cin >> cmdBuff;
 		if (0 == strcmp(cmdBuff, "exit"))
 		{
@@ -60,14 +60,14 @@ int main()
 		}
 	}
 	
-	std::cout << "Server::Exit!" << std::endl;
+	LOG_INFO("Server::Exit!");
 	while (1)
 	{
 		std::chrono::milliseconds t(100);
 		std::this_thread::sleep_for(t);
 
 		char cmdBuff[256] = { 0 };
-		std::cout << "input a cmd: " << std::endl;
+		LOG_INFO("input a cmd: ");
 		std::cin >> cmdBuff;
 		if (0 == strcmp(cmdBuff, "exit"))
 			break;

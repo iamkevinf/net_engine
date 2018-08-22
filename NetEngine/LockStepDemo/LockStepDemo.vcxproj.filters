@@ -325,6 +325,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\cell_log.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -773,6 +776,9 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\cell_log.h">
+      <Filter>Src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

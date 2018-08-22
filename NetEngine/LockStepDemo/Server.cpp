@@ -25,14 +25,14 @@ Server::~Server()
 void Server::OnJoin(knet::ClientSocketPtr& client)
 {
 	knet::TCPServer::OnJoin(client);
-	std::cout << "Server " << client->Sockfd() << " Join" << std::endl;
+	LOG_INFO("Server %d Join", client->Sockfd());
 	World::GetInstance()->RegisterUser(client);
 }
 
 void Server::OnExit(knet::ClientSocketPtr& client)
 {
 	knet::TCPServer::OnExit(client);
-	std::cout << "Server " << client->Sockfd() << " Exit" << std::endl;
+	LOG_INFO("Server %d Exit", client->Sockfd());
 	World::GetInstance()->DeleteUser(client);
 }
 
@@ -44,5 +44,5 @@ void Server::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::Me
 void Server::OnRecv(knet::ClientSocketPtr& client)
 {
 	knet::TCPServer::OnRecv(client);
-	std::cout << "Server " << client->Sockfd() << " Recv" << std::endl;
+	LOG_INFO("Server %d Recv", client->Sockfd());
 }

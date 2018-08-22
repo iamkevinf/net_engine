@@ -19,20 +19,18 @@ MyServer::~MyServer()
 void MyServer::OnJoin(knet::ClientSocketPtr& client)
 {
 	knet::TCPServer::OnJoin(client);
-	//std::cout << "Client " << client->Sockfd() << " Join" << std::endl;
+	//LOG_TRACE("Client %d Join", client->Sockfd());
 }
 
 void MyServer::OnExit(knet::ClientSocketPtr& client)
 {
 	knet::TCPServer::OnExit(client);
-	std::cout << "Client " << client->Sockfd() << " Exit" << std::endl;
+	LOG_TRACE("Client %d Exit", client->Sockfd());
 }
 
 void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::MessageBody* body)
 {
-	std::cout << "MyServer::OnMessage type: " << body->type
-		<< " size: " << body->size
-		<< std::endl;
+	LOG_TRACE("MyServer::OnMessage type: %d \n size: %d", body->type, body->size);
 
 	knet::MessageBody s2cMsg;
 	int size = 4;
@@ -46,5 +44,5 @@ void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::
 void MyServer::OnRecv(knet::ClientSocketPtr& client)
 {
 	knet::TCPServer::OnRecv(client);
-	//std::cout << "Client " << client->Sockfd() << " Recv" << std::endl;
+	//LOG_TRACE("Client %d Recv", client->Sockfd());
 }

@@ -14,7 +14,7 @@ namespace knet
 
 	ClientSocket::~ClientSocket()
 	{
-		std::cout << "ClientSocket::~ClientSocket " << m_sock << std::endl;
+		LOG_TRACE("ClientSocket::~ClientSocket");
 
 		if (INVALID_SOCKET != m_sock)
 		{

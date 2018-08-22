@@ -35,7 +35,7 @@ void inputThread2()
 	while (true)
 	{
 		char cmdBuff[256] = { 0 };
-		std::cout << "input a cmd: " << std::endl;
+		LOG_INFO("input a cmd: ");
 		std::cin >> cmdBuff;
 
 		if (0 == strcmp(cmdBuff, "exit"))
@@ -45,7 +45,7 @@ void inputThread2()
 		}
 		else
 		{
-			std::cout << "not support cmd!" << std::endl;
+			LOG_ERROR("not support cmd!");
 		}
 	}
 }
@@ -67,7 +67,7 @@ void RecvFunc(int bgn, int end)
 
 void SendFunc(int thread_id)
 {
-	std::cout << "ThreadID = " << thread_id << " Start" << std::endl;
+	LOG_INFO("ThreadID = %d Start", thread_id);
 
 	// thread_id 1 base
 	int pre_count = g_client_count / g_thread_count;
@@ -90,7 +90,7 @@ void SendFunc(int thread_id)
 		g_clients[i]->Conn(host, port);
 	}
 
-	std::cout << "ThreadID = " << thread_id << " Conn Count bng = " << bgn << " end = " << end << std::endl;
+	LOG_INFO("ThreadID = %d Conn Count bgn= %d end = %d", thread_id, bgn, end);
 
 	g_readyCount++;
 	while (g_readyCount < g_thread_count)
@@ -132,20 +132,20 @@ void SendFunc(int thread_id)
 		delete g_clients[i];
 	}
 
-	std::cout << "ThreadID = " << thread_id << " Exit" << std::endl;
+	LOG_INFO("ThreadID = %d Exit", thread_id);
 }
 
 int main()
 {
-	std::cout << "please input client connection count:" << std::endl;
+	LOG_INFO("please input client connection count:");
 	std::cin >> g_client_count;
 	for (int i = 0; i < g_client_count; ++i)
 		g_clients.push_back(nullptr);
 
-	std::cout << "please input thread count:" << std::endl;
+	LOG_INFO("please input thread count:");
 	std::cin >> g_thread_count;
 
-	std::cout << "please input host name:" << std::endl;
+	LOG_INFO("please input host name:");
 	std::cin >> host;
 
 	std::thread thread_input(inputThread2);
@@ -163,12 +163,7 @@ int main()
 		auto t = tTime.GetElapsedSecond();
 		if (t >= 1.0)
 		{
-			std::cout.setf(::std::ios::fixed);
-			std::cout << "Thread=" << g_thread_count
-				<< " Time=" << ::std::fixed << ::std::setprecision(6) << t
-				<< " Conn=" << g_client_count
-				<< " Send=" << (int)(g_sendCount / t)
-				<< std::endl;
+			LOG_INFO("Thread=%d Time=%f Conn=%d Send=%d", g_thread_count, t, g_client_count, (int)g_sendCount / t);
 
 			g_sendCount = 0;
 

@@ -25,15 +25,15 @@ namespace knet
 #endif
 		if (m_sock != INVALID_SOCKET)
 		{
-			std::cout << "close old conn" << std::endl;
+			LOG_INFO("close old conn");
 			CloseSock();
 		}
 
 		m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (m_sock == INVALID_SOCKET)
-			std::cout << "CreateSock Error" << std::endl;
+			LOG_ERROR("CreateSock Error");
 
-		//std::cout << "CreateSock Done <Sock:" << m_sock << ">" << std::endl;
+		//LOG_TRACE("CreateSock Done <Sock: %d>", m_sock);
 	}
 
 	int TCPClient::Conn(const std::string& ip, uint16_t port)
@@ -56,9 +56,7 @@ namespace knet
 		else
 			m_isConn = true;
 
-		//std::cout << "Conn <Socket:" << m_sock 
-		//	<< "> IP: " << ip.c_str()
-		//	<< " Port: " << port << std::endl;
+		//LOG_TRACE("Conn <Socket: %d>, IP: %s Port:%d", m_sock, ip.c_str, port);
 
 		return ret;
 	}
@@ -73,7 +71,7 @@ namespace knet
 			close(m_sock);
 #endif
 
-			std::cout << "CloseSock <Socket:" << m_sock << ">" << std::endl;
+			LOG_INFO("CloseSock <Socket:%d>", m_sock);
 
 			m_sock = INVALID_SOCKET;
 		}
@@ -93,7 +91,7 @@ namespace knet
 		int ret = select((int)(m_sock + 1), &fdReads, 0, 0, &tv);
 		if (ret < 0)
 		{
-			std::cout << "Select Error: <socket=" << m_sock << ">" << std::endl;
+			LOG_ERROR("Select Error: <socket=%d>", m_sock);
 			CloseSock();
 			return false;
 		}
@@ -104,7 +102,7 @@ namespace knet
 
 			if (-1 == Recv())
 			{
-				std::cout << "Recv Error: <socket=" << m_sock << ">" << std::endl;
+				LOG_ERROR("Recv Error: <socket=%d>", m_sock);
 				CloseSock();
 				return false;
 			}
@@ -187,9 +185,7 @@ namespace knet
 
 	void TCPClient::OnMessageProc(MessageBody* body)
 	{
-		std::cout << "TCPClient::OnMessageProc type: " << body->type
-			<< " size: " << body->size
-			<< std::endl;
+		LOG_INFO("TCPClient::OnMessageProc type: %d size: ", body->type, body->size);
 	}
 
 }; // end of namespace knet

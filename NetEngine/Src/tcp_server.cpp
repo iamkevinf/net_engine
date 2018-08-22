@@ -32,15 +32,15 @@ namespace knet
 
 		if (m_sock != INVALID_SOCKET)
 		{
-			std::cout << "close old conn" << std::endl;
+			LOG_INFO("close old conn");
 			Close();
 		}
 
 		m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (m_sock == INVALID_SOCKET)
-			std::cout << "CreateSock Error" << std::endl;
+			LOG_ERROR("CreateSock Error");
 
-		std::cout << "CreateSock Done <Sock:" << m_sock << ">" << std::endl;
+		LOG_INFO("CreateSock Done <Sock:%d>", m_sock);
 	}
 
 	int TCPServer::Bind(const std::string& ip, uint16_t port)
@@ -58,11 +58,9 @@ namespace knet
 #endif
 		int ret = bind(m_sock, (sockaddr*)&_sin, sizeof(sockaddr_in));
 		if (SOCKET_ERROR == ret)
-			std::cout << "Bind Error Port:" << port << std::endl;
+			LOG_ERROR("Bind Error Port: %d", port);
 
-		std::cout << "Bind <Sock:" << m_sock << ">"
-			<< "IP: " << ip.c_str()
-			<< " Port: " << port << std::endl;
+		LOG_INFO("Bind <Sock:%d> IP: %s Port: %d", m_sock, ip.c_str(), port);
 
 		return ret;
 	}
@@ -71,9 +69,9 @@ namespace knet
 	{
 		int ret = listen(m_sock, n);
 		if (SOCKET_ERROR == ret)
-			std::cout << "Listen Error <Sock" << m_sock << ">" << std::endl;
+			LOG_ERROR("Listen Error <Sock %d>", m_sock);
 
-		std::cout << "Listen Done: <Sock:" << m_sock << ">" << std::endl;
+		LOG_INFO("Listen Done: <Sock: %d>", m_sock);
 
 		return ret;
 	}
@@ -91,7 +89,7 @@ namespace knet
 #endif
 		if (clientSock == INVALID_SOCKET)
 		{
-			std::cout << "Accept Error <Sock:" << m_sock << "> : invalid client" << std::endl;
+			LOG_ERROR("Accept Error <Sock: %d>: Invalid Client", m_sock);
 			return false;
 		}
 
@@ -134,7 +132,7 @@ namespace knet
 
 	void TCPServer::Close()
 	{
-		std::cout << "TCPServer::Close" << std::endl;
+		LOG_TRACE("TCPServer::Close");
 		m_threadService.Close();
 
 		if (m_sock != INVALID_SOCKET)
@@ -174,7 +172,7 @@ namespace knet
 			int ret = select((int)(m_sock + 1), &fdRead, nullptr, nullptr, &t);
 			if (ret < 0)
 			{
-				std::cout << "TCPServer::OnRun Select Error" << std::endl;
+				LOG_ERROR("TCPServer::OnRun Select Error");
 				thread->CloseWithoutWait();
 				break;
 			}
@@ -197,14 +195,7 @@ namespace knet
 		double t = m_time.GetElapsedSecond();
 		if (t >= 1.0)
 		{
-			::std::cout.setf(::std::ios::fixed);
-			::std::cout << "Thread=" << m_cells.size()
-				<< " Socket " << m_sock
-				<< " Time=" << ::std::fixed << ::std::setprecision(6) << t
-				<< " Conn=" << m_connCount
-				<< " Rec=" << m_recvCount
-				<< " Msg=" << int(m_msgCount / t)
-				<< ::std::endl;
+			LOG_INFO("Thread=%d Socket=%d Time=%f Conn=%d Rec=%d Msg=%d", m_cells.size(), m_sock, t, m_connCount.load(), m_recvCount.load(), int(m_msgCount.load() / t));
 
 			m_msgCount = 0;
 			m_recvCount = 0;

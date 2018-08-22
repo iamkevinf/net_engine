@@ -108,7 +108,7 @@ namespace knet
 			int ret = select((int)(m_maxSock + 1), &fdRead, &fdWrite, nullptr, &t);
 			if (ret < 0)
 			{
-				std::cout << "Cell::OnRun:: Select Error" << std::endl;
+				LOG_TRACE("Cell::OnRun:: Select Error");
 				thread->CloseWithoutWait();
 				break;
 			}
@@ -122,20 +122,18 @@ namespace knet
 			//WriteData(fdExcp);
 
 #if _WIN32
-			//std::cout << "Cell::OnRun Select: fdRead=" << fdRead.fd_count
-			//	<< " fdWrite=" << fdWrite.fd_count
-			//	<< std::endl;
+			//LOG_INFO("Cell::OnRun Select: fdRead=%d fdWrite=%d", fdRead.fd_count, fdWrite.fd_count);
 
 			//if (fdExcp.fd_count > 0)
 			//{
-			//	std::cout << "Cell::OnRun::Select::Excp=" << fdExcp.fd_count << std::endl;
+			//	LOG_INFO("Cell::OnRun::Select::Excp=%d",fdExcp.fd_count);
 			//}
 #endif
 
 			//CheckTime();
 		}
 
-		std::cout << "Cell::OnRun exit " << m_id << std::endl;
+		LOG_TRACE("Cell::OnRun exit");
 		ClrClient();
 	}
 
@@ -184,7 +182,7 @@ namespace knet
 			}
 			else
 			{
-				std::cout << "OnRun:: m_clients.find Error" << std::endl;
+				LOG_ERROR("OnRun:: m_clients.find Error");
 			}
 		}
 #else

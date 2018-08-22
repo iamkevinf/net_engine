@@ -21,6 +21,8 @@
 	#define SOCKET_ERROR			(-1)
 #endif
 
+#include "cell_log.h"
+
 #ifndef RECV_BUFFER_SIZE
 #define RECV_BUFFER_SIZE 8192
 #endif // RECV_BUFFER_SIZE

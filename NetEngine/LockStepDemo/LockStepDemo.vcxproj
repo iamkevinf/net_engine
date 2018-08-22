@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\cell.cpp" />
+    <ClCompile Include="..\Src\cell_log.cpp" />
     <ClCompile Include="..\Src\cell_task.cpp" />
     <ClCompile Include="..\Src\cell_thread.cpp" />
     <ClCompile Include="..\Src\client_socket.cpp" />
@@ -243,6 +244,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\cell.h" />
+    <ClInclude Include="..\Src\cell_log.h" />
     <ClInclude Include="..\Src\cell_task.h" />
     <ClInclude Include="..\Src\cell_thread.h" />
     <ClInclude Include="..\Src\client_socket.h" />

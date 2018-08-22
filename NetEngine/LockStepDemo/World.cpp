@@ -126,14 +126,14 @@ bool World::HandleLogin(PlayerPtr& player, knet::MessageBody* msg)
 
 	if (player->GetUUID() != 0)
 	{
-		std::cout << "This player alread exist " << player->GetUUID() << std::endl;
+		LOG_ERROR("This player alread exist %u", player->GetUUID());
 		return false;
 	}
 
 	m_uuid_counter++;
 	player->SetUUID(m_uuid_counter);
 
-	std::cout << "HandleLogin cur uuid: " << player->GetUUID() << std::endl;
+	LOG_TRACE("HandleLogin cur uuid: %u", player->GetUUID());
 
 	SCLogin ret;
 	ret.set_uuid(player->GetUUID());
@@ -171,7 +171,7 @@ bool World::HandleReady(PlayerPtr& player, knet::MessageBody* msg)
 			m_gameState = EGameState::EGS_RUNNING;
 	}
 
-	std::cout << "HandleReady " << player->GetUUID() << std::endl;
+	LOG_TRACE("HandleReady %u", player->GetUUID());
 
 	return true;
 }
