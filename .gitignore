@@ -9,6 +9,7 @@ UnityLockStepDemo/Library
 UnityLockStepDemo/Temp
 UnityLockStepDemo/*.csproj
 UnityLockStepDemo/*sln
+UnityLockStepDemo/Bin
 
 # Prerequisites
 *.d

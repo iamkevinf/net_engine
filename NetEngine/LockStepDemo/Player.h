@@ -26,6 +26,9 @@ private:
 	knet::ClientSocketPtr m_client;
 
 	DEF_FUNC_PARAM(UUID, uint32_t, m_UUID, 0);
+	DEF_FUNC_PARAM(PosX, double, m_posX, 0);
+	DEF_FUNC_PARAM(PosY, double, m_posY, 0);
+	DEF_FUNC_PARAM(PosZ, double, m_posZ, 0);
 };
 
 typedef std::shared_ptr<Player> PlayerPtr;

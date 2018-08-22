@@ -50,7 +50,7 @@ public:
 	void DispatchCommand(MsgNode node);
 
 	PlayerPtr GetUser(SOCKET id);
-	uint32_t GetUserSize()const { return m_sessions.size(); }
+	uint32_t GetUserSize()const { return (uint32_t)m_sessions.size(); }
 	bool RegisterUser(const knet::ClientSocketPtr& client);
 	bool DeleteUser(const knet::ClientSocketPtr& client);
 
@@ -60,8 +60,9 @@ public:
 	void FrameInit(const PlayerPtr& player);
 	void FrameTurn();
 
-public:
+	void SendLoginInfo();
 
+public:
 	static World* GetInstance()
 	{
 		static World s_instance;

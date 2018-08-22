@@ -54,6 +54,7 @@ enum EMessageType {
   ESCLogin = 10002,
   ECSReady = 11001,
   ESCReady = 11002,
+  ESCSight = 20001,
   EMax = 999999
 };
 bool EMessageType_IsValid(int value);

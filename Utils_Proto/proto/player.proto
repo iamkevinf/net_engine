@@ -1,5 +1,13 @@
 syntax = "proto2";
 
+message PlayerInfo
+{
+	optional uint32 UUID = 1;
+	optional double PosX = 2;
+	optional double PosY = 3;
+	optional double PosZ = 4;
+}
+
 message CSLogin
 {
 }
@@ -41,4 +49,9 @@ message SCFrame
 	optional uint64 FrameID = 1;
 	optional uint64 NextFrameID = 2;
 	repeated UserFrame Users = 3;
+}
+
+message SCSight
+{
+	repeated PlayerInfo Players = 1;
 }

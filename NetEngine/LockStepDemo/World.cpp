@@ -148,6 +148,7 @@ bool World::HandleLogin(PlayerPtr& player, knet::MessageBody* msg)
 	player->SendImm(&s2cMsg);
 
 	FrameInit(player);
+	SendLoginInfo();
 
 	return true;
 }
@@ -194,6 +195,32 @@ bool World::HandleFrame(PlayerPtr& player, knet::MessageBody* msg)
 		uint32_t key = proto.keyinfo()[i];
 		m_curFrameInfo.insert(std::make_pair(uuid, std::vector<uint32_t>())).first->second.push_back(key);
 	}
+
+	return true;
+}
+
+void World::SendLoginInfo()
+{
+	SCSight proto;
+	PlayerInfo* playerInfo = nullptr;
+
+	for (auto iter : m_sessions)
+	{
+		playerInfo = proto.add_players();
+		playerInfo->set_uuid(iter.second->GetUUID());
+		playerInfo->set_posx(iter.second->GetPosX());
+		playerInfo->set_posy(iter.second->GetPosY());
+		playerInfo->set_posz(iter.second->GetPosZ());
+	}
+
+	int size = proto.ByteSize();
+
+	knet::MessageBody s2cMsg;
+	s2cMsg.size = size + knet::MessageBody::HEADER_TYPE_BYTES;
+	s2cMsg.type = EMessageType::ESCSight;
+
+	proto.SerializeToArray(&s2cMsg.data, size);
+	Broadcast(&s2cMsg);
 }
 
 void World::FrameInit(const PlayerPtr& player)

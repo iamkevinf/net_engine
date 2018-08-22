@@ -14,5 +14,7 @@ enum EMessageType
 	ECSReady = 11001;
 	ESCReady = 11002;
 
+	ESCSight = 20001;
+
 	EMax = 999999;
 }

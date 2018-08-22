@@ -36,12 +36,14 @@ namespace protobuf_player_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[8];
+  static const ::google::protobuf::internal::ParseTable schema[10];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
 };
 void AddDescriptors();
+void InitDefaultsPlayerInfoImpl();
+void InitDefaultsPlayerInfo();
 void InitDefaultsCSLoginImpl();
 void InitDefaultsCSLogin();
 void InitDefaultsSCLoginImpl();
@@ -58,7 +60,10 @@ void InitDefaultsCSFrameImpl();
 void InitDefaultsCSFrame();
 void InitDefaultsSCFrameImpl();
 void InitDefaultsSCFrame();
+void InitDefaultsSCSightImpl();
+void InitDefaultsSCSight();
 inline void InitDefaults() {
+  InitDefaultsPlayerInfo();
   InitDefaultsCSLogin();
   InitDefaultsSCLogin();
   InitDefaultsCSReady();
@@ -67,6 +72,7 @@ inline void InitDefaults() {
   InitDefaultsUserFrame();
   InitDefaultsCSFrame();
   InitDefaultsSCFrame();
+  InitDefaultsSCSight();
 }
 }  // namespace protobuf_player_2eproto
 class CSFrame;
@@ -78,6 +84,9 @@ extern CSLoginDefaultTypeInternal _CSLogin_default_instance_;
 class CSReady;
 class CSReadyDefaultTypeInternal;
 extern CSReadyDefaultTypeInternal _CSReady_default_instance_;
+class PlayerInfo;
+class PlayerInfoDefaultTypeInternal;
+extern PlayerInfoDefaultTypeInternal _PlayerInfo_default_instance_;
 class SCFrame;
 class SCFrameDefaultTypeInternal;
 extern SCFrameDefaultTypeInternal _SCFrame_default_instance_;
@@ -90,11 +99,154 @@ extern SCLoginDefaultTypeInternal _SCLogin_default_instance_;
 class SCReady;
 class SCReadyDefaultTypeInternal;
 extern SCReadyDefaultTypeInternal _SCReady_default_instance_;
+class SCSight;
+class SCSightDefaultTypeInternal;
+extern SCSightDefaultTypeInternal _SCSight_default_instance_;
 class UserFrame;
 class UserFrameDefaultTypeInternal;
 extern UserFrameDefaultTypeInternal _UserFrame_default_instance_;
 
 // ===================================================================
+
+class PlayerInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:PlayerInfo) */ {
+ public:
+  PlayerInfo();
+  virtual ~PlayerInfo();
+
+  PlayerInfo(const PlayerInfo& from);
+
+  inline PlayerInfo& operator=(const PlayerInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  PlayerInfo(PlayerInfo&& from) noexcept
+    : PlayerInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline PlayerInfo& operator=(PlayerInfo&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PlayerInfo& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const PlayerInfo* internal_default_instance() {
+    return reinterpret_cast<const PlayerInfo*>(
+               &_PlayerInfo_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    0;
+
+  void Swap(PlayerInfo* other);
+  friend void swap(PlayerInfo& a, PlayerInfo& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline PlayerInfo* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  PlayerInfo* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const PlayerInfo& from);
+  void MergeFrom(const PlayerInfo& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(PlayerInfo* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional double PosX = 2;
+  bool has_posx() const;
+  void clear_posx();
+  static const int kPosXFieldNumber = 2;
+  double posx() const;
+  void set_posx(double value);
+
+  // optional double PosY = 3;
+  bool has_posy() const;
+  void clear_posy();
+  static const int kPosYFieldNumber = 3;
+  double posy() const;
+  void set_posy(double value);
+
+  // optional double PosZ = 4;
+  bool has_posz() const;
+  void clear_posz();
+  static const int kPosZFieldNumber = 4;
+  double posz() const;
+  void set_posz(double value);
+
+  // optional uint32 UUID = 1;
+  bool has_uuid() const;
+  void clear_uuid();
+  static const int kUUIDFieldNumber = 1;
+  ::google::protobuf::uint32 uuid() const;
+  void set_uuid(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:PlayerInfo)
+ private:
+  void set_has_uuid();
+  void clear_has_uuid();
+  void set_has_posx();
+  void clear_has_posx();
+  void set_has_posy();
+  void clear_has_posy();
+  void set_has_posz();
+  void clear_has_posz();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  double posx_;
+  double posy_;
+  double posz_;
+  ::google::protobuf::uint32 uuid_;
+  friend struct ::protobuf_player_2eproto::TableStruct;
+  friend void ::protobuf_player_2eproto::InitDefaultsPlayerInfoImpl();
+};
+// -------------------------------------------------------------------
 
 class CSLogin : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CSLogin) */ {
  public:
@@ -138,7 +290,7 @@ class CSLogin : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_CSLogin_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    0;
+    1;
 
   void Swap(CSLogin* other);
   friend void swap(CSLogin& a, CSLogin& b) {
@@ -238,7 +390,7 @@ class SCLogin : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_SCLogin_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    1;
+    2;
 
   void Swap(SCLogin* other);
   friend void swap(SCLogin& a, SCLogin& b) {
@@ -348,7 +500,7 @@ class CSReady : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_CSReady_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    2;
+    3;
 
   void Swap(CSReady* other);
   friend void swap(CSReady& a, CSReady& b) {
@@ -448,7 +600,7 @@ class SCReady : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_SCReady_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    3;
+    4;
 
   void Swap(SCReady* other);
   friend void swap(SCReady& a, SCReady& b) {
@@ -548,7 +700,7 @@ class SCFrameInit : public ::google::protobuf::Message /* @@protoc_insertion_poi
                &_SCFrameInit_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    4;
+    5;
 
   void Swap(SCFrameInit* other);
   friend void swap(SCFrameInit& a, SCFrameInit& b) {
@@ -668,7 +820,7 @@ class UserFrame : public ::google::protobuf::Message /* @@protoc_insertion_point
                &_UserFrame_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    5;
+    6;
 
   void Swap(UserFrame* other);
   friend void swap(UserFrame& a, UserFrame& b) {
@@ -791,7 +943,7 @@ class CSFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_CSFrame_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    6;
+    7;
 
   void Swap(CSFrame* other);
   friend void swap(CSFrame& a, CSFrame& b) {
@@ -924,7 +1076,7 @@ class SCFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_SCFrame_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    7;
+    8;
 
   void Swap(SCFrame* other);
   friend void swap(SCFrame& a, SCFrame& b) {
@@ -1013,6 +1165,119 @@ class SCFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   friend struct ::protobuf_player_2eproto::TableStruct;
   friend void ::protobuf_player_2eproto::InitDefaultsSCFrameImpl();
 };
+// -------------------------------------------------------------------
+
+class SCSight : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:SCSight) */ {
+ public:
+  SCSight();
+  virtual ~SCSight();
+
+  SCSight(const SCSight& from);
+
+  inline SCSight& operator=(const SCSight& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  SCSight(SCSight&& from) noexcept
+    : SCSight() {
+    *this = ::std::move(from);
+  }
+
+  inline SCSight& operator=(SCSight&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SCSight& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SCSight* internal_default_instance() {
+    return reinterpret_cast<const SCSight*>(
+               &_SCSight_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    9;
+
+  void Swap(SCSight* other);
+  friend void swap(SCSight& a, SCSight& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SCSight* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  SCSight* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const SCSight& from);
+  void MergeFrom(const SCSight& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(SCSight* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .PlayerInfo Players = 1;
+  int players_size() const;
+  void clear_players();
+  static const int kPlayersFieldNumber = 1;
+  const ::PlayerInfo& players(int index) const;
+  ::PlayerInfo* mutable_players(int index);
+  ::PlayerInfo* add_players();
+  ::google::protobuf::RepeatedPtrField< ::PlayerInfo >*
+      mutable_players();
+  const ::google::protobuf::RepeatedPtrField< ::PlayerInfo >&
+      players() const;
+
+  // @@protoc_insertion_point(class_scope:SCSight)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::PlayerInfo > players_;
+  friend struct ::protobuf_player_2eproto::TableStruct;
+  friend void ::protobuf_player_2eproto::InitDefaultsSCSightImpl();
+};
 // ===================================================================
 
 
@@ -1022,6 +1287,106 @@ class SCFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// PlayerInfo
+
+// optional uint32 UUID = 1;
+inline bool PlayerInfo::has_uuid() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void PlayerInfo::set_has_uuid() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void PlayerInfo::clear_has_uuid() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void PlayerInfo::clear_uuid() {
+  uuid_ = 0u;
+  clear_has_uuid();
+}
+inline ::google::protobuf::uint32 PlayerInfo::uuid() const {
+  // @@protoc_insertion_point(field_get:PlayerInfo.UUID)
+  return uuid_;
+}
+inline void PlayerInfo::set_uuid(::google::protobuf::uint32 value) {
+  set_has_uuid();
+  uuid_ = value;
+  // @@protoc_insertion_point(field_set:PlayerInfo.UUID)
+}
+
+// optional double PosX = 2;
+inline bool PlayerInfo::has_posx() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PlayerInfo::set_has_posx() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PlayerInfo::clear_has_posx() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PlayerInfo::clear_posx() {
+  posx_ = 0;
+  clear_has_posx();
+}
+inline double PlayerInfo::posx() const {
+  // @@protoc_insertion_point(field_get:PlayerInfo.PosX)
+  return posx_;
+}
+inline void PlayerInfo::set_posx(double value) {
+  set_has_posx();
+  posx_ = value;
+  // @@protoc_insertion_point(field_set:PlayerInfo.PosX)
+}
+
+// optional double PosY = 3;
+inline bool PlayerInfo::has_posy() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PlayerInfo::set_has_posy() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PlayerInfo::clear_has_posy() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PlayerInfo::clear_posy() {
+  posy_ = 0;
+  clear_has_posy();
+}
+inline double PlayerInfo::posy() const {
+  // @@protoc_insertion_point(field_get:PlayerInfo.PosY)
+  return posy_;
+}
+inline void PlayerInfo::set_posy(double value) {
+  set_has_posy();
+  posy_ = value;
+  // @@protoc_insertion_point(field_set:PlayerInfo.PosY)
+}
+
+// optional double PosZ = 4;
+inline bool PlayerInfo::has_posz() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void PlayerInfo::set_has_posz() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void PlayerInfo::clear_has_posz() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void PlayerInfo::clear_posz() {
+  posz_ = 0;
+  clear_has_posz();
+}
+inline double PlayerInfo::posz() const {
+  // @@protoc_insertion_point(field_get:PlayerInfo.PosZ)
+  return posz_;
+}
+inline void PlayerInfo::set_posz(double value) {
+  set_has_posz();
+  posz_ = value;
+  // @@protoc_insertion_point(field_set:PlayerInfo.PosZ)
+}
+
+// -------------------------------------------------------------------
+
 // CSLogin
 
 // -------------------------------------------------------------------
@@ -1334,9 +1699,47 @@ SCFrame::users() const {
   return users_;
 }
 
+// -------------------------------------------------------------------
+
+// SCSight
+
+// repeated .PlayerInfo Players = 1;
+inline int SCSight::players_size() const {
+  return players_.size();
+}
+inline void SCSight::clear_players() {
+  players_.Clear();
+}
+inline const ::PlayerInfo& SCSight::players(int index) const {
+  // @@protoc_insertion_point(field_get:SCSight.Players)
+  return players_.Get(index);
+}
+inline ::PlayerInfo* SCSight::mutable_players(int index) {
+  // @@protoc_insertion_point(field_mutable:SCSight.Players)
+  return players_.Mutable(index);
+}
+inline ::PlayerInfo* SCSight::add_players() {
+  // @@protoc_insertion_point(field_add:SCSight.Players)
+  return players_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::PlayerInfo >*
+SCSight::mutable_players() {
+  // @@protoc_insertion_point(field_mutable_list:SCSight.Players)
+  return &players_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::PlayerInfo >&
+SCSight::players() const {
+  // @@protoc_insertion_point(field_list:SCSight.Players)
+  return players_;
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
