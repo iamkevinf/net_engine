@@ -24,31 +24,31 @@ namespace knet
 #if LOG_LVL_TRACE >= LOG_LVL
 #   define LOG_TRACE(...) knet::cell_log(LOG_LVL_TRACE, __VA_ARGS__)
 #else
-#   define LOG_TRACE(...) void
+#   define LOG_TRACE(...) /*LOG_HERE LOG_LVL_TRACE*/
 #endif
 
 #if LOG_LVL_DEBUG >= LOG_LVL
 #   define LOG_DEBUG(...) knet::cell_log(LOG_LVL_DEBUG, __VA_ARGS__)
 #else
-#   define LOG_DEBUG(...) void
+#   define LOG_DEBUG(...) /*LOG_HERE LOG_LVL_DEBUG*/
 #endif
 
 #if LOG_LVL_INFO >= LOG_LVL
 #   define LOG_INFO(...) knet::cell_log(LOG_LVL_INFO, __VA_ARGS__)
 #else
-#   define LOG_INFO(...) void
+#   define LOG_INFO(...) /*LOG_HERE LOG_LVL_INFO*/
 #endif
 
 #if LOG_LVL_WARN >= LOG_LVL
 #   define LOG_WARN(...) knet::cell_log(LOG_LVL_WARN, __VA_ARGS__)
 #else
-#   define LOG_WARN(...) void
+#   define LOG_WARN(...) /*LOG_HERE LOG_LVL_WARN*/
 #endif
 
 #if LOG_LVL_ERROR >= LOG_LVL
 #   define LOG_ERROR(...) knet::cell_log(LOG_LVL_ERROR, __VA_ARGS__)
 #else
-#   define LOG_ERROR(...) void
+#   define LOG_ERROR(...) /*LOG_HERE LOG_LVL_ERROR*/
 #endif
 
 #define LOG_FATAL(...) knet::cell_log(LOG_LVL_FATAL, __VA_ARGS__)

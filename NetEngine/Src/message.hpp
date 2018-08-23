@@ -1,6 +1,8 @@
 ﻿#ifndef __MESSAGE_HPP__
 #define __MESSAGE_HPP__
 
+#include <string.h>
+
 namespace knet
 {
 	struct MessageBody
