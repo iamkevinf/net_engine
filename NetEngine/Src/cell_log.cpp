@@ -3,6 +3,7 @@
 #include <cstdarg>
 #include <string>
 #include <assert.h>
+#include <ctime>
 
 #ifdef _WIN32
 #include <Windows.h>

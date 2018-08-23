@@ -22,14 +22,6 @@ namespace knet
 
 	void TCPServer::CreateSock()
 	{
-#ifdef _WIN32
-		WORD ver = MAKEWORD(2, 2);
-		WSADATA data;
-		WSAStartup(ver, &data);
-#else
-		signal(SIGPIPE, SIG_IGN);
-#endif
-
 		if (m_sock != INVALID_SOCKET)
 		{
 			LOG_INFO("close old conn");
@@ -147,10 +139,6 @@ namespace knet
 			closesocket(m_sock);
 #else
 			close(m_sock);
-#endif
-
-#ifdef _WIN32
-			WSACleanup();
 #endif
 
 			m_sock = INVALID_SOCKET;
