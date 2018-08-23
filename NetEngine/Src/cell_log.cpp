@@ -76,6 +76,7 @@ namespace knet
 
 #ifdef _WIN32
 		OutputDebugString((msg + "\r").c_str());
+		std::cout << msg << std::endl;
 #else
 		std::cout << msg << std::endl;
 #endif

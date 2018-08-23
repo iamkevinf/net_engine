@@ -30,7 +30,7 @@ void MyServer::OnExit(knet::ClientSocketPtr& client)
 
 void MyServer::OnMessage(knet::Cell* cell, knet::ClientSocketPtr& client, knet::MessageBody* body)
 {
-	LOG_TRACE("MyServer::OnMessage type: %d \n size: %d", body->type, body->size);
+	LOG_TRACE("MyServer::OnMessage type: %d size: %d", body->type, body->size);
 
 	knet::MessageBody s2cMsg;
 	int size = 4;
