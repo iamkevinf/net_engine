@@ -1,5 +1,6 @@
 ﻿#include "mem_alloctor.h"
 #include "my_server.h"
+#include "cell_network.h"
 
 #include <iostream>
 #include <string.h>
@@ -35,6 +36,7 @@ void inputThread()
 
 int main()
 {
+	knet::CellNetwork::Instance().Init();
 	int thread_count = 4;
 	LOG_INFO("input thread count");
 	std::cin >> thread_count;
@@ -72,6 +74,8 @@ int main()
 		if (0 == strcmp(cmdBuff, "exit"))
 			break;
 	}
+
+	knet::CellNetwork::Instance().Fini();
 
 	return 0;
 }

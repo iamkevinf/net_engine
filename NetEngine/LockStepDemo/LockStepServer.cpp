@@ -5,6 +5,7 @@
 
 #include "server.h"
 #include "World.h"
+#include "cell_network.h"
 
 #include <iostream>
 #include <string.h>
@@ -20,6 +21,8 @@ int port = 10086;
 int main()
 {
 	int thread_count = 1;
+
+	knet::CellNetwork::Instance().Init();
 
 	World::GetInstance()->Start();
 
@@ -39,6 +42,8 @@ int main()
 	}
 
 	server.Close();
+
+	knet::CellNetwork::Instance().Fini();
 
 	LOG_INFO("Server::Exit!");
 	return 0;
