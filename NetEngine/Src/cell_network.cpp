@@ -2,6 +2,8 @@
 
 #include "net_defined.hpp"
 
+#include <signal.h>
+
 namespace knet
 {
 	CellNetwork::CellNetwork()

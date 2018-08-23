@@ -79,7 +79,6 @@ namespace knet
 #else
 		std::cout << msg << std::endl;
 #endif
-		std::cout << msg << std::endl;
 
 		if (lvl >= LOG_LVL_FATAL)
 		{
